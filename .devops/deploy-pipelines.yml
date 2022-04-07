@@ -22,7 +22,7 @@ variables:
     dockerRegistryServiceConnection: iodreminderacr
     dockerNamespace: iodreminderacr.azurecr.io
     connectedServiceName: DEV-IO
-    webAppName: io-d-reminder-app
+    webAppName: 'io-d-reminder-app'
  # ${{ if eq(parameters['environment'], 'uat') }}:
  #  dockerRegistryServiceConnection: $(UAT_CONTAINER_REGISTRY)
  #   dockerNamespace: microserviceuarc.azurecr.io
