@@ -9,26 +9,31 @@ parameters:
   - name: environment
     displayName: Target Environment
     type: string
-    default: uat
+    default: dev
     values:
-      - uat
-      - prod
+      - dev
 
 variables:
   MAVEN_CACHE_FOLDER: $(Pipeline.Workspace)/.m2/repository
   MAVEN_OPTS: '-Dmaven.repo.local=$(MAVEN_CACHE_FOLDER)'
   BUILD_NUMBER: $(Build.BuildNumber)
-  imageRepository: 'cgn-onboarding-portal-backend'
-  ${{ if eq(parameters['environment'], 'uat') }}:
-    dockerRegistryServiceConnection: $(UAT_CONTAINER_REGISTRY)
-    dockerNamespace: microserviceuarc.azurecr.io
-    connectedServiceName: $(UAT_AZURE_SUBSCRIPTION)
-    webAppName: $(UAT_WEB_APP_NAME)
-  ${{ if eq(parameters['environment'], 'prod') }}:
-    dockerRegistryServiceConnection: $(PROD_CONTAINER_REGISTRY)
-    dockerNamespace: microserviceparc.azurecr.io
-    connectedServiceName: $(PROD_AZURE_SUBSCRIPTION)
-    webAppName: $(PROD_WEB_APP_NAME)
+  imageRepository: 'io-reminder'
+  ${{ if eq(parameters['environment'], 'dev') }}:
+    dockerRegistryServiceConnection: iodreminderacr
+    dockerNamespace: iodreminderacr.azurecr.io
+    connectedServiceName: DEV-IO
+    webAppName: io-d-reminder-app
+    resourceGroupName: io-d-reminder-backend
+ # ${{ if eq(parameters['environment'], 'uat') }}:
+ #  dockerRegistryServiceConnection: $(UAT_CONTAINER_REGISTRY)
+ #   dockerNamespace: microserviceuarc.azurecr.io
+ #   connectedServiceName: $(UAT_AZURE_SUBSCRIPTION)
+ #   webAppName: $(UAT_WEB_APP_NAME)
+ # ${{ if eq(parameters['environment'], 'prod') }}:
+ #   dockerRegistryServiceConnection: $(PROD_CONTAINER_REGISTRY)
+ #   dockerNamespace: microserviceparc.azurecr.io
+ #   connectedServiceName: $(PROD_AZURE_SUBSCRIPTION)
+ #   webAppName: $(PROD_WEB_APP_NAME)
 steps:
   - task: Bash@3
     displayName: Check Version and Branch
@@ -98,3 +103,4 @@ steps:
       DockerNamespace: '$(dockerNamespace)'
       DockerRepository: '$(imageRepository)'
       DockerImageTag: '$(Build.BuildId)'
+      ResourceGroupName: '$(resourceGroupName)'
