@@ -27,7 +27,7 @@ public class EventHubConsumer {
 		try {
 			System.in.read();
 		} catch (IOException e) {
-			e.printStackTrace();
+			log.error("Consumer Error");
 		}
 
 		log.info("Stopping event processor");

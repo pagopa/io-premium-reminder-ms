@@ -14,12 +14,11 @@ public class Application{
     public static void main(String[] args) {
     	SpringApplication.run(Application.class, args);
     	
-//    	MessageConsumer messageConsumer = (MessageConsumer)ApplicationContextProvider.getBean("MessageEventConsumer");
-//    	messageConsumer.init();
+    	MessageConsumer messageConsumer = (MessageConsumer)ApplicationContextProvider.getBean("MessageEventConsumer");
+    	messageConsumer.init();
+    	MessageStatusConsumer messageStatusConsumer = (MessageStatusConsumer)ApplicationContextProvider.getBean("MessageStatusEventConsumer");
+    	messageStatusConsumer.init();
     	
-//    	MessageStatusConsumer messageStatusConsumer = (MessageStatusConsumer)ApplicationContextProvider.getBean("MessageStatusEventConsumer");
-//    	messageStatusConsumer.init();
-//    	
     	ReminderConsumer notificationConsumer = (ReminderConsumer)ApplicationContextProvider.getBean("ReminderEventConsumer");
     	notificationConsumer.init();
     }
