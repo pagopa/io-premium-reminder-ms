@@ -1,4 +1,4 @@
-package it.gov.pagopa.microservice.config;
+package it.gov.pagopa.reminder.config;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
