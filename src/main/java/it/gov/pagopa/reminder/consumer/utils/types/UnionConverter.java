@@ -1,17 +1,16 @@
 package it.gov.pagopa.reminder.consumer.utils.types;
 
-import org.apache.avro.AvroRuntimeException;
-import org.apache.avro.AvroTypeException;
-import org.apache.avro.Schema;
-import it.gov.pagopa.reminder.consumer.utils.JsonToAvroReader;
-import it.gov.pagopa.reminder.consumer.utils.PathsPrinter;
+import static it.gov.pagopa.reminder.consumer.utils.PathsPrinter.print;
 
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 
-import static java.util.stream.Collectors.joining;
-import static it.gov.pagopa.reminder.consumer.utils.PathsPrinter.print;
+import org.apache.avro.AvroRuntimeException;
+import org.apache.avro.AvroTypeException;
+import org.apache.avro.Schema;
+
+import it.gov.pagopa.reminder.consumer.utils.JsonToAvroReader;
 
 public class UnionConverter implements AvroTypeConverter {
     private final JsonToAvroReader jsonToAvroReader;

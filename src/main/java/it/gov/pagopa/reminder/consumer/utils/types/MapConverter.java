@@ -1,11 +1,12 @@
 package it.gov.pagopa.reminder.consumer.utils.types;
 
-import org.apache.avro.Schema;
-import it.gov.pagopa.reminder.consumer.utils.JsonToAvroReader;
-
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.apache.avro.Schema;
+
+import it.gov.pagopa.reminder.consumer.utils.JsonToAvroReader;
 
 public class MapConverter extends AvroTypeConverterWithStrictJavaTypeCheck<Map> {
     private final JsonToAvroReader recordRecord;

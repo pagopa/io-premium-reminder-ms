@@ -12,8 +12,6 @@ public interface ReminderService {
 	
 	void save(Reminder reminder);
 	
-	void deleteById(String id, String partitionKey);
-	
-	void updateReminder(String reminderId, boolean isRead);
+	void updateReminder(String reminderId, boolean isRead, boolean isPaid);
 
 }

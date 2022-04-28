@@ -1,17 +1,16 @@
 package it.gov.pagopa.reminder.consumer.utils.types;
 
-import org.apache.avro.AvroTypeException;
-import org.apache.avro.Schema;
-import it.gov.pagopa.reminder.consumer.utils.PathsPrinter;
+import static it.gov.pagopa.reminder.consumer.utils.PathsPrinter.print;
+import static it.gov.pagopa.reminder.consumer.utils.types.AvroTypeConverter.isLogicalType;
+import static org.apache.avro.Schema.Type.LONG;
 
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoField;
 import java.util.Deque;
 
-import static org.apache.avro.Schema.Type.LONG;
-import static it.gov.pagopa.reminder.consumer.utils.PathsPrinter.print;
-import static it.gov.pagopa.reminder.consumer.utils.types.AvroTypeConverter.isLogicalType;
+import org.apache.avro.AvroTypeException;
+import org.apache.avro.Schema;
 
 public class LongTimestampMillisConverter implements AvroTypeConverter {
     public static final AvroTypeConverter INSTANCE = new LongTimestampMillisConverter(DateTimeFormatter.ISO_DATE_TIME);

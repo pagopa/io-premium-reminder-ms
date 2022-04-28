@@ -1,14 +1,14 @@
 package it.gov.pagopa.reminder.consumer.utils.types;
 
-import org.apache.avro.Schema;
-import org.apache.avro.generic.GenericData;
-import org.apache.avro.generic.GenericRecordBuilder;
-import it.gov.pagopa.reminder.consumer.utils.PathsPrinter;
-import it.gov.pagopa.reminder.consumer.utils.JsonToAvroReader;
-import it.gov.pagopa.reminder.consumer.utils.UnknownFieldListener;
-
 import java.util.Deque;
 import java.util.Map;
+
+import org.apache.avro.Schema;
+import org.apache.avro.generic.GenericRecordBuilder;
+
+import it.gov.pagopa.reminder.consumer.utils.JsonToAvroReader;
+import it.gov.pagopa.reminder.consumer.utils.PathsPrinter;
+import it.gov.pagopa.reminder.consumer.utils.UnknownFieldListener;
 
 public class RecordConverter extends AvroTypeConverterWithStrictJavaTypeCheck<Map> {
     private final JsonToAvroReader jsonToAvroReader;

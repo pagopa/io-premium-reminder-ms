@@ -1,13 +1,13 @@
 package it.gov.pagopa.reminder.consumer.utils.types;
 
-import org.apache.avro.Schema;
-
-import it.gov.pagopa.reminder.consumer.utils.JsonToAvroReader;
+import static java.util.stream.Collectors.toList;
 
 import java.util.Collection;
 import java.util.Deque;
 
-import static java.util.stream.Collectors.toList;
+import org.apache.avro.Schema;
+
+import it.gov.pagopa.reminder.consumer.utils.JsonToAvroReader;
 
 public class ArrayConverter extends AvroTypeConverterWithStrictJavaTypeCheck<Collection> {
     private final JsonToAvroReader jsonToAvroReader;

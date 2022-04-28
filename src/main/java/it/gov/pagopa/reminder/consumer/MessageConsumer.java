@@ -1,8 +1,10 @@
 package it.gov.pagopa.reminder.consumer;
 
+import java.time.LocalDateTime;
 import java.util.function.Consumer;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 
 import com.azure.messaging.eventhubs.EventData;
@@ -13,14 +15,19 @@ import com.azure.messaging.eventhubs.models.ErrorContext;
 import com.azure.messaging.eventhubs.models.EventContext;
 import com.azure.storage.blob.BlobContainerClientBuilder;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import it.gov.pagopa.reminder.consumer.utils.JsonAvroConverter;
+import it.gov.pagopa.reminder.model.JsonLoader;
 import it.gov.pagopa.reminder.model.Reminder;
 import it.gov.pagopa.reminder.service.ReminderService;
-import it.gov.pagopa.reminder.util.Constants;
+import it.gov.pagopa.reminder.util.LocalDateTimeDeserializer;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import static it.gov.pagopa.reminder.util.ReminderUtil.checkNullInMessage;
 
 @NoArgsConstructor
+@Slf4j
 public class MessageConsumer extends EventHubConsumer {
 
 	@Value("${azure.eventhub.message.connectionString}")
@@ -31,9 +38,15 @@ public class MessageConsumer extends EventHubConsumer {
 	private String storageConnectionString;
 	@Value("${azure.eventhub.message.storageContainerName}")
 	private String storageContainerName;
+	@Value("${checkpoint.size}")
+	private int checkpointSize;
 	
 	@Autowired
 	ReminderService reminderService;
+	
+	@Autowired
+	@Qualifier("messageSchema")
+	JsonLoader schema;
 	
 	public void init() {
 		this.blobContainerAsyncClient = new BlobContainerClientBuilder()
@@ -52,21 +65,25 @@ public class MessageConsumer extends EventHubConsumer {
 	private final Consumer<EventContext> PARTITION_PROCESSOR = eventContext -> {
 		JsonAvroConverter converter = new JsonAvroConverter();
 		EventData eventData = eventContext.getEventData();
-		
 		if (eventData != null) {
-			byte[] binaryJson = converter.convertToJson(eventData.getBody(), Constants.MESSAGE_SCHEMA);
-			Reminder newReminder = new Gson().fromJson(new String(binaryJson), Reminder.class);
-			reminderService.save(newReminder);
-			// Every 10 events received, it will update the checkpoint stored in Azure Blob Storage.
-			if (eventData.getSequenceNumber() % 10 == 0) {
+			try {
+				byte[] binaryJson = converter.convertToJson(eventData.getBody(), schema.getJsonString());
+				String avroJson = new String(binaryJson);
+				GsonBuilder gsonBuilder = new GsonBuilder();
+				gsonBuilder.registerTypeAdapter(LocalDateTime.class, new LocalDateTimeDeserializer());
+				Gson gson = gsonBuilder.setPrettyPrinting().create();
+				Reminder newReminder = gson.fromJson(avroJson, Reminder.class);
+				checkNullInMessage(newReminder);
+				reminderService.save(newReminder);
+				eventContext.updateCheckpoint();
+			} catch(Exception e) {
+				e.printStackTrace();
 				eventContext.updateCheckpoint();
 			}
 		}
 	};
-
+	
 	private final Consumer<ErrorContext> ERROR_HANDLER = errorContext -> {
-		System.out.printf("Error occurred in partition processor for partition %s, %s.%n",
-				errorContext.getPartitionContext().getPartitionId(),
-				errorContext.getThrowable());
+		log.error("Error occurred in partition processor for partition {}, {}", errorContext.getPartitionContext().getPartitionId(), errorContext.getThrowable());
 	};
 }

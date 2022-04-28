@@ -1,10 +1,12 @@
 package it.gov.pagopa.reminder.consumer;
 
 import java.util.function.Consumer;
+import java.util.function.Function;
+
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.MediaType;
+
 import com.azure.messaging.eventhubs.EventData;
 import com.azure.messaging.eventhubs.EventHubClientBuilder;
 import com.azure.messaging.eventhubs.EventProcessorClientBuilder;
@@ -13,17 +15,21 @@ import com.azure.messaging.eventhubs.models.ErrorContext;
 import com.azure.messaging.eventhubs.models.EventContext;
 import com.azure.storage.blob.BlobContainerClientBuilder;
 import com.google.gson.Gson;
+
+import io.github.resilience4j.core.IntervalFunction;
+import io.github.resilience4j.retry.Retry;
+import io.github.resilience4j.retry.RetryConfig;
 import it.gov.pagopa.reminder.dto.NotificationMessage;
 import it.gov.pagopa.reminder.dto.SenderMetadata;
-import it.gov.pagopa.reminder.dto.avro.MessageContentType;
 import it.gov.pagopa.reminder.dto.request.NotificationDTO;
 import it.gov.pagopa.reminder.model.Reminder;
 import it.gov.pagopa.reminder.service.ReminderService;
 import it.gov.pagopa.reminder.util.ApplicationContextProvider;
 import it.gov.pagopa.reminder.util.Constants;
 import it.gov.pagopa.reminder.util.RestTemplateUtils;
-import it.gov.pagopa.reminder.util.WebClientUtils;
-
+import lombok.extern.slf4j.Slf4j;
+import static it.gov.pagopa.reminder.util.ReminderUtil.checkNullInMessage;
+@Slf4j
 public class ReminderConsumer extends EventHubConsumer {
 
 	@Value("${azure.eventhub.notification.connectionString}")
@@ -34,6 +40,10 @@ public class ReminderConsumer extends EventHubConsumer {
 	private String storageConnectionString;
 	@Value("${azure.eventhub.notification.storageContainerName}")
 	private String storageContainerName;
+	@Value("${notification.notifyEndpoint}")
+	private String notifyEndpoint;
+	@Value("${checkpoint.size}")
+	private int checkpointSize;
 	
 	@Autowired
 	ReminderService reminderService;
@@ -52,36 +62,52 @@ public class ReminderConsumer extends EventHubConsumer {
 		consume();
 	}
 	
-	private final Consumer<EventContext> PARTITION_PROCESSOR = eventContext -> {
+	private  Consumer<EventContext> PARTITION_PROCESSOR = eventContext -> {
 		EventData eventData = eventContext.getEventData();
-		
+
 		if (eventData != null) {
 			Reminder reminderToSend = new Gson().fromJson(new String(eventData.getBody()), Reminder.class);
-			if(reminderToSend != null && reminderToSend.getContent_type().equals(MessageContentType.PAYMENT)) {
-				//TODO: inviare request a servizio dei pagamenti
-			}
-			if(reminderToSend != null && !reminderToSend.getContent_type().equals(MessageContentType.PAYMENT)) {
+			checkNullInMessage(reminderToSend);
+			if(reminderToSend != null) {
+				log.info("I'm processing the reminder with id: {} ", reminderToSend.getId());
 				String created_at = DateFormatUtils.format(reminderToSend.getCreatedAt(), Constants.DATE_FORMAT);
 				NotificationMessage notificationMessage =  new NotificationMessage(
 																reminderToSend.getId(), reminderToSend.getFiscalCode(), 
 																created_at, reminderToSend.getSenderServiceId(), 
 																reminderToSend.getTimeToLiveSeconds());
-				SenderMetadata senderMetadata = (SenderMetadata) ApplicationContextProvider.getBean("ReminderEventSenderMetadata"); //new SenderMetadata();
+				SenderMetadata senderMetadata = (SenderMetadata) ApplicationContextProvider.getBean("ReminderEventSenderMetadata");
 				NotificationDTO notification = new NotificationDTO(notificationMessage, senderMetadata);
-				RestTemplateUtils.sendNotification("https://io-d-mock-app-backend.azurewebsites.net/api/v1/notify", notification);
-//				WebClientUtils.sendPostRequest("https://io-d-mock-app-backend.azurewebsites.net/api/v1/notify", 
-//												MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON, notification);
-			}
-			// Every 10 events received, it will update the checkpoint stored in Azure Blob Storage.
-			if (eventData.getSequenceNumber() % 10 == 0) {
-				eventContext.updateCheckpoint();
+				log.info("I'm sending the notification with id: {} ", notification.getMessage().getId());
+				try {
+					sendNotificationWithRetry(notification);
+					eventContext.updateCheckpoint();
+				}
+				catch(Exception e) {
+					eventContext.updateCheckpoint();
+				}
 			}
 		}
 	};
 
 	private final Consumer<ErrorContext> ERROR_HANDLER = errorContext -> {
-		System.out.printf("Error occurred in partition processor for partition %s, %s.%n",
-				errorContext.getPartitionContext().getPartitionId(),
-				errorContext.getThrowable());
+		log.error("Error occurred in partition processor for partition {}, {}", errorContext.getPartitionContext().getPartitionId(), errorContext.getThrowable());
+
 	};
+	
+	private String callNotify(NotificationDTO notification) {
+		log.info("Attempt to send reminder with id: {} ", notification.getMessage().getId());
+		RestTemplateUtils.sendNotification(notifyEndpoint, notification);
+		return "notify";
+	}
+	private void sendNotificationWithRetry(NotificationDTO notification) {
+		IntervalFunction intervalFn = IntervalFunction.of(10000);
+		RetryConfig retryConfig = RetryConfig.custom()
+		  .maxAttempts(3)
+		  .intervalFunction(intervalFn)
+		  .build();
+		Retry retry = Retry.of("sendNotificationWithRetry", retryConfig);
+		Function<Object, Object> sendNotificationFn = Retry.decorateFunction(retry, 
+				notObj -> callNotify((NotificationDTO)notObj));
+		sendNotificationFn.apply(notification);
+	}
 }

@@ -1,4 +1,5 @@
 package it.gov.pagopa.reminder.util;
+
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.http.HttpEntity;
@@ -9,10 +10,10 @@ import com.google.gson.Gson;
 import it.gov.pagopa.reminder.dto.request.NotificationDTO;
 
 public class RestTemplateUtils {
-
+	
 	public static void sendNotification(String url, NotificationDTO notification) {
 		RestTemplate restTemplate = new RestTemplate();
-		restTemplate.setErrorHandler(new RestTemplateExceptionHandler());
+//		restTemplate.setErrorHandler(new RestTemplateExceptionHandler());
 		HttpHeaders requestHeaders = new HttpHeaders();
 	    requestHeaders.setContentType(MediaType.APPLICATION_JSON);
 	    List<MediaType> acceptedTypes = new ArrayList<MediaType>();

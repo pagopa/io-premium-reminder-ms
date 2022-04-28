@@ -22,8 +22,6 @@ public class EventHubConsumer {
 
 		log.info("Starting event processor");
 		eventProcessorClient.start();
-
-		log.info("Press enter to stop.");
 		try {
 			System.in.read();
 		} catch (IOException e) {
@@ -33,7 +31,6 @@ public class EventHubConsumer {
 		log.info("Stopping event processor");
 		eventProcessorClient.stop();
 		log.info("Event processor stopped.");
-
 		log.info("Exiting process");
 	}
 }

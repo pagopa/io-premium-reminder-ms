@@ -7,8 +7,9 @@ import org.springframework.web.reactive.function.client.WebClient;
 import com.google.gson.Gson;
 
 import it.gov.pagopa.reminder.dto.request.NotificationDTO;
+import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
-
+@Slf4j
 public class WebClientUtils {
 
 	public static void sendPostRequest(String uri, MediaType contentType, MediaType acceptableDataType, NotificationDTO notification) {
@@ -19,10 +20,10 @@ public class WebClientUtils {
 	    .bodyValue(new Gson().toJson(notification).toString())
 	    .retrieve()
 	    .onStatus(HttpStatus::isError, response -> {
-	    	System.out.println("Errore nella richietsa");
-           return Mono.error(new Exception("ERRORE nell'invio della notifica"));
+	    	log.error("Request error");
+           return Mono.error(new Exception("ERROR in sending notification"));
         })
         .bodyToMono(String.class);
-		System.out.println(responseA.toString());
+		log.info(responseA.toString());
 	}
 }

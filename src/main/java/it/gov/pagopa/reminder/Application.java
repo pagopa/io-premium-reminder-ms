@@ -16,6 +16,7 @@ public class Application{
     	
     	MessageConsumer messageConsumer = (MessageConsumer)ApplicationContextProvider.getBean("MessageEventConsumer");
     	messageConsumer.init();
+   	
     	MessageStatusConsumer messageStatusConsumer = (MessageStatusConsumer)ApplicationContextProvider.getBean("MessageStatusEventConsumer");
     	messageStatusConsumer.init();
     	

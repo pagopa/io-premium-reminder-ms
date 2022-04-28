@@ -2,7 +2,10 @@ package it.gov.pagopa.reminder.service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -18,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @Slf4j
 @Transactional
-public class ReminderServiceImpl implements ReminderService{
+public class ReminderServiceImpl implements ReminderService {
 
 	@Autowired
 	ReminderRepository reminderRepository;
@@ -32,8 +35,7 @@ public class ReminderServiceImpl implements ReminderService{
 
 	@Override
 	public Reminder findById(String id) {
-		Reminder rr = reminderRepository.findById(id).orElse(null);
-		return rr;
+		return reminderRepository.findById(id).orElse(null);
 	}
 
 	@Override
@@ -41,17 +43,12 @@ public class ReminderServiceImpl implements ReminderService{
 		reminderRepository.save(reminder);		
 	}
 
-	@Override
-	public void deleteById(String id, String partitionKey) {
-		reminderRepository.deleteById(id);
-	}
-
 
 	@Override
-	public void updateReminder(String reminderId, boolean isRead) {
+	public void updateReminder(String reminderId, boolean isRead, boolean isPaid) {
 		Reminder reminderToUpdate = findById(reminderId);
-		//TODO: verificare logica per i messaggi di pagamento
-		reminderToUpdate.setReadFlag(isRead);	
+		reminderToUpdate.setPaidFlag(isPaid);
+		reminderToUpdate.setReadFlag(isRead);
 		save(reminderToUpdate);
 	}
 
@@ -64,65 +61,35 @@ public class ReminderServiceImpl implements ReminderService{
 		int reminderDayNum = Integer.valueOf(reminderDay);
 		LocalDateTime dateTime = LocalDateTime.now().minusDays(reminderDayNum);
 
-
-		List<Reminder> remindersToNotify = reminderRepository.findByReadFlagAndReminderFlagAndNumReminderLessThanAndDataUltimoReminderLessThan(false, true, reminderNumMax, dateTime);
-		List<Reminder> paymentsToNotify = reminderRepository.findByPaidFlagAndDataUltimoReminderLessThanAndContent_type(false, dateTime, MessageContentType.PAYMENT.toString());
+		List<Reminder> remindersToNotify = reminderRepository.findRemindersToNotify(false, true, reminderNumMax, dateTime);
+		List<Reminder> paymentsToNotify = reminderRepository.findPaymentsToNotify(false, dateTime, MessageContentType.PAYMENT.toString(), LocalDateTime.now());
+		remindersToNotify.addAll(paymentsToNotify);
 		ReminderProducer producer = (ReminderProducer) ApplicationContextProvider.getBean("getReminderProducer");
 		
 		for (Reminder reminder : remindersToNotify) {
-
 			byte[] byteReminder = new Gson().toJson(reminder).getBytes();
 			producer.insertReminder(byteReminder);
-			
-
 			Reminder updateReminder = reminderRepository.findById(reminder.getId()).orElse(new Reminder());
 			int contatore = updateReminder.getNumReminder()+1;
 			updateReminder.setNumReminder(contatore);
 			if(contatore==10) {
 				updateReminder.setReminderFlag(false);
 			}
-
-			updateReminder.setDataUltimoReminder(LocalDateTime.now());
-
+			updateReminder.setLastDateReminder(LocalDateTime.now());
 			List<LocalDateTime> listDate = updateReminder.getDateReminder();
-
-			if(listDate==null) {
-				listDate = new ArrayList<LocalDateTime>();
-			}
+			listDate = Optional.ofNullable(listDate).orElseGet(ArrayList::new);
 			listDate.add(LocalDateTime.now());
-
 			updateReminder.setDateReminder(listDate);
 			reminderRepository.save(updateReminder);
-
 		}
-		for (Reminder payment : paymentsToNotify) {
-
-			byte[] byteReminder = new Gson().toJson(payment).getBytes();
-			producer.insertReminder(byteReminder);
-
-			Reminder updatePayment = reminderRepository.findById(payment.getId()).orElse(new Reminder());
-			int contatore = updatePayment.getNumReminder()+1;
-			updatePayment.setNumReminder(contatore);
 
 
-			updatePayment.setDataUltimoReminder(LocalDateTime.now());
-
-			List<LocalDateTime> listDate = updatePayment.getDateReminder();
-
-			if(listDate==null) {
-				listDate = new ArrayList<LocalDateTime>();
-			}
-			listDate.add(LocalDateTime.now());
-
-			updatePayment.setDateReminder(listDate);
-			reminderRepository.save(updatePayment);
-		}	
 	}
 
 	@Override
 	public void deleteReminders() {
-		log.info("Cancellazione dei reminder");
-		reminderRepository.deleteByPaidFlag(true);
-		reminderRepository.deleteByReadFlagOrNumReminder(true, Integer.valueOf(reminderMax));
+//		log.info("Cancellazione dei reminder");
+//		List<Reminder> rrr = reminderRepository.deleteReminders(Integer.valueOf(reminderMax), LocalDateTime.now());
+//		log.info("Cancellazione dei reminder");
 	}
 }

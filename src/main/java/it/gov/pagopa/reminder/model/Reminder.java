@@ -20,16 +20,16 @@ public class Reminder extends Message{
 	private boolean paidFlag;
 	private boolean reminderFlag=true;
 	@CreatedDate
-	private LocalDateTime dataInserimento;
-	private LocalDateTime dataScadenza;
+	private LocalDateTime insertionDate;
+	private LocalDateTime expirationDate;
 	private List<LocalDateTime> dateReminder;
-	private LocalDateTime dataUltimoReminder;
+	private LocalDateTime lastDateReminder;
 	private int numReminder;
 	
 	@Override
 	public String toString() {
 		return String.format("%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s", 
-				readFlag, paidFlag, reminderFlag, dataInserimento, dataScadenza, dateReminder, dataUltimoReminder, numReminder,
+				readFlag, paidFlag, reminderFlag, insertionDate, expirationDate, dateReminder, lastDateReminder, numReminder,
 				id, op, senderServiceId, senderUserId, timeToLiveSeconds, createdAt, isPending, 
 				content_subject, content_type, content_paymentData_amount, content_paymentData_noticeNumber,
 				content_paymentData_invalidAfterDueDate, content_paymentData_payeeFiscalCode, timestamp, fiscalCode);

@@ -2,10 +2,7 @@ package it.gov.pagopa.reminder.dto;
 
 import org.springframework.beans.factory.annotation.Value;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
