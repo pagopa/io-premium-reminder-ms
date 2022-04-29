@@ -78,7 +78,6 @@ public class MessageConsumer extends EventHubConsumer {
 				reminderService.save(newReminder);
 				eventContext.updateCheckpoint();
 			} catch(Exception e) {
-				e.printStackTrace();
 				eventContext.updateCheckpoint();
 			}
 		}
