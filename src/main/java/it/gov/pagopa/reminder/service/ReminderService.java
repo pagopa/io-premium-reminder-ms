@@ -14,4 +14,6 @@ public interface ReminderService {
 	
 	void updateReminder(String reminderId, boolean isRead, boolean isPaid);
 
+	String healthCheck();
+
 }

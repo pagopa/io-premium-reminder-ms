@@ -2,7 +2,6 @@ package it.gov.pagopa.reminder.service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -10,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.google.gson.Gson;
+
 import it.gov.pagopa.reminder.dto.avro.MessageContentType;
 import it.gov.pagopa.reminder.model.Reminder;
 import it.gov.pagopa.reminder.producer.ReminderProducer;
@@ -32,6 +33,8 @@ public class ReminderServiceImpl implements ReminderService {
 	@Value("${reminder.day}")
 	private String reminderDay;
 
+	@Value("${health.value}")
+	private String health;
 
 	@Override
 	public Reminder findById(String id) {
@@ -61,7 +64,7 @@ public class ReminderServiceImpl implements ReminderService {
 		int reminderDayNum = Integer.valueOf(reminderDay);
 		LocalDateTime dateTime = LocalDateTime.now().minusDays(reminderDayNum);
 
-		List<Reminder> remindersToNotify = reminderRepository.findRemindersToNotify(false, true, reminderNumMax, dateTime);
+		List<Reminder> remindersToNotify = reminderRepository.findRemindersToNotify(false, true, reminderNumMax, dateTime, MessageContentType.PAYMENT.toString());
 		List<Reminder> paymentsToNotify = reminderRepository.findPaymentsToNotify(false, dateTime, MessageContentType.PAYMENT.toString(), LocalDateTime.now());
 		remindersToNotify.addAll(paymentsToNotify);
 		ReminderProducer producer = (ReminderProducer) ApplicationContextProvider.getBean("getReminderProducer");
@@ -70,9 +73,9 @@ public class ReminderServiceImpl implements ReminderService {
 			byte[] byteReminder = new Gson().toJson(reminder).getBytes();
 			producer.insertReminder(byteReminder);
 			Reminder updateReminder = reminderRepository.findById(reminder.getId()).orElse(new Reminder());
-			int contatore = updateReminder.getNumReminder()+1;
-			updateReminder.setNumReminder(contatore);
-			if(contatore==10) {
+			int count = updateReminder.getNumReminder()+1;
+			updateReminder.setNumReminder(count);
+			if(count==10) {
 				updateReminder.setReminderFlag(false);
 			}
 			updateReminder.setLastDateReminder(LocalDateTime.now());
@@ -88,8 +91,13 @@ public class ReminderServiceImpl implements ReminderService {
 
 	@Override
 	public void deleteReminders() {
-//		log.info("Cancellazione dei reminder");
-//		List<Reminder> rrr = reminderRepository.deleteReminders(Integer.valueOf(reminderMax), LocalDateTime.now());
-//		log.info("Cancellazione dei reminder");
+		log.info("Cancellazione dei reminder");
+		reminderRepository.deleteReminders(Integer.valueOf(reminderMax), LocalDateTime.now(), MessageContentType.PAYMENT.toString());
+		log.info("Fine cancellazione dei reminder");
+	}
+	
+	@Override
+	public String healthCheck() {
+		return health;
 	}
 }

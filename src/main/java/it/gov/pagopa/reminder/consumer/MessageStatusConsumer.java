@@ -63,6 +63,7 @@ public class MessageStatusConsumer extends EventHubConsumer {
 			byte[] binaryJson = converter.convertToJson(eventData.getBody(), schema.getJsonString());
 			String avroJson = new String(binaryJson);
 			MessageStatus reminderToUpdate = new Gson().fromJson(avroJson, MessageStatus.class);
+			log.debug("Message Statuts riceved with idMsg: {} readFlag: {} paidFlad {}", reminderToUpdate.getMessageId(), reminderToUpdate.isRead(), reminderToUpdate.isPaid());
 			reminderService.updateReminder(reminderToUpdate.getMessageId(), reminderToUpdate.isRead(), reminderToUpdate.isPaid());
 			eventContext.updateCheckpoint();
 		}

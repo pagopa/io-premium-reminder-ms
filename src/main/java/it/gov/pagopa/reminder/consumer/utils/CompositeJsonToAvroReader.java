@@ -1,19 +1,5 @@
 package it.gov.pagopa.reminder.consumer.utils;
 
-import org.apache.avro.AvroTypeException;
-import org.apache.avro.Schema;
-import org.apache.avro.generic.GenericData;
-import it.gov.pagopa.reminder.consumer.utils.types.ArrayConverter;
-import it.gov.pagopa.reminder.consumer.utils.types.BytesDecimalConverter;
-import it.gov.pagopa.reminder.consumer.utils.types.EnumConverter;
-import it.gov.pagopa.reminder.consumer.utils.types.LongTimestampMillisConverter;
-import it.gov.pagopa.reminder.consumer.utils.types.MapConverter;
-import it.gov.pagopa.reminder.consumer.utils.types.NullConverter;
-import it.gov.pagopa.reminder.consumer.utils.types.PrimitiveConverter;
-import it.gov.pagopa.reminder.consumer.utils.types.RecordConverter;
-import it.gov.pagopa.reminder.consumer.utils.types.AvroTypeConverter;
-import it.gov.pagopa.reminder.consumer.utils.types.UnionConverter;
-
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,7 +7,21 @@ import java.util.Collections;
 import java.util.Deque;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+
+import org.apache.avro.AvroTypeException;
+import org.apache.avro.Schema;
+import org.apache.avro.generic.GenericData;
+
+import it.gov.pagopa.reminder.consumer.utils.types.ArrayConverter;
+import it.gov.pagopa.reminder.consumer.utils.types.AvroTypeConverter;
+import it.gov.pagopa.reminder.consumer.utils.types.BytesDecimalConverter;
+import it.gov.pagopa.reminder.consumer.utils.types.EnumConverter;
+import it.gov.pagopa.reminder.consumer.utils.types.LongTimestampMillisConverter;
+import it.gov.pagopa.reminder.consumer.utils.types.MapConverter;
+import it.gov.pagopa.reminder.consumer.utils.types.NullConverter;
+import it.gov.pagopa.reminder.consumer.utils.types.PrimitiveConverter;
+import it.gov.pagopa.reminder.consumer.utils.types.RecordConverter;
+import it.gov.pagopa.reminder.consumer.utils.types.UnionConverter;
 
 public class CompositeJsonToAvroReader implements JsonToAvroReader {
     private final List<AvroTypeConverter> converters;

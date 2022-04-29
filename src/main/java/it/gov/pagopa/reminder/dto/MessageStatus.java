@@ -1,4 +1,5 @@
 package it.gov.pagopa.reminder.dto;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,8 +9,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class MessageStatus {
 
-	String messageId;
-	boolean isRead;
-	boolean isPaid;
+
+
+String messageId;
+boolean isRead;
+boolean isPaid;
+
+
 
 }

@@ -73,10 +73,12 @@ public class MessageConsumer extends EventHubConsumer {
 				gsonBuilder.registerTypeAdapter(LocalDateTime.class, new LocalDateTimeDeserializer());
 				Gson gson = gsonBuilder.setPrettyPrinting().create();
 				Reminder newReminder = gson.fromJson(avroJson, Reminder.class);
+				log.debug("Message riceved with id: {}", newReminder.getId());
 				checkNullInMessage(newReminder);
 				reminderService.save(newReminder);
 				eventContext.updateCheckpoint();
 			} catch(Exception e) {
+				e.printStackTrace();
 				eventContext.updateCheckpoint();
 			}
 		}

@@ -97,7 +97,7 @@ public class ReminderConsumer extends EventHubConsumer {
 	private String callNotify(NotificationDTO notification) {
 		log.info("Attempt to send reminder with id: {} ", notification.getMessage().getId());
 		RestTemplateUtils.sendNotification(notifyEndpoint, notification);
-		return "notify";
+		return null;
 	}
 	private void sendNotificationWithRetry(NotificationDTO notification) {
 		IntervalFunction intervalFn = IntervalFunction.of(10000);

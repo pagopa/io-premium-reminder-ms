@@ -20,7 +20,7 @@ public class EventHubConsumer {
 	protected void consume() {
 		EventProcessorClient eventProcessorClient = this.eventProcessorClientBuilder.buildEventProcessorClient();
 
-		log.info("Starting consumer event processor - waiting events from hub");
+		log.info("Starting event processor");
 		eventProcessorClient.start();
 		try {
 			System.in.read();
@@ -28,8 +28,9 @@ public class EventHubConsumer {
 			log.error("Consumer Error");
 		}
 
-		log.info("Stopping consumer event processor");
+		log.info("Stopping event processor");
 		eventProcessorClient.stop();
-		log.info("Exiting consumer process");
+		log.info("Event processor stopped.");
+		log.info("Exiting process");
 	}
 }
