@@ -1,0 +1,24 @@
+package it.gov.pagopa.reminder.model;
+
+import java.io.IOException;
+import java.nio.charset.Charset;
+
+import org.springframework.core.io.Resource;
+import org.springframework.util.StreamUtils;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+public class JsonLoader {
+	
+	private String jsonString;
+	
+	public JsonLoader(Resource res) throws IOException {
+		jsonString = StreamUtils.copyToString(res.getInputStream(), Charset.defaultCharset());
+	}
+
+}
