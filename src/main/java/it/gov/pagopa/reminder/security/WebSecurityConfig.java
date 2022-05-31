@@ -1,4 +1,6 @@
-package it.gov.pagopa.microservice.security;
+package it.gov.pagopa.reminder.security;
+
+import java.util.Collections;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -7,13 +9,11 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import it.gov.pagopa.microservice.config.ConfigProperties;
 
-import java.util.Collections;
+import it.gov.pagopa.reminder.config.ConfigProperties;
 
 @Configuration
 @EnableWebSecurity
