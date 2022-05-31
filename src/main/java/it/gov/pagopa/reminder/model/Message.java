@@ -9,7 +9,6 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 
 import it.gov.pagopa.reminder.dto.avro.MessageContentType;
-import it.gov.pagopa.reminder.dto.avro.MessageCrudOperation;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,12 +16,10 @@ import lombok.Setter;
 @Getter 
 @Setter 
 @NoArgsConstructor 
-//@AllArgsConstructor
 public class Message {
 
 	@Id
 	protected String id;
-	protected MessageCrudOperation op;
 	protected String senderServiceId;
 	protected String senderUserId;
 	protected int timeToLiveSeconds;
