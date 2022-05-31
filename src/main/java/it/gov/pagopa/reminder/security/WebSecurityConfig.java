@@ -20,11 +20,8 @@ import it.gov.pagopa.reminder.config.ConfigProperties;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    private ConfigProperties configProperties;
-
     @Bean
-    CorsConfigurationSource corsConfigurationSource() {
+    CorsConfigurationSource corsConfigurationSource(@Autowired ConfigProperties configProperties) {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.addAllowedOrigin(configProperties.getCORSOrigin());
         configuration.setAllowedMethods(Collections.singletonList("POST, PUT, GET, OPTIONS, DELETE"));
@@ -38,7 +35,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
-                .csrf().disable()
                 .exceptionHandling().and()
                 .cors().and()
                 .authorizeRequests()

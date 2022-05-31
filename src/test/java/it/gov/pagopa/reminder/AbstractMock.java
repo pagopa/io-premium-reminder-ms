@@ -20,7 +20,7 @@ import it.gov.pagopa.reminder.model.Reminder;
 import it.gov.pagopa.reminder.repository.ReminderRepository;
 import it.gov.pagopa.reminder.service.ReminderServiceImpl;
 
-public class AbstractTest {
+public class AbstractMock {
 
 	private static final String EMPTY = "empty";
 	private static final String FULL = "full";

@@ -38,7 +38,7 @@ import it.gov.pagopa.reminder.util.RestTemplateUtils;
 @Import(it.gov.pagopa.reminder.KafkaTestContainersConfiguration.class)
 @DirtiesContext
 @EmbeddedKafka(partitions = 1, brokerProperties = { "listeners=PLAINTEXT://localhost:9092", "port=9092" })
-public class MessageKafkaConsumerTest extends AbstractTest{
+public class MessageKafkaConsumerTest extends AbstractMock{
 	
     @Autowired
     private ReminderProducer producer;

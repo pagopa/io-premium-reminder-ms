@@ -33,14 +33,6 @@ import it.gov.pagopa.reminder.model.Reminder;
 public class ConfigConsumer extends ConfigKafka{
 	
 	@Autowired
-	@Qualifier("messageSchema")
-	JsonLoader messageSchema;
-	
-	@Autowired
-	@Qualifier("messageStatusSchema")
-	JsonLoader mesagesStatusSchema;
-	
-	@Autowired
 	ObjectMapper mapper;
 	
 	@Value("${kafka.topic.message}")
@@ -81,7 +73,7 @@ public class ConfigConsumer extends ConfigKafka{
 	}
 	
 	@Bean
-	public ConcurrentKafkaListenerContainerFactory<String, Reminder> kafkaListenerContainerFactory() {
+	public ConcurrentKafkaListenerContainerFactory<String, Reminder> kafkaListenerContainerFactory(@Autowired @Qualifier("messageSchema") JsonLoader messageSchema) {
 		ConcurrentKafkaListenerContainerFactory<String, Reminder> factory = new ConcurrentKafkaListenerContainerFactory<>();
 		Map<String, Object> props = createProps(urlMessage, serverMessage);
 		props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, AvroMessageDeserializer.class.getName());
@@ -92,7 +84,7 @@ public class ConfigConsumer extends ConfigKafka{
 
 	
 	@Bean
-	public ConcurrentKafkaListenerContainerFactory<String, MessageStatus> kafkaListenerContainerFactoryMessStat() {
+	public ConcurrentKafkaListenerContainerFactory<String, MessageStatus> kafkaListenerContainerFactoryMessStat(@Autowired @Qualifier("messageStatusSchema") JsonLoader mesagesStatusSchema) {
 		ConcurrentKafkaListenerContainerFactory<String, MessageStatus> factoryStatus = new ConcurrentKafkaListenerContainerFactory<>();
 		Map<String, Object> props1 = createProps(urlMessageStatus, serverMessageStatus);
 		props1.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, AvroMessageStatusDeserializer.class.getName());

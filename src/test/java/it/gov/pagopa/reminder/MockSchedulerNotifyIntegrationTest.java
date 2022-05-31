@@ -16,7 +16,7 @@ import it.gov.pagopa.reminder.scheduler.CheckRemindersToNotifyJob;
 @SpringBootTest(classes = Application.class,webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
-public class MockSchedulerNotifyIntegrationTest extends AbstractTest{
+public class MockSchedulerNotifyIntegrationTest extends AbstractMock{
 
     @Autowired
     private CheckRemindersToNotifyJob job;

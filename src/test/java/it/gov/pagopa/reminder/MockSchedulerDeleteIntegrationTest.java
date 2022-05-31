@@ -15,7 +15,7 @@ import it.gov.pagopa.reminder.scheduler.CheckRemindersToDeleteJob;
 @SpringBootTest(classes = Application.class,webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
-public class MockSchedulerDeleteIntegrationTest extends AbstractTest{
+public class MockSchedulerDeleteIntegrationTest extends AbstractMock{
 
 	@Autowired
     private CheckRemindersToDeleteJob job;
