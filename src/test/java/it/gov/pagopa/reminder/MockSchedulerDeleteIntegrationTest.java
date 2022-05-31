@@ -1,4 +1,4 @@
-package it.gov.pagopa;
+package it.gov.pagopa.reminder;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -10,7 +10,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import it.gov.pagopa.reminder.Application;
 import it.gov.pagopa.reminder.scheduler.CheckRemindersToDeleteJob;
 
 @SpringBootTest(classes = Application.class,webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)

@@ -1,4 +1,4 @@
-package it.gov.pagopa;
+package it.gov.pagopa.reminder;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -35,7 +35,7 @@ import it.gov.pagopa.reminder.util.RestTemplateUtils;
 @SpringBootTest(classes = Application.class,webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
-@Import(it.gov.pagopa.KafkaTestContainersConfiguration.class)
+@Import(it.gov.pagopa.reminder.KafkaTestContainersConfiguration.class)
 @DirtiesContext
 @EmbeddedKafka(partitions = 1, brokerProperties = { "listeners=PLAINTEXT://localhost:9092", "port=9092" })
 public class MessageKafkaConsumerTest extends AbstractTest{

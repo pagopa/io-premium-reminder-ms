@@ -1,4 +1,4 @@
-package it.gov.pagopa;
+package it.gov.pagopa.reminder;
 
 import java.util.HashMap;
 import java.util.Map;

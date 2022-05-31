@@ -1,4 +1,4 @@
-package it.gov.pagopa;
+package it.gov.pagopa.reminder;
 
 import org.junit.Before;
 import org.junit.Test;
