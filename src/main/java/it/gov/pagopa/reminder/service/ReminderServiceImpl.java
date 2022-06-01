@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -154,7 +155,8 @@ public class ReminderServiceImpl implements ReminderService {
 	
 	private String callPaymentCheck(Reminder reminder) {
 		ResponseEntity<MessageStatus> response = restTemplate.getForEntity(urlPayment.concat(reminder.getContent_paymentData_noticeNumber()), MessageStatus.class);
-		if (response.getBody() != null && response.getBody().getIsPaid().booleanValue()) {
+		MessageStatus body = response.getBody();
+		if (Objects.nonNull(body) && body.getIsPaid().booleanValue()) {
 			reminder.setPaidFlag(true);
 			reminder.setPaidDate(LocalDateTime.now());					
 		} else {	
@@ -191,7 +193,7 @@ public class ReminderServiceImpl implements ReminderService {
 	
 	private void sendReminderToProducer(Reminder reminder) throws JsonProcessingException {
 		ReminderProducer remProd = new ReminderProducer();
-		kafkaTemplatePayments = (KafkaTemplate<String, String>) ApplicationContextProvider.getBean("KafkaTemplatePayments");
+		kafkaTemplatePayments = (KafkaTemplate<String, String>) ApplicationContextProvider.getBean("kafkaTemplatePayments");
 		remProd.sendReminder(reminder, kafkaTemplatePayments, mapper, producerTopic);	
 		if(!reminder.isReadFlag()) {
 			int countRead = reminder.getMaxReadMessageSend()+1;
