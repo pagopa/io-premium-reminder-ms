@@ -46,10 +46,10 @@ steps:
       goals: 'package'
       sonarQubeRunAnalysis: true
 
-- task: Bash@3
-  inputs:
-    targetType: 'inline'
-    script: ls -la target/surefire-reports
+  - task: Bash@3
+    inputs:
+      targetType: 'inline'
+      script: ls -la target/surefire-reports
 
   - task: SonarCloudPublish@1
     displayName: 'Publish SonarCloud results on build summary'
