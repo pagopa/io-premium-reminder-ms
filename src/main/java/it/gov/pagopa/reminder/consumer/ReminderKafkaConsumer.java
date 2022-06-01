@@ -56,7 +56,7 @@ public class ReminderKafkaConsumer{
 					createdAt, reminder.getSenderServiceId(), 
 					reminder.getTimeToLiveSeconds());
 
-			SenderMetadata senderMetadata = (SenderMetadata) ApplicationContextProvider.getBean("ReminderEventSenderMetadata");
+			SenderMetadata senderMetadata = (SenderMetadata) ApplicationContextProvider.getBean("reminderEventSenderMetadata");
 			NotificationDTO notification = new NotificationDTO(notificationMessage, senderMetadata);
 			try {
 				sendNotificationWithRetry(notification);
