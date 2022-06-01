@@ -9,6 +9,6 @@ import org.springframework.stereotype.Component;
 public class ConfigProperties {
 
     @Value("${spring_cors_origin}")
-    private String CORSOrigin;
+    private String corsOrigin;
 
 }

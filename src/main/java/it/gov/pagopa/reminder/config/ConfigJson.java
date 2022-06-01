@@ -3,9 +3,11 @@ package it.gov.pagopa.reminder.config;
 import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
+import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -43,6 +45,11 @@ public class ConfigJson {
 		mapper.registerModule(new Jdk8Module());
 		mapper.registerModule(new JavaTimeModule());
 		return mapper;
+	}
+	
+	@Bean
+	public RestTemplate restTemplate(RestTemplateBuilder builder) {
+	   return builder.build();
 	}
 	
 

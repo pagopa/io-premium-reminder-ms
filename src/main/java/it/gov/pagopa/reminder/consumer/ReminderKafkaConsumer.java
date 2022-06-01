@@ -50,10 +50,10 @@ public class ReminderKafkaConsumer{
 		if(Objects.nonNull(reminder)) {
 			log.info("I'm processing the reminder with id: {} ", reminder.getId());
 
-			String created_at = DateFormatUtils.format(reminder.getCreatedAt(), Constants.DATE_FORMAT);
+			String createdAt = DateFormatUtils.format(reminder.getCreatedAt(), Constants.DATE_FORMAT);
 			NotificationMessage notificationMessage =  new NotificationMessage(
 					reminder.getId(), reminder.getFiscal_code(), 
-					created_at, reminder.getSenderServiceId(), 
+					createdAt, reminder.getSenderServiceId(), 
 					reminder.getTimeToLiveSeconds());
 
 			SenderMetadata senderMetadata = (SenderMetadata) ApplicationContextProvider.getBean("ReminderEventSenderMetadata");
@@ -106,12 +106,10 @@ public class ReminderKafkaConsumer{
 		Map<String, String> properties = new HashMap<>();
 		properties.put(notification.getMessage().getId(), "Call failed after maximum number of attempts");
 		properties.put("time", event.getCreationTime().toString());
-		if (Objects.nonNull(event.getLastThrowable())) {
-			if (Objects.nonNull(event.getLastThrowable().getMessage())) 
+		if (Objects.nonNull(event.getLastThrowable().getMessage())) 
 				properties.put("message", event.getLastThrowable().getMessage());
-			if (Objects.nonNull(event.getLastThrowable().getCause())) 
-				properties.put("cause", event.getLastThrowable().getCause().toString());
-		}
+		if (Objects.nonNull(event.getLastThrowable().getCause())) 
+				properties.put("cause", event.getLastThrowable().getCause().toString());		
 		return properties;
 	}
 }

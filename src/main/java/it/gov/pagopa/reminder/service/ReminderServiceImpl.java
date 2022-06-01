@@ -6,16 +6,24 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.github.resilience4j.core.IntervalFunction;
+import io.github.resilience4j.retry.Retry;
+import io.github.resilience4j.retry.RetryConfig;
+import it.gov.pagopa.reminder.dto.MessageStatus;
 import it.gov.pagopa.reminder.dto.avro.MessageContentType;
 import it.gov.pagopa.reminder.model.Reminder;
 import it.gov.pagopa.reminder.producer.ReminderProducer;
@@ -28,10 +36,13 @@ import lombok.extern.slf4j.Slf4j;
 @Transactional
 public class ReminderServiceImpl implements ReminderService {
 
-	@Autowired
-	ReminderRepository reminderRepository;
-	@Autowired
-	ObjectMapper mapper;
+	@Autowired ReminderRepository reminderRepository;
+	@Autowired ObjectMapper mapper;
+	@Autowired RestTemplate restTemplate;
+	@Value("${interval.function}")
+	private int intervalFunction;
+	@Value("${attempts.max}")
+	private int attemptsMax;
 	@Value("${health.value}")
 	private String health;	
 	@Value("${kafka.send}")
@@ -46,6 +57,8 @@ public class ReminderServiceImpl implements ReminderService {
 	private String reminderDay;
 	@Value("${payment.day}")
 	private String paymentDay;
+	@Value("${paymentupdater.url}")
+	private String urlPayment;
 
 
 	@Autowired
@@ -101,37 +114,21 @@ public class ReminderServiceImpl implements ReminderService {
 		log.info("paidMessageToNotify: {}",paidMessageToNotify.size());
 
 		readMessageToNotify.addAll(paidMessageToNotify);
-
-
-		kafkaTemplatePayments = (KafkaTemplate<String, String>) ApplicationContextProvider.getBean("KafkaTemplatePayments");
-		ReminderProducer remProd = new ReminderProducer();
 		for (Reminder reminder : readMessageToNotify) {
-			try {
-				remProd.sendReminder(reminder, kafkaTemplatePayments, mapper, producerTopic);
-
-				if(!reminder.isReadFlag()) {
-					int countRead = reminder.getMaxReadMessageSend()+1;
-					reminder.setMaxReadMessageSend(countRead);
+			try {				
+				if (isGeneric(reminder)) {
+					sendReminderToProducer(reminder);
+				} else {
+					sendNotificationWithRetry(reminder);
 				}
-				if(reminder.isReadFlag() && !reminder.isPaidFlag() && MessageContentType.PAYMENT.toString().equalsIgnoreCase(reminder.getContent_type().toString())) {
-					int countPaid = reminder.getMaxPaidMessageSend()+1;
-					reminder.setMaxPaidMessageSend(countPaid);
-				}
-
-				reminder.setLastDateReminder(LocalDateTime.now());
-				List<LocalDateTime> listDate = reminder.getDateReminder();
-				listDate = Optional.ofNullable(listDate).orElseGet(ArrayList::new);
-				listDate.add(LocalDateTime.now());
-				reminder.setDateReminder(listDate);
-
 				reminderRepository.save(reminder);
 				log.info("Update reminder with id: {}", reminder.getId());
 			} catch (JsonProcessingException e) {
 				log.error("Producer error sending notification {} to message-send queue", reminder.getId());
 				log.error(e.getMessage());
 			}
-			catch (Exception e) {
-				log.error("Generic error in getMessageToNotify of notification {} ", reminder.getId());
+			catch (HttpServerErrorException e) {
+				log.error("HttpServerErrorException for reminder with id {}, {}", reminder.getId());
 				log.error(e.getMessage());
 			}
 		}
@@ -154,7 +151,61 @@ public class ReminderServiceImpl implements ReminderService {
 		return health;
 	}
 
+	
+	private String callPaymentCheck(Reminder reminder) {
+		ResponseEntity<MessageStatus> response = restTemplate.getForEntity(urlPayment.concat(reminder.getContent_paymentData_noticeNumber()), MessageStatus.class);
+		if (response.getBody() != null && response.getBody().getIsPaid().booleanValue()) {
+			reminder.setPaidFlag(true);
+			reminder.setPaidDate(LocalDateTime.now());					
+		} else {	
+			try {
+				sendReminderToProducer(reminder);
+			} catch (JsonProcessingException e) {
+				log.error("Producer error sending notification {} to message-send queue", reminder.getId());
+				log.error(e.getMessage());
+			}
+		}	
+		return "";
+	}
+
+	private void sendNotificationWithRetry(Reminder reminder) {
+		IntervalFunction intervalFn = IntervalFunction.of(intervalFunction);
+		RetryConfig retryConfig = RetryConfig.custom()
+				.maxAttempts(attemptsMax)
+				.intervalFunction(intervalFn)
+				.build();
+		Retry retry = Retry.of("sendNotificationWithRetry", retryConfig);
+		Function<Object, Object> sendNotificationFn = Retry.decorateFunction(retry, 
+				notObj -> callPaymentCheck((Reminder)notObj));
+		sendNotificationFn.apply(reminder);
+	}
 
 
+	private boolean isGeneric(Reminder reminder) {
+		return MessageContentType.GENERIC.toString().equalsIgnoreCase(reminder.getContent_type().toString());
+	}
+	
+	private boolean isPayment(Reminder reminder) {
+		return MessageContentType.PAYMENT.toString().equalsIgnoreCase(reminder.getContent_type().toString());
+	}
+	
+	private void sendReminderToProducer(Reminder reminder) throws JsonProcessingException {
+		ReminderProducer remProd = new ReminderProducer();
+		kafkaTemplatePayments = (KafkaTemplate<String, String>) ApplicationContextProvider.getBean("KafkaTemplatePayments");
+		remProd.sendReminder(reminder, kafkaTemplatePayments, mapper, producerTopic);	
+		if(!reminder.isReadFlag()) {
+			int countRead = reminder.getMaxReadMessageSend()+1;
+			reminder.setMaxReadMessageSend(countRead);
+		}
+		if(reminder.isReadFlag() && !reminder.isPaidFlag() && isPayment(reminder)) {
+			int countPaid = reminder.getMaxPaidMessageSend()+1;
+			reminder.setMaxPaidMessageSend(countPaid);
+		}
+		reminder.setLastDateReminder(LocalDateTime.now());
+		List<LocalDateTime> listDate = reminder.getDateReminder();
+		listDate = Optional.ofNullable(listDate).orElseGet(ArrayList::new);
+		listDate.add(LocalDateTime.now());
+		reminder.setDateReminder(listDate);
+	}
 
 }

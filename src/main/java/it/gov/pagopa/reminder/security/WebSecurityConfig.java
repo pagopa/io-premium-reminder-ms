@@ -23,7 +23,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     CorsConfigurationSource corsConfigurationSource(@Autowired ConfigProperties configProperties) {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedOrigin(configProperties.getCORSOrigin());
+        configuration.addAllowedOrigin(configProperties.getCorsOrigin());
         configuration.setAllowedMethods(Collections.singletonList("POST, PUT, GET, OPTIONS, DELETE"));
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");

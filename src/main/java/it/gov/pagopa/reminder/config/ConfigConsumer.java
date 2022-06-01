@@ -49,26 +49,26 @@ public class ConfigConsumer extends ConfigKafka{
 	protected String urlMessageSend;
 	
 	@Bean
-	public MessageKafkaConsumer MessageEventKafkaConsumer() {
+	public MessageKafkaConsumer messageEventKafkaConsumer() {
 		return new MessageKafkaConsumer();		
 	}
 	
 	@Bean
-	public MessageStatusKafkaConsumer MessageStatusEventKafkaConsumer() {
+	public MessageStatusKafkaConsumer messageStatusEventKafkaConsumer() {
 		return new MessageStatusKafkaConsumer();
 	}
 	
 	@Bean
-	public PaymentUpdatesKafkaConsumer PaymentUpdatesEventKafkaConsumer() {
+	public PaymentUpdatesKafkaConsumer paymentUpdatesEventKafkaConsumer() {
 		return new PaymentUpdatesKafkaConsumer();
 	}
 	
 	@Bean
-	public ReminderKafkaConsumer ReminderEventKafkaConsumer() {
+	public ReminderKafkaConsumer reminderEventKafkaConsumer() {
 		return new ReminderKafkaConsumer();
 	}
 	
-	@Bean SenderMetadata ReminderEventSenderMetadata() {
+	@Bean SenderMetadata reminderEventSenderMetadata() {
 		return new SenderMetadata();
 	}
 	

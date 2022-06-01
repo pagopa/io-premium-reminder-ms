@@ -24,7 +24,7 @@ public class ConfigProducer extends BeanConf{
 	protected String urlMessageSend;
 	
 	@Bean
-	public KafkaTemplate<String, String> KafkaTemplatePayments() {
+	public KafkaTemplate<String, String> kafkaTemplatePayments() {
 		Map<String, Object> props = new HashMap<>();
 		try {
 			getPropsReminder(props, urlMessageSend, serverMessageSend);

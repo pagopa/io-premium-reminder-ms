@@ -10,9 +10,9 @@ import lombok.NoArgsConstructor;
 public class SenderMetadata {
 
 	@Value("${notification.senderMetadata.serviceName}")
-	private String service_name;
+	private String serviceName;
 	@Value("${notification.senderMetadata.organizationName}")
-	private String organization_name;
+	private String organizationName;
 	@Value("${notification.senderMetadata.departmentName}")
-	private String department_name;
+	private String departmentName;
 }
