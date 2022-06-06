@@ -22,7 +22,7 @@ variables:
     dockerRegistryServiceConnection: iodreminderacr
     dockerNamespace: iodreminderacr.azurecr.io
     connectedServiceName: DEV-IO
-    webAppName: io-d-reminder-app
+    webAppName: io-d-reminder
     resourceGroupName: io-d-reminder-backend
  # ${{ if eq(parameters['environment'], 'uat') }}:
  #  dockerRegistryServiceConnection: $(UAT_CONTAINER_REGISTRY)
