@@ -1,5 +1,7 @@
 package it.gov.pagopa.reminder;
 
+import java.time.LocalDateTime;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
@@ -23,11 +25,11 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import it.gov.pagopa.reminder.Application;
 import it.gov.pagopa.reminder.consumer.MessageKafkaConsumer;
 import it.gov.pagopa.reminder.consumer.MessageStatusKafkaConsumer;
 import it.gov.pagopa.reminder.consumer.PaymentUpdatesKafkaConsumer;
 import it.gov.pagopa.reminder.consumer.ReminderKafkaConsumer;
+import it.gov.pagopa.reminder.model.Reminder;
 import it.gov.pagopa.reminder.producer.ReminderProducer;
 import it.gov.pagopa.reminder.util.ApplicationContextProvider;
 import it.gov.pagopa.reminder.util.RestTemplateUtils;
@@ -77,8 +79,8 @@ public class MessageKafkaConsumerTest extends AbstractMock{
 		Mockito.when(restTemplate.postForObject(Mockito.anyString(), Mockito.any(), Mockito.any())).thenReturn(new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR).internalServerError().body("{}"));
 		kafkaTemplate = new KafkaTemplate<>((ProducerFactory<String, String>) ApplicationContextProvider.getBean("producerFactory"));
 		consumerRem = (ReminderKafkaConsumer) ApplicationContextProvider.getBean("reminderEventKafkaConsumer");
-		producer.sendReminder(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A",3), kafkaTemplate, mapper, "message-send");
-		consumerRem.reminderKafkaListener(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A",3));
+		producer.sendReminder(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456", 3), kafkaTemplate, mapper, "message-send");
+		consumerRem.reminderKafkaListener(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456", 3));
 //		consumer.getLatch().await(10000, TimeUnit.MILLISECONDS);
         String s = consumer.getPayload();
 //        assertThat(consumer.getLatch().getCount(), equalTo(0L));
@@ -90,8 +92,8 @@ public class MessageKafkaConsumerTest extends AbstractMock{
 	@Test
 	public void test_scheduleMockSchedulerNotifyIntegrationTest_GENERIC_OK() throws SchedulerException, InterruptedException, JsonProcessingException {
 		consumer = (PaymentUpdatesKafkaConsumer) ApplicationContextProvider.getBean("paymentUpdatesEventKafkaConsumer");
-		mockGetPaymentByNoticeNumberAndFiscalCodeWithResponse(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A",3));
-		mockSaveWithResponse(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A",3));
+		mockGetPaymentByNoticeNumberAndFiscalCodeWithResponse(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456", 3));
+		mockSaveWithResponse(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456", 3));
 		consumer.paymentUpdatesKafkaListener(getPaymentMessage("123", "456", true, null, 5d, "payments"));
 		Assertions.assertTrue(true);
 	}
@@ -99,8 +101,8 @@ public class MessageKafkaConsumerTest extends AbstractMock{
 	@Test
 	public void test_scheduleMockSchedulerNotifyIntegrationTest_PAYMENTS_OK() throws SchedulerException, InterruptedException, JsonProcessingException {
 		consumer = (PaymentUpdatesKafkaConsumer) ApplicationContextProvider.getBean("paymentUpdatesEventKafkaConsumer");
-		mockGetPaymentByNoticeNumberAndFiscalCodeWithResponse(selectReminderMockObject("", "1","PAYMENT","AAABBB77Y66A444A",3));
-		mockSaveWithResponse(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A",3));
+		mockGetPaymentByNoticeNumberAndFiscalCodeWithResponse(selectReminderMockObject("", "1","PAYMENT","AAABBB77Y66A444A", "123456", 3));
+		mockSaveWithResponse(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456", 3));
 		consumer.paymentUpdatesKafkaListener(getPaymentMessage("123", "456", true, null, 5d, "payments"));
 		Assertions.assertTrue(true);
 	}
@@ -108,20 +110,28 @@ public class MessageKafkaConsumerTest extends AbstractMock{
 	@Test
 	public void test_scheduleMockSchedulerNotifyIntegrationTest_MESSAGES_OK() throws SchedulerException, InterruptedException, JsonProcessingException {
 		consumer = (PaymentUpdatesKafkaConsumer) ApplicationContextProvider.getBean("paymentUpdatesEventKafkaConsumer");
-		mockGetPaymentByNoticeNumberAndFiscalCodeWithResponse(selectReminderMockObject("", "1","PAYMENT","AAABBB77Y66A444A",3));
-		mockSaveWithResponse(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A",3));
+		mockGetPaymentByNoticeNumberAndFiscalCodeWithResponse(selectReminderMockObject("", "1","PAYMENT","AAABBB77Y66A444A", "123456", 3));
+		mockSaveWithResponse(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456", 3));
 		consumer.paymentUpdatesKafkaListener(getPaymentMessage("123", "456", true, null, 5d, "message"));
 		Assertions.assertTrue(consumer.getPayload().contains("message"));
 		Assertions.assertEquals(0L, consumer.getLatch().getCount());
 	}
 	
-	
+	@Test
+	public void test_MessageStatusKafkaConsumerTest_Payd_MESSAGES_OK() throws SchedulerException, InterruptedException, JsonProcessingException {
+		consumerMessStatus = (MessageStatusKafkaConsumer) ApplicationContextProvider.getBean("messageStatusEventKafkaConsumer");
+		mockSaveWithResponse(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456", 3));
+		mockFindIdWithResponse(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456", 3));
+		consumerMessStatus.messageStatusKafkaListener(selectMessageStatusMockObject("", "1", false, true));
+		Assertions.assertTrue(consumerMessStatus.getPayload().contains("messageId"));
+		Assertions.assertEquals(0L, consumerMessStatus.getLatch().getCount());
+	}	
 	
 	@Test
-	public void test_MessageStatusKafkaConsumerTest_MESSAGES_OK() throws SchedulerException, InterruptedException, JsonProcessingException {
+	public void test_MessageStatusKafkaConsumerTest_Read_MESSAGES_OK() throws SchedulerException, InterruptedException, JsonProcessingException {
 		consumerMessStatus = (MessageStatusKafkaConsumer) ApplicationContextProvider.getBean("messageStatusEventKafkaConsumer");
-		mockSaveWithResponse(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A",3));
-		mockFindIdWithResponse(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A",3));
+		mockSaveWithResponse(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456", 3));
+		mockFindIdWithResponse(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456", 3));
 		consumerMessStatus.messageStatusKafkaListener(selectMessageStatusMockObject("", "1", true, false));
 		Assertions.assertTrue(consumerMessStatus.getPayload().contains("messageId"));
 		Assertions.assertEquals(0L, consumerMessStatus.getLatch().getCount());
@@ -130,8 +140,14 @@ public class MessageKafkaConsumerTest extends AbstractMock{
 	@Test
 	public void test_MessageKafkaConsumerConsumerTest_MESSAGES_OK() throws SchedulerException, InterruptedException, JsonProcessingException {
 		messageKafkaConsumer = (MessageKafkaConsumer) ApplicationContextProvider.getBean("messageEventKafkaConsumer");
-		mockSaveWithResponse(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A",3));
-		messageKafkaConsumer.messageKafkaListener(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A",3));
+		mockSaveWithResponse(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456", 3));
+		Reminder mockObj = selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456", 3);
+		mockObj.setContent_paymentData_noticeNumber("12345");
+		mockObj.setContent_paymentData_payeeFiscalCode("fiscal");
+		mockObj.setInsertionDate(LocalDateTime.now());
+		mockObj.setSenderServiceId("id");
+		selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456", 3);
+		messageKafkaConsumer.messageKafkaListener(mockObj);
 		Assertions.assertTrue(messageKafkaConsumer.getPayload().contains("paidFlag=false"));
 		Assertions.assertEquals(0L, messageKafkaConsumer.getLatch().getCount());
 	}
