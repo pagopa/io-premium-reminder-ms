@@ -1,6 +1,7 @@
 package it.gov.pagopa.reminder;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -10,7 +11,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import it.gov.pagopa.reminder.dto.MessageStatus;
@@ -37,6 +41,9 @@ public class AbstractMock {
 	
 	@InjectMocks
 	protected ReminderServiceImpl service;
+    
+	@Value("${paymentupdater.url}")
+	private String urlPayment;
 
 	protected void mockSaveWithResponse(Reminder returnReminder) {
 		Mockito.when(mockRepository.save(Mockito.any(Reminder.class))).thenReturn(returnReminder);
@@ -50,24 +57,24 @@ public class AbstractMock {
 		Mockito.when(mockRepository.getPaymentByNoticeNumberAndFiscalCode(Mockito.anyString(), Mockito.anyString())).thenReturn(reminder);
 	}
 
-	protected void mockFindReminderAndPaymentNotifyWithResponse(List<Reminder> listReturnReminder) {
-//		Mockito.when(mockRepository.findReminderAndPaymentToNotify(Mockito.anyBoolean(), Mockito.anyBoolean(), Mockito.anyInt(), Mockito.any(LocalDateTime.class), Mockito.anyString(), 
-//				Mockito.anyBoolean(), Mockito.any(LocalDateTime.class), Mockito.any(LocalDateTime.class))).thenReturn(listReturnReminder);
+	protected void mockGetReadMessageToNotifyWithResponse(List<Reminder> listReturnReminder) {
+		Mockito.when(mockRepository.getReadMessageToNotify(Mockito.anyInt())).thenReturn(listReturnReminder);
 	}
 
 
-	protected void mockFindRemindersToNotifyWithResponse(List<Reminder> listReturnReminder) {
-//		Mockito.when(mockRepository.findRemindersToNotify(Mockito.anyBoolean(), Mockito.anyBoolean(), Mockito.anyInt(), Mockito.any(LocalDateTime.class), Mockito.anyString())).thenReturn(listReturnReminder);
+	protected void mockGetPaidMessageToNotifyWithResponse(List<Reminder> listReturnReminder) {
+		Mockito.when(mockRepository.getPaidMessageToNotify(Mockito.anyString(), Mockito.anyInt(), Mockito.any(LocalDateTime.class), Mockito.any(LocalDate.class), Mockito.any(LocalDate.class))).thenReturn(listReturnReminder);
+	}
+	
+	protected void mockDeleteReadMessageWithResponse(int retValue) {
+		Mockito.when(mockRepository.deleteReadMessage(Mockito.anyInt(), Mockito.anyString())).thenReturn(retValue);
 	}
 
-
-	protected void mockFindPaymentsToNotifyWithResponse( List<Reminder> listReturnReminder) {
-//		Mockito.when(mockRepository.findPaymentsToNotify(Mockito.anyBoolean(), Mockito.any(LocalDateTime.class), Mockito.anyString(), Mockito.any(LocalDateTime.class))).thenReturn(listReturnReminder);
+	
+	protected void mockDeletePaidMessageWithResponse(int retValue) {
+		Mockito.when(mockRepository.deletePaidMessage(Mockito.anyInt(), Mockito.any(LocalDate.class), Mockito.anyString())).thenReturn(retValue);
 	}
 
-	protected void mockDeleteRemindersWithResponse(int retValue) {
-//		Mockito.when(mockRepository.deleteReminders(Mockito.anyInt(), Mockito.any(LocalDateTime.class), Mockito.anyString())).thenReturn(retValue);
-	}
 
 	protected List<Reminder>  selectListReminderMockObject(String type) {
 		List<Reminder> retList = null;
@@ -79,9 +86,9 @@ public class AbstractMock {
 			break;
 		case FULL:
 			retList = new ArrayList<Reminder>();
-			returnReminder1 = selectReminderMockObject(type, "1","GENERIC","AAABBB77Y66A444A",3);
+			returnReminder1 = selectReminderMockObject(type, "1","GENERIC","AAABBB77Y66A444A", "123456", 3);
 			retList.add(returnReminder1);
-			returnReminder1 = selectReminderMockObject(type, "2","PAYMENT","CCCDDD77Y66A444A",3);
+			returnReminder1 = selectReminderMockObject(type, "2","PAYMENT","CCCDDD77Y66A444A", "123456", 3);
 			retList.add(returnReminder1);
 			break;
 		case NULL:
@@ -96,9 +103,8 @@ public class AbstractMock {
 
 	}
 
-	protected Reminder selectReminderMockObject(String type, String id, String contentType, String fiscalCode, int numReminder) {
+	protected Reminder selectReminderMockObject(String type, String id, String contentType, String fiscalCode, String noticeNumber, int numReminder) {
 		Reminder returnReminder1 = null;
-
 		switch (type){
 		case EMPTY:
 			returnReminder1 = new Reminder();
@@ -107,10 +113,9 @@ public class AbstractMock {
 			returnReminder1.setId(id);
 			returnReminder1.setContent_type(MessageContentType.valueOf(contentType));
 			returnReminder1.setFiscal_code(fiscalCode);
+			returnReminder1.setContent_paymentData_noticeNumber(noticeNumber);	
 		};
-
 		return returnReminder1;
-
 	}
 	
 	protected MessageStatus selectMessageStatusMockObject(String type, String messageId, boolean isRead, boolean isPaid) {
@@ -125,7 +130,6 @@ public class AbstractMock {
 	}	
 
 	protected PaymentMessage getPaymentMessage(String noticeNumber, String fiscalCode, boolean paid, LocalDate d, Double amount, String source) {
-
 		PaymentMessage pm = new PaymentMessage(noticeNumber, fiscalCode, paid, d, amount, source);
 		return pm;
 	}
@@ -133,5 +137,8 @@ public class AbstractMock {
 	protected void before() {
 		service = new ReminderServiceImpl();
 	}
-
+	
+	protected void getMockRestGetForEntity(Class classResult, String url, Object resp, HttpStatus status) {
+		Mockito.when(restTemplate.getForEntity(url, classResult)).thenReturn(new ResponseEntity(resp, status));
+	}
 }

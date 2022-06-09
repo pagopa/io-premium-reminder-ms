@@ -22,8 +22,6 @@ import lombok.ToString;
 @Getter 
 @Setter 
 @NoArgsConstructor
-//@AllArgsConstructor 
-@EqualsAndHashCode(callSuper = false)
 @JsonIgnoreProperties
 @Document
 @ToString(callSuper = true)

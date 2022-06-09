@@ -60,7 +60,8 @@ public class ReminderServiceImpl implements ReminderService {
 	private String paymentDay;
 	@Value("${paymentupdater.url}")
 	private String urlPayment;
-
+	@Autowired
+	ReminderProducer remProd;
 
 	@Autowired
 	private KafkaTemplate<String, String> kafkaTemplatePayments;
@@ -192,7 +193,6 @@ public class ReminderServiceImpl implements ReminderService {
 	}
 	
 	private void sendReminderToProducer(Reminder reminder) throws JsonProcessingException {
-		ReminderProducer remProd = new ReminderProducer();
 		kafkaTemplatePayments = (KafkaTemplate<String, String>) ApplicationContextProvider.getBean("kafkaTemplatePayments");
 		remProd.sendReminder(reminder, kafkaTemplatePayments, mapper, producerTopic);	
 		if(!reminder.isReadFlag()) {
