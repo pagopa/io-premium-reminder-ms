@@ -14,6 +14,11 @@ public class AvroMessageStatusDeserializer implements Deserializer<MessageStatus
 
 	JsonLoader schema;
 	ObjectMapper mapper;
+	JsonAvroConverter converter;
+
+	public void setConverter(JsonAvroConverter converter) {
+		this.converter = converter;
+	}
 	
 	public AvroMessageStatusDeserializer(JsonLoader js, ObjectMapper obMapper) {
 		schema = js;
@@ -23,9 +28,9 @@ public class AvroMessageStatusDeserializer implements Deserializer<MessageStatus
 	@Override
 	public MessageStatus deserialize(String topic, byte[] bytes) {
 		MessageStatus returnObject = null;
-		JsonAvroConverter converter = new JsonAvroConverter();
 		if (bytes != null) {
 			try {
+				converter = new JsonAvroConverter();
 				byte[] binaryJson = converter.convertToJson(bytes, schema.getJsonString());
 				String avroJson = new String(binaryJson);
 				returnObject = mapper.readValue(avroJson, MessageStatus.class);

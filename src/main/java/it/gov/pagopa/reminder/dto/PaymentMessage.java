@@ -8,11 +8,12 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Getter
 //@Builder
-//@NoArgsConstructor
+@NoArgsConstructor
 @AllArgsConstructor
 @ToString
 public class PaymentMessage {
