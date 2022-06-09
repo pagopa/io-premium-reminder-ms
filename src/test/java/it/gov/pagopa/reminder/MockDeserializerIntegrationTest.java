@@ -56,7 +56,7 @@ public class MockDeserializerIntegrationTest extends AbstractMock{
 	
 	@InjectMocks
 	ReminderDeserializer reminderDeserializer = null;
-	
+
 	@Autowired 
 	@Qualifier("messageSchema") 
 	JsonLoader messageSchema;
@@ -154,6 +154,7 @@ public class MockDeserializerIntegrationTest extends AbstractMock{
 		reminderDeserializer.deserialize(null, byteArrray);
 		Assertions.assertTrue(true);
 	}
+
 
 
 }

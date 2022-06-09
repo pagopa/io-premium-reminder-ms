@@ -27,6 +27,7 @@ import it.gov.pagopa.reminder.dto.PaymentMessage;
 import it.gov.pagopa.reminder.dto.SenderMetadata;
 import it.gov.pagopa.reminder.model.JsonLoader;
 import it.gov.pagopa.reminder.model.Reminder;
+import tech.allegro.schema.json2avro.converter.JsonAvroConverter;
 
 
 @Configuration
@@ -77,7 +78,9 @@ public class ConfigConsumer extends ConfigKafka{
 		ConcurrentKafkaListenerContainerFactory<String, Reminder> factory = new ConcurrentKafkaListenerContainerFactory<>();
 		Map<String, Object> props = createProps(urlMessage, serverMessage);
 		props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, AvroMessageDeserializer.class.getName());
-		DefaultKafkaConsumerFactory<String, Reminder> dkc = new DefaultKafkaConsumerFactory<>(props, new StringDeserializer(), new AvroMessageDeserializer(messageSchema, mapper));
+		AvroMessageDeserializer deserializer = new AvroMessageDeserializer(messageSchema, mapper);
+		deserializer.setConverter(new JsonAvroConverter());
+		DefaultKafkaConsumerFactory<String, Reminder> dkc = new DefaultKafkaConsumerFactory<>(props, new StringDeserializer(), deserializer);
 		factory.setConsumerFactory(dkc);
 		return factory;
 	}
@@ -88,7 +91,9 @@ public class ConfigConsumer extends ConfigKafka{
 		ConcurrentKafkaListenerContainerFactory<String, MessageStatus> factoryStatus = new ConcurrentKafkaListenerContainerFactory<>();
 		Map<String, Object> props1 = createProps(urlMessageStatus, serverMessageStatus);
 		props1.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, AvroMessageStatusDeserializer.class.getName());
-		DefaultKafkaConsumerFactory<String, MessageStatus> dkc = new DefaultKafkaConsumerFactory<>(props1, new StringDeserializer(), new AvroMessageStatusDeserializer(mesagesStatusSchema, mapper));
+		AvroMessageStatusDeserializer deserializer = new AvroMessageStatusDeserializer(mesagesStatusSchema, mapper);
+		deserializer.setConverter(new JsonAvroConverter());
+		DefaultKafkaConsumerFactory<String, MessageStatus> dkc = new DefaultKafkaConsumerFactory<>(props1, new StringDeserializer(), deserializer);
 		factoryStatus.setConsumerFactory(dkc);
 		return factoryStatus;
 	}

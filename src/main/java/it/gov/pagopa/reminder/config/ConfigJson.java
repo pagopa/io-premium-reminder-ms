@@ -16,6 +16,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 
 import it.gov.pagopa.reminder.model.JsonLoader;
+import it.gov.pagopa.reminder.util.RestTemplateUtils;
 
 
 @Configuration
@@ -50,6 +51,11 @@ public class ConfigJson {
 	@Bean
 	public RestTemplate restTemplate(RestTemplateBuilder builder) {
 	   return builder.build();
+	}
+	
+	@Bean
+	public RestTemplateUtils restTemplateUtil(RestTemplateBuilder builder) {
+	   return new RestTemplateUtils();
 	}
 	
 

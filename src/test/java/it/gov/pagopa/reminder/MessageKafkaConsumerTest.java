@@ -1,6 +1,10 @@
 package it.gov.pagopa.reminder;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertThat;
+
 import java.time.LocalDateTime;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -24,6 +28,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.dockerjava.api.exception.InternalServerErrorException;
 
 import it.gov.pagopa.reminder.consumer.MessageKafkaConsumer;
 import it.gov.pagopa.reminder.consumer.MessageStatusKafkaConsumer;
@@ -75,19 +80,32 @@ public class MessageKafkaConsumerTest extends AbstractMock{
     }
     
 	@Test
-	public void test_scheduleMockSchedulerNotifyIntegrationTest2_OK() throws SchedulerException, InterruptedException, JsonProcessingException {
-		Mockito.when(restTemplate.postForObject(Mockito.anyString(), Mockito.any(), Mockito.any())).thenReturn(new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR).internalServerError().body("{}"));
+	public void test_scheduleMockSchedulerNotifyIntegrationTest2_KO() throws SchedulerException, InterruptedException, JsonProcessingException {				
+		Mockito.when(restTemplate.postForObject(Mockito.anyString(), Mockito.any(), Mockito.any())).thenThrow(new RuntimeException("500!"));
 		kafkaTemplate = new KafkaTemplate<>((ProducerFactory<String, String>) ApplicationContextProvider.getBean("producerFactory"));
 		consumerRem = (ReminderKafkaConsumer) ApplicationContextProvider.getBean("reminderEventKafkaConsumer");
 		producer.sendReminder(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456", 3), kafkaTemplate, mapper, "message-send");
 		consumerRem.reminderKafkaListener(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456", 3));
-//		consumer.getLatch().await(10000, TimeUnit.MILLISECONDS);
+		//consumer.getLatch().await(10000, TimeUnit.MILLISECONDS);
+        String s = consumer.getPayload();
+        Assertions.assertEquals(0L, consumerRem.getLatch().getCount());
+//        assertThat(consumer.getPayload(), containsString("embedded-test-topic"));
+		Assertions.assertTrue(true);
+	}
+	
+	@Test
+	public void test_scheduleMockSchedulerNotifyIntegrationTest2_OK() throws SchedulerException, InterruptedException, JsonProcessingException {
+		Mockito.when(restTemplate.postForObject(Mockito.anyString(), Mockito.any(), Mockito.any())).thenReturn(new ResponseEntity(HttpStatus.OK).accepted().body("{}"));
+		kafkaTemplate = new KafkaTemplate<>((ProducerFactory<String, String>) ApplicationContextProvider.getBean("producerFactory"));
+		consumerRem = (ReminderKafkaConsumer) ApplicationContextProvider.getBean("reminderEventKafkaConsumer");
+		producer.sendReminder(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456", 3), kafkaTemplate, mapper, "message-send");
+		consumerRem.reminderKafkaListener(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456", 3));
+		//consumer.getLatch().await(10000, TimeUnit.MILLISECONDS);
         String s = consumer.getPayload();
 //        assertThat(consumer.getLatch().getCount(), equalTo(0L));
 //        assertThat(consumer.getPayload(), containsString("embedded-test-topic"));
 		Assertions.assertTrue(true);
 	}
-	
 	
 	@Test
 	public void test_scheduleMockSchedulerNotifyIntegrationTest_GENERIC_OK() throws SchedulerException, InterruptedException, JsonProcessingException {

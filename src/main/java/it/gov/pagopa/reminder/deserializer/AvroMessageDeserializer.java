@@ -30,7 +30,6 @@ public class AvroMessageDeserializer implements Deserializer<Reminder> {
 		Reminder returnObject = null;
 		if (bytes != null) {
 			try {
-				converter = new JsonAvroConverter();
 				byte[] binaryJson = converter.convertToJson(bytes, schema.getJsonString());
 				String avroJson = new String(binaryJson);
 				returnObject = mapper.readValue(avroJson, Reminder.class);

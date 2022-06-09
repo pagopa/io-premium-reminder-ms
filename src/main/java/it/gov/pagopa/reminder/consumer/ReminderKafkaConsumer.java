@@ -39,6 +39,8 @@ public class ReminderKafkaConsumer{
 
 	@Autowired
 	ReminderService reminderService;
+	@Autowired
+	RestTemplateUtils restTemplateUtils;
 
 	private CountDownLatch latch = new CountDownLatch(1);
 	private String payload = "";
@@ -72,7 +74,7 @@ public class ReminderKafkaConsumer{
 
 	private String callNotify(NotificationDTO notification) {
 		log.info("Attempt to send reminder with id: {} ", notification.getMessage().getId());
-		RestTemplateUtils.sendNotification(notifyEndpoint, notification);
+		restTemplateUtils.sendNotification(notifyEndpoint, notification);
 		return "";
 	}
 

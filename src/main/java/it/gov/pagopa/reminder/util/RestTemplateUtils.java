@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -21,10 +22,12 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class RestTemplateUtils {
 	
-	private RestTemplateUtils() {}
+	@Autowired
+	RestTemplate restTemplate;
 	
-	public static void sendNotification(String url, NotificationDTO notification) {
-		RestTemplate restTemplate = new RestTemplate();
+	public RestTemplateUtils() {}
+	
+	public void sendNotification(String url, NotificationDTO notification) {
 		HttpHeaders requestHeaders = new HttpHeaders();
 	    requestHeaders.setContentType(MediaType.APPLICATION_JSON);
 	    List<MediaType> acceptedTypes = new ArrayList<>();
@@ -32,8 +35,7 @@ public class RestTemplateUtils {
 	    requestHeaders.setAccept(acceptedTypes);
 	    String jsonInString = new Gson().toJson(notification);
 	    HttpEntity<String> request = new HttpEntity<>(jsonInString, requestHeaders);
-		ResponseEntity<Object> response = restTemplate
-				  .exchange(url, HttpMethod.POST, request, Object.class);
+		ResponseEntity<Object> response = restTemplate.postForObject(url, request,  ResponseEntity.class);
 		if (Objects.nonNull(notification.getMessage()) && !response.getStatusCode().isError()) {
 			log.info("Notification {} sent successfully", notification.getMessage().getId());
 		}
