@@ -36,7 +36,7 @@ public class RestTemplateUtils {
 	    String jsonInString = new Gson().toJson(notification);
 	    HttpEntity<String> request = new HttpEntity<>(jsonInString, requestHeaders);
 		ResponseEntity<Object> response = restTemplate.postForObject(url, request,  ResponseEntity.class);
-		if (Objects.nonNull(notification.getMessage()) && !response.getStatusCode().isError()) {
+		if (Objects.nonNull(notification.getMessage()) && Objects.nonNull(response) && !response.getStatusCode().isError()) {
 			log.info("Notification {} sent successfully", notification.getMessage().getId());
 		}
 	}
