@@ -39,7 +39,7 @@ public class ConfigKafka extends BeanConf{
 			props.put("value.deserializer.specific.avro.reader", "true") ;
 			props.put("spring.kafka.consumer.properties.specific.avro.reader", "true") ;
 		} catch (Exception e) {
-			log.error("Failed to create producer with exception: " + e.getMessage());
+			log.error("Failed to create consumer with exception: " + e.getMessage());
 		}
 		return props;
 	}

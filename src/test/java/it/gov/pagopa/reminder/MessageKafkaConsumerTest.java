@@ -1,10 +1,6 @@
 package it.gov.pagopa.reminder;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertThat;
-
 import java.time.LocalDateTime;
-import java.util.concurrent.TimeUnit;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -28,7 +24,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.dockerjava.api.exception.InternalServerErrorException;
 
 import it.gov.pagopa.reminder.consumer.MessageKafkaConsumer;
 import it.gov.pagopa.reminder.consumer.MessageStatusKafkaConsumer;
