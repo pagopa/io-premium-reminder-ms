@@ -55,11 +55,13 @@ public class ReminderServiceImpl implements ReminderService {
 	@Value("${start.day}")
 	private String startDay;
 	@Value("${reminder.day}")
-	private String reminderDay;
+	private int reminderDay;
 	@Value("${payment.day}")
-	private String paymentDay;
+	private int paymentDay;
 	@Value("${paymentupdater.url}")
 	private String urlPayment;
+	@Value("${test.active}")
+	private boolean isTest;
 	@Autowired
 	ReminderProducer remProd;
 
@@ -104,15 +106,16 @@ public class ReminderServiceImpl implements ReminderService {
 	public void getMessageToNotify() {
 
 		LocalDateTime todayTime = LocalDateTime.now(ZonedDateTime.now().getZone());
-		LocalDateTime dateTimePayment = todayTime.minusDays(Integer.valueOf(paymentDay));
+		LocalDateTime dateTimeRead = isTest ? todayTime.minusMinutes(reminderDay) : todayTime.minusDays(reminderDay);
+		LocalDateTime dateTimePayment = isTest ? todayTime.minusMinutes(paymentDay) : todayTime.minusDays(paymentDay);
 		LocalDate today = LocalDate.now();
 		LocalDate startDateReminder = today.plusDays(Integer.valueOf(startDay));
 
-		List<Reminder> readMessageToNotify = reminderRepository.getReadMessageToNotify(maxReadMessageSend);
+		List<Reminder> readMessageToNotify = reminderRepository.getReadMessageToNotify(maxReadMessageSend, dateTimeRead);
 		log.info("readMessageToNotify: {}", readMessageToNotify.size());
 
 		List<Reminder> paidMessageToNotify = reminderRepository.getPaidMessageToNotify(MessageContentType.PAYMENT.toString(), 
-				Integer.valueOf(maxPaidMessageSend), dateTimePayment, startDateReminder, today);
+				Integer.valueOf(maxPaidMessageSend), dateTimePayment, startDateReminder);
 		log.info("paidMessageToNotify: {}",paidMessageToNotify.size());
 
 		readMessageToNotify.addAll(paidMessageToNotify);
@@ -143,7 +146,7 @@ public class ReminderServiceImpl implements ReminderService {
 		int readMessage = reminderRepository.deleteReadMessage(maxReadMessageSend, MessageContentType.PAYMENT.toString());
 		log.info("Delete: {} readMessage", readMessage);
 	
-		int paidMessage = reminderRepository.deletePaidMessage(maxPaidMessageSend, LocalDate.now(), MessageContentType.PAYMENT.toString());
+		int paidMessage = reminderRepository.deletePaidMessage(maxPaidMessageSend, MessageContentType.PAYMENT.toString());
 		log.info("Delete: {} paidMessage", paidMessage);
 	}
 

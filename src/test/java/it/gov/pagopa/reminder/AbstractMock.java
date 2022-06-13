@@ -58,12 +58,12 @@ public class AbstractMock {
 	}
 
 	protected void mockGetReadMessageToNotifyWithResponse(List<Reminder> listReturnReminder) {
-		Mockito.when(mockRepository.getReadMessageToNotify(Mockito.anyInt())).thenReturn(listReturnReminder);
+		Mockito.when(mockRepository.getReadMessageToNotify(Mockito.anyInt(), Mockito.any(LocalDateTime.class))).thenReturn(listReturnReminder);
 	}
 
 
 	protected void mockGetPaidMessageToNotifyWithResponse(List<Reminder> listReturnReminder) {
-		Mockito.when(mockRepository.getPaidMessageToNotify(Mockito.anyString(), Mockito.anyInt(), Mockito.any(LocalDateTime.class), Mockito.any(LocalDate.class), Mockito.any(LocalDate.class))).thenReturn(listReturnReminder);
+		Mockito.when(mockRepository.getPaidMessageToNotify(Mockito.anyString(), Mockito.anyInt(), Mockito.any(LocalDateTime.class), Mockito.any(LocalDate.class))).thenReturn(listReturnReminder);
 	}
 	
 	protected void mockDeleteReadMessageWithResponse(int retValue) {
@@ -72,7 +72,7 @@ public class AbstractMock {
 
 	
 	protected void mockDeletePaidMessageWithResponse(int retValue) {
-		Mockito.when(mockRepository.deletePaidMessage(Mockito.anyInt(), Mockito.any(LocalDate.class), Mockito.anyString())).thenReturn(retValue);
+		Mockito.when(mockRepository.deletePaidMessage(Mockito.anyInt(), Mockito.anyString())).thenReturn(retValue);
 	}
 
 

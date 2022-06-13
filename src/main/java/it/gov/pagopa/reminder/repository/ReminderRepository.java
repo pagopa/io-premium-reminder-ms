@@ -21,16 +21,16 @@ public interface ReminderRepository extends MongoRepository<Reminder, String>{
 	int deleteReadMessage(int maxReadMessageSend, String typeMessage);
 	
 	
-	@Query(value="{content_type:?2, $or:[{paidFlag:true}, {maxPaidMessageSend:{$gte:?0}}, {content_paymentData_dueDate:{$lt:?1}}]}",delete = true)
-	int deletePaidMessage(int maxPaidMessageSend, LocalDate now, String typeMessage);
+	@Query(value="{content_type:?1, $or:[{paidFlag:true}, {maxPaidMessageSend:{$gte:?0}}]}",delete = true)
+	int deletePaidMessage(int maxPaidMessageSend, String typeMessage);
 
 	/**
 	 * Retrieval of unread, unpaid reminders that have not exceeded the maximum number of notifications.
 	 * @param maxReadMessageSend
 	 * @return Reminder list
 	 */
-	@Query("{readFlag:false, paidFlag:false, maxReadMessageSend:{$lt:?0}}")
-	List<Reminder> getReadMessageToNotify(int maxReadMessageSend);
+	@Query("{readFlag:false, paidFlag:false, maxReadMessageSend:{$lt:?0}, $or:[{lastDateReminder:{$exists: false}}, {lastDateReminder:{$lt:?1}}]}")
+	List<Reminder> getReadMessageToNotify(int maxReadMessageSend, LocalDateTime dateTimeRead);
 	
 	/**
 	 * Recovery of payment reminders, read, unpaid and that have not passed
@@ -42,8 +42,8 @@ public interface ReminderRepository extends MongoRepository<Reminder, String>{
 	 * @param today
 	 * @return Reminder list
 	 */
-	@Query("{readFlag:true, paidFlag:false, content_type:?0, maxPaidMessageSend:{$lt:?1}, $or:[{lastDateReminder:{$exists: false}}, {lastDateReminder:{$lt:?2}}], $or:[{content_paymentData_dueDate:{$exists: false}}, {content_paymentData_dueDate: {$gt:?4, $lt:?3}}]}")
-	List<Reminder> getPaidMessageToNotify(String typeMessage, Integer maxPaidMessageSend, LocalDateTime dateTimePayment, LocalDate startDateReminder, LocalDate today);
+	@Query("{readFlag:true, paidFlag:false, content_type:?0, maxPaidMessageSend:{$lt:?1}, $or:[{lastDateReminder:{$exists: false}}, {lastDateReminder:{$lt:?2}}], $or:[{content_paymentData_dueDate:{$exists: false}}, {content_paymentData_dueDate: {$lt:?3}}]}")
+	List<Reminder> getPaidMessageToNotify(String typeMessage, Integer maxPaidMessageSend, LocalDateTime dateTimePayment, LocalDate startDateReminder);
 
 
 
