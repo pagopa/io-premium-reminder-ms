@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
+import it.gov.pagopa.reminder.dto.avro.MessageContentType;
 import it.gov.pagopa.reminder.model.Reminder;
 import it.gov.pagopa.reminder.service.ReminderService;
 import lombok.extern.slf4j.Slf4j;
@@ -21,23 +22,30 @@ public class MessageKafkaConsumer {
 
 
 	private CountDownLatch latch = new CountDownLatch(1);
-    private String payload = null;
-    
-    @KafkaListener(topics = "${kafka.message}", groupId = "reminder-message")
+	private String payload = null;
+
+	@KafkaListener(topics = "${kafka.message}", groupId = "reminder-message")
 	public void messageKafkaListener(Reminder message) {		
 		log.info("Received message: {}", message);
 		checkNullInMessage(message);
-		reminderService.save(message);
+
+		if(MessageContentType.PAYMENT.toString().equalsIgnoreCase(message.getContent_type().toString())) {
+			Reminder reminder = reminderService.getPaymentByNoticeNumberAndFiscalCode(message.getContent_paymentData_noticeNumber(), message.getContent_paymentData_payeeFiscalCode());
+			if(reminder == null) reminderService.save(reminder);
+		} else {
+			reminderService.save(message);
+		}
+
 		payload = message.toString();
 		latch.countDown();
 	}
 
-	
-    public CountDownLatch getLatch() {
-        return latch;
-    }
 
-    public String getPayload() {
-        return payload;
-    }
+	public CountDownLatch getLatch() {
+		return latch;
+	}
+
+	public String getPayload() {
+		return payload;
+	}
 }

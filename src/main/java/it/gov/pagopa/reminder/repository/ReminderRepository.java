@@ -15,7 +15,7 @@ public interface ReminderRepository extends MongoRepository<Reminder, String>{
 
 
 	@Query("{'content_paymentData_noticeNumber':?0, 'content_paymentData_payeeFiscalCode':?1}")
-	Reminder getPaymentByNoticeNumberAndFiscalCode(String noticeNumber, String fiscalCode);
+	List<Reminder> getPaymentByNoticeNumberAndFiscalCode(String noticeNumber, String fiscalCode);
 
 	@Query(value="{content_type:{'$ne':?1}, $or:[{readFlag:true}, {maxReadMessageSend:{$gte:?0}}]}",delete = true)
 	int deleteReadMessage(int maxReadMessageSend, String typeMessage);

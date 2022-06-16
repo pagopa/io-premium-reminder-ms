@@ -54,7 +54,9 @@ public class AbstractMock {
 	}
 
 	public void mockGetPaymentByNoticeNumberAndFiscalCodeWithResponse(Reminder reminder) {
-		Mockito.when(mockRepository.getPaymentByNoticeNumberAndFiscalCode(Mockito.anyString(), Mockito.anyString())).thenReturn(reminder);
+		List<Reminder> listReminder = new ArrayList<>();
+		listReminder.add(reminder);
+		Mockito.when(mockRepository.getPaymentByNoticeNumberAndFiscalCode(Mockito.anyString(), Mockito.anyString())).thenReturn(listReminder);
 	}
 
 	protected void mockGetReadMessageToNotifyWithResponse(List<Reminder> listReturnReminder) {

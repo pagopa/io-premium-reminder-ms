@@ -98,7 +98,10 @@ public class ReminderServiceImpl implements ReminderService {
 
 	@Override
 	public Reminder getPaymentByNoticeNumberAndFiscalCode(String noticeNumber, String fiscalCode) {
-		return reminderRepository.getPaymentByNoticeNumberAndFiscalCode(noticeNumber, fiscalCode);
+
+		List<Reminder> listReminder = reminderRepository.getPaymentByNoticeNumberAndFiscalCode(noticeNumber, fiscalCode); 
+		
+		return listReminder.isEmpty() ? null : listReminder.get(0);
 	}
 
 
