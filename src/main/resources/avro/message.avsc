@@ -1,7 +1,7 @@
 {
   "name": "message",
   "type": "record",
-  "namespace": "it.gov.pagopa.reminder.avro.dto",
+  "namespace": "it.gov.pagopa.reminder.dto.avro",
   "doc": "Kafka JS schema for cosmos api container 'messages'",
   "fields": [
     {
@@ -91,6 +91,18 @@
       "type": "long",
       "logicalType": "timestamp-millis",
       "default": 0
+    },
+    {
+      "name": "featureLevelType",
+      "type": {
+        "type": "enum",
+        "name": "MessageFeatureLevelType",
+        "symbols": [
+          "STANDARD",
+          "ADVANCED"
+        ]
+      },
+      "default": "STANDARD"
     }
   ]
 }

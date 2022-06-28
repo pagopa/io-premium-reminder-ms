@@ -9,6 +9,7 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
 import it.gov.pagopa.reminder.dto.avro.MessageContentType;
+import it.gov.pagopa.reminder.dto.avro.MessageFeatureLevelType;
 import it.gov.pagopa.reminder.model.Reminder;
 import it.gov.pagopa.reminder.service.ReminderService;
 import lombok.extern.slf4j.Slf4j;
@@ -29,13 +30,17 @@ public class MessageKafkaConsumer {
 		log.info("Received message: {}", message);
 		checkNullInMessage(message);
 
-		if(MessageContentType.PAYMENT.toString().equalsIgnoreCase(message.getContent_type().toString())) {
-			Reminder reminder = reminderService.getPaymentByNoticeNumberAndFiscalCode(message.getContent_paymentData_noticeNumber(), message.getContent_paymentData_payeeFiscalCode());
-			if(reminder == null) reminderService.save(reminder);
-		} else {
-			reminderService.save(message);
-		}
+		if(MessageFeatureLevelType.ADVANCED.toString().equalsIgnoreCase(message.getFeatureLevelType().toString())) {
 
+			if(MessageContentType.PAYMENT.toString().equalsIgnoreCase(message.getContent_type().toString())) {
+				Reminder reminder = reminderService.getPaymentByNoticeNumberAndFiscalCode(message.getContent_paymentData_noticeNumber(), message.getContent_paymentData_payeeFiscalCode());
+				if(reminder == null) 
+					message.setRptId(message.getContent_paymentData_payeeFiscalCode().concat(message.getContent_paymentData_noticeNumber()));
+				reminderService.save(message);
+			} else {
+				reminderService.save(message);
+			}
+		}
 		payload = message.toString();
 		latch.countDown();
 	}

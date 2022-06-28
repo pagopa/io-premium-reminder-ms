@@ -52,5 +52,7 @@ public class Reminder extends Message{
 	@JsonDeserialize(using = LocalDateTimeDeserializer.class)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Constants.DATE_FORMAT_DESERIALIZER)
 	private LocalDateTime paidDate;
+	
+	private String rptId;
 
 }

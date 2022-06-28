@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 
 import it.gov.pagopa.reminder.dto.avro.MessageContentType;
+import it.gov.pagopa.reminder.dto.avro.MessageFeatureLevelType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -36,4 +37,5 @@ public class Message {
 	@JsonDeserialize(using = LocalDateDeserializer.class)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	protected LocalDate content_paymentData_dueDate;
+	protected MessageFeatureLevelType featureLevelType;
 }

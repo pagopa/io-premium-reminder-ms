@@ -2,6 +2,9 @@
   "type" : "object",
   "id" : "urn:jsonschema:it:gov:pagopa:reminder:dto:PaymentMessage",
   "properties" : {
+	"messageId" : {
+      "type" : "string"
+    },
     "noticeNumber" : {
       "type" : "string"
     },
