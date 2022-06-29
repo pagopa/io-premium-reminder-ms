@@ -96,10 +96,6 @@ public class MessageKafkaConsumerTest extends AbstractMock{
 		consumerRem = (ReminderKafkaConsumer) ApplicationContextProvider.getBean("reminderEventKafkaConsumer");
 		producer.sendReminder(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456", 3), kafkaTemplate, mapper, "message-send");
 		consumerRem.reminderKafkaListener(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456", 3));
-		//consumer.getLatch().await(10000, TimeUnit.MILLISECONDS);
-        String s = consumer.getPayload();
-//        assertThat(consumer.getLatch().getCount(), equalTo(0L));
-//        assertThat(consumer.getPayload(), containsString("embedded-test-topic"));
 		Assertions.assertTrue(true);
 	}
 	

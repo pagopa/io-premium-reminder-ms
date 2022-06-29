@@ -122,12 +122,7 @@ public class AbstractMock {
 	
 	protected MessageStatus selectMessageStatusMockObject(String type, String messageId, boolean isRead, boolean isPaid) {
 		MessageStatus messageStatus = null;
-		switch (type){
-		case EMPTY:
-			messageStatus = new MessageStatus();
-		default:
-			messageStatus = new MessageStatus(messageId, isRead, isPaid);
-		};
+		messageStatus = new MessageStatus(messageId, isRead, isPaid);
 		return messageStatus;
 	}	
 
