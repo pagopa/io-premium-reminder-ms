@@ -19,6 +19,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 import it.gov.pagopa.reminder.dto.MessageStatus;
 import it.gov.pagopa.reminder.model.Reminder;
 import it.gov.pagopa.reminder.producer.ReminderProducer;
@@ -116,6 +118,18 @@ public class TestSchedulerNotifyIntegrationTest extends AbstractMock{
 	
 	@Test
 	public void test_CheckRemindersToNotifyJob_AllResponse_Paid_OK() throws SchedulerException, InterruptedException {
+		mockGetReadMessageToNotifyWithResponse(selectListReminderMockObject("full"));
+		mockGetPaidMessageToNotifyWithResponse(selectListReminderMockObject("full"));
+		getMockRestGetForEntity(MessageStatus.class, urlPayment.concat("123456"), new MessageStatus("1", true, true), HttpStatus.OK);
+		mockSaveWithResponse(selectReminderMockObject("", "1","PAYMENT","AAABBB77Y66A444A", "123456", 3));
+		mockFindIdWithResponse(selectReminderMockObject("", "1","PAYMENT","AAABBB77Y66A444A", "123456", 3));
+		job.execute(null);
+		Assertions.assertTrue(true);
+	}
+	
+	@Test
+	public void test_CheckRemindersToNotifyJob_AllResponse_Paid_WithProxy_KO() throws SchedulerException, InterruptedException, JsonProcessingException {
+		proxyKo();
 		mockGetReadMessageToNotifyWithResponse(selectListReminderMockObject("full"));
 		mockGetPaidMessageToNotifyWithResponse(selectListReminderMockObject("full"));
 		getMockRestGetForEntity(MessageStatus.class, urlPayment.concat("123456"), new MessageStatus("1", true, true), HttpStatus.OK);
