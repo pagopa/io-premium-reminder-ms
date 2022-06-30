@@ -4,8 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
-//@Setter
-//@NoArgsConstructor
 @AllArgsConstructor
 public class NotificationMessage {
 

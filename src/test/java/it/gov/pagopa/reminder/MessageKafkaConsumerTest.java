@@ -23,7 +23,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import it.gov.pagopa.reminder.consumer.MessageKafkaConsumer;
 import it.gov.pagopa.reminder.consumer.MessageStatusKafkaConsumer;
@@ -64,8 +63,6 @@ public class MessageKafkaConsumerTest extends AbstractMock{
     @InjectMocks
     RestTemplateUtils util;
     
-	@Autowired
-	ObjectMapper mapper;
 	
 	@Value("${notification.notifyEndpoint}")
 	private String notifyEndpoint;

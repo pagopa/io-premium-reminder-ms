@@ -1,5 +1,6 @@
 package it.gov.pagopa.reminder;
 
+import java.nio.charset.Charset;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -7,19 +8,28 @@ import java.util.List;
 import java.util.Optional;
 
 import org.junit.Rule;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import it.gov.pagopa.reminder.dto.MessageStatus;
 import it.gov.pagopa.reminder.dto.PaymentMessage;
 import it.gov.pagopa.reminder.dto.avro.MessageContentType;
+import it.gov.pagopa.reminder.dto.request.ProxyPaymentResponse;
 import it.gov.pagopa.reminder.model.Reminder;
 import it.gov.pagopa.reminder.repository.ReminderRepository;
 import it.gov.pagopa.reminder.service.ReminderServiceImpl;
@@ -41,6 +51,9 @@ public class AbstractMock {
 	
 	@InjectMocks
 	protected ReminderServiceImpl service;
+	
+	@Autowired
+	ObjectMapper mapper;
     
 	@Value("${paymentupdater.url}")
 	private String urlPayment;
@@ -51,6 +64,22 @@ public class AbstractMock {
 
 	protected void mockFindIdWithResponse(Reminder returnReminder1) {
 		Mockito.when(mockRepository.findById(Mockito.anyString())).thenReturn(Optional.of(returnReminder1));
+	}
+	
+	protected void proxyKo() throws JsonProcessingException {
+		ProxyPaymentResponse dto = new ProxyPaymentResponse();
+		dto.setDetail_v2("PPT_RPT_DUPLICATA");
+		dto.setCodiceContestoPagamento("32");
+		dto.setImportoSingoloVersamento("30");
+		dto.setCodiceContestoPagamento("abc");
+		dto.setDetail("abc");
+		dto.setInstance("");
+		dto.setStatus(500);
+		dto.setTitle("");
+    	HttpServerErrorException errorResponse = new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "", mapper.writeValueAsString(dto).getBytes(), Charset.defaultCharset());	   	
+		Mockito.when(restTemplate.exchange(ArgumentMatchers.anyString(), ArgumentMatchers.any(HttpMethod.class),
+				ArgumentMatchers.any(HttpEntity.class), ArgumentMatchers.<Class<String>>any()))
+				.thenThrow(errorResponse);
 	}
 
 	public void mockGetPaymentByNoticeNumberAndFiscalCodeWithResponse(Reminder reminder) {
