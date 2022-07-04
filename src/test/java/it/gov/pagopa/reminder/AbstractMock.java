@@ -164,6 +164,7 @@ public class AbstractMock {
 		service = new ReminderServiceImpl();
 	}
 	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	protected void getMockRestGetForEntity(Class classResult, String url, Object resp, HttpStatus status) {
 		Mockito.when(restTemplate.getForEntity(url, classResult)).thenReturn(new ResponseEntity(resp, status));
 	}

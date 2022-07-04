@@ -72,6 +72,7 @@ public class MessageKafkaConsumerTest extends AbstractMock{
     	before();
     }
     
+	@SuppressWarnings("unchecked")
 	@Test
 	public void test_scheduleMockSchedulerNotifyIntegrationTest2_KO() throws SchedulerException, InterruptedException, JsonProcessingException {				
 		Mockito.when(restTemplate.postForObject(Mockito.anyString(), Mockito.any(), Mockito.any())).thenThrow(new RuntimeException("500!"));
@@ -79,13 +80,10 @@ public class MessageKafkaConsumerTest extends AbstractMock{
 		consumerRem = (ReminderKafkaConsumer) ApplicationContextProvider.getBean("reminderEventKafkaConsumer");
 		producer.sendReminder(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456", 3), kafkaTemplate, mapper, "message-send");
 		consumerRem.reminderKafkaListener(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456", 3));
-		//consumer.getLatch().await(10000, TimeUnit.MILLISECONDS);
-        String s = consumer.getPayload();
         Assertions.assertEquals(0L, consumerRem.getLatch().getCount());
-//        assertThat(consumer.getPayload(), containsString("embedded-test-topic"));
-		Assertions.assertTrue(true);
 	}
 	
+	@SuppressWarnings({ "unchecked", "static-access", "rawtypes" })
 	@Test
 	public void test_scheduleMockSchedulerNotifyIntegrationTest2_OK() throws SchedulerException, InterruptedException, JsonProcessingException {
 		Mockito.when(restTemplate.postForObject(Mockito.anyString(), Mockito.any(), Mockito.any())).thenReturn(new ResponseEntity(HttpStatus.OK).accepted().body("{}"));
@@ -93,7 +91,7 @@ public class MessageKafkaConsumerTest extends AbstractMock{
 		consumerRem = (ReminderKafkaConsumer) ApplicationContextProvider.getBean("reminderEventKafkaConsumer");
 		producer.sendReminder(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456", 3), kafkaTemplate, mapper, "message-send");
 		consumerRem.reminderKafkaListener(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456", 3));
-		Assertions.assertTrue(true);
+		Assertions.assertEquals(0L, consumerRem.getLatch().getCount());
 	}
 	
 	@Test
@@ -102,7 +100,7 @@ public class MessageKafkaConsumerTest extends AbstractMock{
 		mockGetPaymentByNoticeNumberAndFiscalCodeWithResponse(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456", 3));
 		mockSaveWithResponse(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456", 3));
 		consumer.paymentUpdatesKafkaListener(getPaymentMessage("123", "456", true, null, 5d, "payments"));
-		Assertions.assertTrue(true);
+		Assertions.assertEquals(0L, consumer.getLatch().getCount());
 	}
 
 	@Test
@@ -111,7 +109,7 @@ public class MessageKafkaConsumerTest extends AbstractMock{
 		mockGetPaymentByNoticeNumberAndFiscalCodeWithResponse(selectReminderMockObject("", "1","PAYMENT","AAABBB77Y66A444A", "123456", 3));
 		mockSaveWithResponse(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456", 3));
 		consumer.paymentUpdatesKafkaListener(getPaymentMessage("123", "456", true, null, 5d, "payments"));
-		Assertions.assertTrue(true);
+		Assertions.assertEquals(0L, consumer.getLatch().getCount());
 	}
 
 	@Test

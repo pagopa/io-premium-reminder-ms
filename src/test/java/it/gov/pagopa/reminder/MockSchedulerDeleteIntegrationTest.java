@@ -28,15 +28,13 @@ public class MockSchedulerDeleteIntegrationTest extends AbstractMock{
 	@Test
 	public void test_scheduleCheckRemindersToDeleteJob_ret0_ok() throws SchedulerException, InterruptedException {
 		mockDeleteReadMessageWithResponse(0);
-		mockDeletePaidMessageWithResponse(0);
 		job.execute(null);
 		Assertions.assertTrue(true);
 	}
-//
+
 	@Test
 	public void test_scheduleCheckRemindersToDeleteJob_ret1_OK() throws SchedulerException, InterruptedException {
 		mockDeleteReadMessageWithResponse(0);
-		mockDeletePaidMessageWithResponse(0);
 		job.execute(null);
 		Assertions.assertTrue(true);
 	}
@@ -44,7 +42,6 @@ public class MockSchedulerDeleteIntegrationTest extends AbstractMock{
 	@Test
 	public void test_scheduleCheckRemindersToDeleteJob_retnull_KO() throws SchedulerException, InterruptedException {
 		mockDeleteReadMessageWithResponse(0);
-		mockDeletePaidMessageWithResponse(0);
 		job.execute(null);
 		Assertions.assertTrue(true);
 	}
