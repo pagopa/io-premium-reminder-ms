@@ -99,7 +99,7 @@ public class MessageKafkaConsumerTest extends AbstractMock{
 		consumer = (PaymentUpdatesKafkaConsumer) ApplicationContextProvider.getBean("paymentUpdatesEventKafkaConsumer");
 		mockGetPaymentByNoticeNumberAndFiscalCodeWithResponse(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456", 3));
 		mockSaveWithResponse(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456", 3));
-		consumer.paymentUpdatesKafkaListener(getPaymentMessage("123", "456", true, null, 5d, "payments"));
+		consumer.paymentUpdatesKafkaListener(getPaymentMessage("123", "456", true, null, 5d, "payments", "BBBPPP77J99A888A"));
 		Assertions.assertEquals(0L, consumer.getLatch().getCount());
 	}
 
@@ -108,7 +108,7 @@ public class MessageKafkaConsumerTest extends AbstractMock{
 		consumer = (PaymentUpdatesKafkaConsumer) ApplicationContextProvider.getBean("paymentUpdatesEventKafkaConsumer");
 		mockGetPaymentByNoticeNumberAndFiscalCodeWithResponse(selectReminderMockObject("", "1","PAYMENT","AAABBB77Y66A444A", "123456", 3));
 		mockSaveWithResponse(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456", 3));
-		consumer.paymentUpdatesKafkaListener(getPaymentMessage("123", "456", true, null, 5d, "payments"));
+		consumer.paymentUpdatesKafkaListener(getPaymentMessage("123", "456", true, null, 5d, "payments", "BBBPPP77J99A888A"));
 		Assertions.assertEquals(0L, consumer.getLatch().getCount());
 	}
 
@@ -117,7 +117,7 @@ public class MessageKafkaConsumerTest extends AbstractMock{
 		consumer = (PaymentUpdatesKafkaConsumer) ApplicationContextProvider.getBean("paymentUpdatesEventKafkaConsumer");
 		mockGetPaymentByNoticeNumberAndFiscalCodeWithResponse(selectReminderMockObject("", "1","PAYMENT","AAABBB77Y66A444A", "123456", 3));
 		mockSaveWithResponse(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456", 3));
-		consumer.paymentUpdatesKafkaListener(getPaymentMessage("123", "456", true, null, 5d, "message"));
+		consumer.paymentUpdatesKafkaListener(getPaymentMessage("123", "456", true, null, 5d, "message", "BBBPPP77J99A888A"));
 		Assertions.assertTrue(consumer.getPayload().contains("message"));
 		Assertions.assertEquals(0L, consumer.getLatch().getCount());
 	}

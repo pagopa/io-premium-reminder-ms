@@ -22,6 +22,9 @@
     },
     "source" : {
       "type" : "string"
+    },
+    "fiscalCode" : {
+      "type" : "string"
     }
   }
 }
