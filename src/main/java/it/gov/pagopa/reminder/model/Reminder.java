@@ -11,9 +11,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 
+import dto.message;
 import it.gov.pagopa.reminder.deserializer.CustomLocalDateArrayDeserializer;
 import it.gov.pagopa.reminder.util.Constants;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,7 +25,7 @@ import lombok.ToString;
 @JsonIgnoreProperties
 @Document
 @ToString(callSuper = true)
-public class Reminder extends Message{
+public class Reminder extends message{
 
 	private boolean readFlag;
 	private boolean paidFlag;

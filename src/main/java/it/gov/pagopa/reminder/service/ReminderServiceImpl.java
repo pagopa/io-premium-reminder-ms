@@ -27,10 +27,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import dto.MessageContentType;
 import io.github.resilience4j.core.IntervalFunction;
 import io.github.resilience4j.retry.Retry;
 import io.github.resilience4j.retry.RetryConfig;
-import it.gov.pagopa.reminder.dto.avro.MessageContentType;
 import it.gov.pagopa.reminder.dto.request.ProxyPaymentResponse;
 import it.gov.pagopa.reminder.model.Reminder;
 import it.gov.pagopa.reminder.producer.ReminderProducer;
@@ -89,14 +89,15 @@ public class ReminderServiceImpl implements ReminderService {
 	}
 
 	@Override
-	public void save(Reminder reminder) {
-		reminderRepository.save(reminder);
+	public Reminder save(Reminder reminder) {
+		reminder = reminderRepository.save(reminder);
 		log.info("Saved message: {}", reminder.getId());
+		return reminder;
 	}
 
 
 	@Override
-	public void updateReminder(String reminderId, boolean isRead, boolean isPaid) {
+	public Reminder updateReminder(String reminderId, boolean isRead, boolean isPaid) {
 		Reminder reminderToUpdate = findById(reminderId);
 		if(null != reminderToUpdate) {
 			reminderToUpdate.setPaidFlag(isPaid);
@@ -109,6 +110,7 @@ public class ReminderServiceImpl implements ReminderService {
 			}	
 			save(reminderToUpdate);
 		}
+		return reminderToUpdate;
 	}
 
 	@Override
@@ -159,13 +161,14 @@ public class ReminderServiceImpl implements ReminderService {
 
 
 	@Override
-	public void deleteMessage() {
+	public int deleteMessage() {
 
 		int readMessage = reminderRepository.deleteReadMessage(maxReadMessageSend, MessageContentType.PAYMENT.toString());
 		log.info("Delete: {} readMessage", readMessage);
 
 		int paidMessage = reminderRepository.deletePaidMessage(maxPaidMessageSend, MessageContentType.PAYMENT.toString());
 		log.info("Delete: {} paidMessage", paidMessage);
+		return readMessage + paidMessage;
 	}
 
 
@@ -245,11 +248,11 @@ public class ReminderServiceImpl implements ReminderService {
 
 
 	private boolean isGeneric(Reminder reminder) {
-		return MessageContentType.GENERIC.toString().equalsIgnoreCase(reminder.getContent_type().toString());
+		return MessageContentType.GENERIC.toString().equalsIgnoreCase(reminder.getContentType().toString());
 	}
 
 	private boolean isPayment(Reminder reminder) {
-		return MessageContentType.PAYMENT.toString().equalsIgnoreCase(reminder.getContent_type().toString());
+		return MessageContentType.PAYMENT.toString().equalsIgnoreCase(reminder.getContentType().toString());
 	}
 
 	private void sendReminderToProducer(Reminder reminder) throws JsonProcessingException {

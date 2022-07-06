@@ -1,5 +1,5 @@
 package it.gov.pagopa.reminder.util;
-
+ 
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.Objects;
@@ -25,11 +25,11 @@ public class ReminderUtil {
 			if (StringUtils.isEmpty(reminder.getSenderUserId())){
 				reminder.setSenderUserId(UNDEFINED);
 			}
-			if (StringUtils.isEmpty(reminder.getContent_paymentData_payeeFiscalCode())){
-				reminder.setContent_paymentData_payeeFiscalCode(UNDEFINED);
+			if (StringUtils.isEmpty(reminder.getContentPaymentDataPayeeFiscalCode())){
+				reminder.setContentPaymentDataPayeeFiscalCode(UNDEFINED);
 			}
-			if (StringUtils.isEmpty(reminder.getContent_paymentData_noticeNumber())){
-				reminder.setContent_paymentData_noticeNumber(UNDEFINED);
+			if (StringUtils.isEmpty(reminder.getContentPaymentDataNoticeNumber())){
+				reminder.setContentPaymentDataNoticeNumber(UNDEFINED);
 			}
 		}
 	}

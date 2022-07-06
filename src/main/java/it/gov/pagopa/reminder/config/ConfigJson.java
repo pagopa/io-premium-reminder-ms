@@ -45,6 +45,9 @@ public class ConfigJson {
 		mapper.registerModule(new ParameterNamesModule());
 		mapper.registerModule(new Jdk8Module());
 		mapper.registerModule(new JavaTimeModule());
+		mapper.addMixIn(
+		        org.apache.avro.specific.SpecificRecord.class, // Interface implemented by all generated Avro-Classes
+		        JacksonIgnoreAvroPropertiesMixIn.class);
 		return mapper;
 	}
 	

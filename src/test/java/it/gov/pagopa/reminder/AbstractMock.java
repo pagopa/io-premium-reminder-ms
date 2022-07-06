@@ -26,9 +26,9 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import dto.MessageContentType;
 import it.gov.pagopa.reminder.dto.MessageStatus;
 import it.gov.pagopa.reminder.dto.PaymentMessage;
-import it.gov.pagopa.reminder.dto.avro.MessageContentType;
 import it.gov.pagopa.reminder.dto.request.ProxyPaymentResponse;
 import it.gov.pagopa.reminder.model.Reminder;
 import it.gov.pagopa.reminder.repository.ReminderRepository;
@@ -142,9 +142,9 @@ public class AbstractMock {
 		default:
 			returnReminder1 = new Reminder();
 			returnReminder1.setId(id);
-			returnReminder1.setContent_type(MessageContentType.valueOf(contentType));
-			returnReminder1.setFiscal_code(fiscalCode);
-			returnReminder1.setContent_paymentData_noticeNumber(noticeNumber);	
+			returnReminder1.setContentType(MessageContentType.valueOf(contentType));
+			//TODO miss returnReminder1.setFiscalCode(fiscalCode);
+			returnReminder1.setContentPaymentDataNoticeNumber(noticeNumber);	
 		};
 		return returnReminder1;
 	}

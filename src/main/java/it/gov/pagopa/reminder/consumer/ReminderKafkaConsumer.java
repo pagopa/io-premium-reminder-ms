@@ -53,8 +53,9 @@ public class ReminderKafkaConsumer{
 			log.info("I'm processing the reminder with id: {} ", reminder.getId());
 
 			String createdAt = DateFormatUtils.format(reminder.getCreatedAt(), Constants.DATE_FORMAT);
+			//TODO reminder.getFiscalCode()
 			NotificationMessage notificationMessage =  new NotificationMessage(
-					reminder.getId(), reminder.getFiscal_code(), 
+					reminder.getId(), reminder.getFiscalCode(), 
 					createdAt, reminder.getSenderServiceId(), 
 					reminder.getTimeToLiveSeconds());
 
