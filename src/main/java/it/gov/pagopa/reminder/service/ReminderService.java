@@ -22,7 +22,7 @@ public interface ReminderService {
 	 * @param isPaid
 	 * @return The Reminder updated
 	 */
-	Reminder updateReminder(String reminderId, boolean isRead, boolean isPaid);
+	Reminder updateReminder(String reminderId, boolean isRead);
 	/**
 	 * Method to verify that the service is active
 	 * @return sample string

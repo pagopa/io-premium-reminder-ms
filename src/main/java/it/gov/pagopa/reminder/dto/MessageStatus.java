@@ -14,6 +14,6 @@ public class MessageStatus {
 
 	String messageId;
 	Boolean isRead;
-	Boolean isPaid;
+	//Boolean isPaid;
 
 }

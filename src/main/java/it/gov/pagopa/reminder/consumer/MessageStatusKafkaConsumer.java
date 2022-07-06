@@ -26,7 +26,7 @@ public class MessageStatusKafkaConsumer{
 		if (Objects.nonNull(messageStatus)) {
 
 	        payload = messageStatus.toString();
-			reminderService.updateReminder(messageStatus.getMessageId(), messageStatus.getIsRead(), messageStatus.getIsPaid());
+			reminderService.updateReminder(messageStatus.getMessageId(), messageStatus.getIsRead());
 		}	
 		latch.countDown();
     }

@@ -97,17 +97,13 @@ public class ReminderServiceImpl implements ReminderService {
 
 
 	@Override
-	public Reminder updateReminder(String reminderId, boolean isRead, boolean isPaid) {
+	public Reminder updateReminder(String reminderId, boolean isRead) {
 		Reminder reminderToUpdate = findById(reminderId);
 		if(null != reminderToUpdate) {
-			reminderToUpdate.setPaidFlag(isPaid);
 			reminderToUpdate.setReadFlag(isRead);
 			if(isRead) {
 				reminderToUpdate.setReadDate(LocalDateTime.now());
 			}
-			if(isPaid) {
-				reminderToUpdate.setPaidDate(LocalDateTime.now());
-			}	
 			save(reminderToUpdate);
 		}
 		return reminderToUpdate;
