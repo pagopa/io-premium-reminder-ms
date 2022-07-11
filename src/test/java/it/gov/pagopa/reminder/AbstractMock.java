@@ -155,8 +155,8 @@ public class AbstractMock {
 		return messageStatus;
 	}	
 
-	protected PaymentMessage getPaymentMessage(String noticeNumber, String fiscalCode, boolean paid, LocalDate d, Double amount, String source) {
-		PaymentMessage pm = new PaymentMessage(noticeNumber, fiscalCode, paid, d, amount, source);
+	protected PaymentMessage getPaymentMessage(String noticeNumber, String fiscalCodePayee, boolean paid, LocalDate d, Double amount, String source, String fiscalCode) {
+		PaymentMessage pm = new PaymentMessage(noticeNumber, fiscalCodePayee, paid, d, amount, source, fiscalCode);
 		return pm;
 	}
 
@@ -164,6 +164,7 @@ public class AbstractMock {
 		service = new ReminderServiceImpl();
 	}
 	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	protected void getMockRestGetForEntity(Class classResult, String url, Object resp, HttpStatus status) {
 		Mockito.when(restTemplate.getForEntity(url, classResult)).thenReturn(new ResponseEntity(resp, status));
 	}

@@ -70,16 +70,16 @@ public class MockDeserializerIntegrationTest extends AbstractMock{
     	before();
     }
  
+	@SuppressWarnings("unchecked")
 	@Test
 	public void test_messageDeserialize_ok() throws JsonMappingException, JsonProcessingException {
-		String s = "";
-		byte[] byteArrray = s.getBytes();
+		byte[] byteArrray = "".getBytes();
 		avroMessageDeserializer = new AvroMessageDeserializer(messageSchema, mapper);
 		avroMessageDeserializer.setConverter(converter);
 		Mockito.when(converter.convertToJson(Mockito.any(), Mockito.anyString())).thenReturn(byteArrray);
-		Mockito.when(mapper.readValue(messageSchema.getJsonString(), Reminder.class)).thenReturn(new Reminder());
-		avroMessageDeserializer.deserialize(null, messageSchema.getJsonString().getBytes());
-		Assertions.assertTrue(true);
+		Mockito.when(mapper.readValue(Mockito.anyString(), Mockito.any(Class.class))).thenReturn(new Reminder());
+		Reminder rem = avroMessageDeserializer.deserialize(null, messageSchema.getJsonString().getBytes());
+		Assertions.assertNotNull(rem);
 	}
 	
 	@Test
@@ -92,16 +92,16 @@ public class MockDeserializerIntegrationTest extends AbstractMock{
 		Assertions.assertTrue(true);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void test_messageStatusDeserialize_ok() throws JsonMappingException, JsonProcessingException {
-		String s = "";
-		byte[] byteArrray = s.getBytes();
+		byte[] byteArrray = "".getBytes();
 		avroMessageStatusDeserializer = new AvroMessageStatusDeserializer(messageStatusSchema, mapper);
 		avroMessageStatusDeserializer.setConverter(converter);
 		Mockito.when(converter.convertToJson(Mockito.any(), Mockito.anyString())).thenReturn(byteArrray);
-		Mockito.when(mapper.readValue(messageStatusSchema.getJsonString(), MessageStatus.class)).thenReturn(new MessageStatus());
-		avroMessageStatusDeserializer.deserialize(null, messageSchema.getJsonString().getBytes());
-		Assertions.assertTrue(true);
+		Mockito.when(mapper.readValue(Mockito.anyString(), Mockito.any(Class.class))).thenReturn(new MessageStatus());
+		MessageStatus status = avroMessageStatusDeserializer.deserialize(null, messageSchema.getJsonString().getBytes());
+		Assertions.assertNotNull(status);
 	}
 	
 	@Test
@@ -117,8 +117,7 @@ public class MockDeserializerIntegrationTest extends AbstractMock{
 	
 	@Test
 	public void test_paymentDeserialize_OK() throws StreamReadException, DatabindException, IOException {
-		String s = "";
-		byte[] byteArrray = s.getBytes();
+		byte[] byteArrray = "".getBytes();
 		paymentMessageDeserializer = new PaymentMessageDeserializer(mapper);
 		Mockito.when(converter.convertToJson(Mockito.any(), Mockito.anyString())).thenReturn(byteArrray);
 		Mockito.when(mapper.readValue(byteArrray, PaymentMessage.class)).thenReturn(new PaymentMessage());
@@ -128,8 +127,7 @@ public class MockDeserializerIntegrationTest extends AbstractMock{
 	
 	@Test
 	public void test_paymentDeserialize_KO() throws StreamReadException, DatabindException, IOException {
-		String s = "ko";
-		byte[] byteArrray = s.getBytes();
+		byte[] byteArrray = "ko".getBytes();
 		paymentMessageDeserializer = new PaymentMessageDeserializer(null);
 		paymentMessageDeserializer.deserialize(null, byteArrray);
 		Assertions.assertTrue(true);
@@ -137,8 +135,7 @@ public class MockDeserializerIntegrationTest extends AbstractMock{
 	
 	@Test
 	public void test_reminderDeserialize_OK() throws StreamReadException, DatabindException, IOException {
-		String s = "";
-		byte[] byteArrray = s.getBytes();
+		byte[] byteArrray = "".getBytes();
 		reminderDeserializer = new ReminderDeserializer(mapper);
 		Mockito.when(converter.convertToJson(Mockito.any(), Mockito.anyString())).thenReturn(byteArrray);
 		Mockito.when(mapper.readValue(byteArrray, Reminder.class)).thenReturn(new Reminder());
@@ -148,8 +145,7 @@ public class MockDeserializerIntegrationTest extends AbstractMock{
 	
 	@Test
 	public void test_reminderDeserialize_KO() throws StreamReadException, DatabindException, IOException {
-		String s = "ko";
-		byte[] byteArrray = s.getBytes();
+		byte[] byteArrray = "ko".getBytes();
 		reminderDeserializer = new ReminderDeserializer(null);
 		reminderDeserializer.deserialize(null, byteArrray);
 		Assertions.assertTrue(true);

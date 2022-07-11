@@ -45,7 +45,7 @@ public interface ReminderRepository extends MongoRepository<Reminder, String>{
 	@Query("{readFlag:true, paidFlag:false, content_type:?0, maxPaidMessageSend:{$lt:?1}, $or:[{lastDateReminder:{$exists: false}}, {lastDateReminder:{$lt:?2}}], $or:[{content_paymentData_dueDate:{$exists: false}}, {content_paymentData_dueDate: {$lt:?3}}]}")
 	List<Reminder> getPaidMessageToNotify(String typeMessage, Integer maxPaidMessageSend, LocalDateTime dateTimePayment, LocalDate startDateReminder);
 
-	@Query("{'content_paymentData_noticeNumber':?0}")
+	@Query("{rptId:?0}")
 	Reminder getPaymentByRptId(String rptId);
 
 
