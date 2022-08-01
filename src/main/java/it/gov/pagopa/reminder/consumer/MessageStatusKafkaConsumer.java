@@ -18,7 +18,7 @@ public class MessageStatusKafkaConsumer{
 	private CountDownLatch latch = new CountDownLatch(1);
     private String payload = null;
 	
-	@KafkaListener(topics = "${kafka.status}", groupId = "reminder-message-status", containerFactory = "kafkaListenerContainerFactoryMessStat")
+	@KafkaListener(topics = "${kafka.status}", groupId = "reminder-message-status", containerFactory = "kafkaListenerContainerFactoryMessStat", autoStartup = "${messagestatus.auto.start}")
     public void messageStatusKafkaListener(MessageStatus messageStatus) {
 
 		log.info("Received message-status: {}", messageStatus);

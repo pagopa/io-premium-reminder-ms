@@ -23,7 +23,7 @@ public class PaymentUpdatesKafkaConsumer {
 	private CountDownLatch latch = new CountDownLatch(1);
 	private String payload = "";
 
-	@KafkaListener(topics = "${kafka.payment}", groupId = "payment-updates-shared", containerFactory = "kafkaListenerContainerFactoryPaymentMessage")
+	@KafkaListener(topics = "${kafka.payment}", groupId = "payment-updates-shared", containerFactory = "kafkaListenerContainerFactoryPaymentMessage", autoStartup = "${payment.auto.start}")
 	public void paymentUpdatesKafkaListener(PaymentMessage message) {		
 		if(Objects.nonNull(message)) {		
 			log.info("Received payment-updates: {}", message);

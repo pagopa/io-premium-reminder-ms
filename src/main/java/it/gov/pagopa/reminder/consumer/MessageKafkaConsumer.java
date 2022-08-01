@@ -25,7 +25,7 @@ public class MessageKafkaConsumer {
 	private CountDownLatch latch = new CountDownLatch(1);
 	private String payload = null;
 
-	@KafkaListener(topics = "${kafka.message}", groupId = "reminder-message")
+	@KafkaListener(topics = "${kafka.message}", groupId = "reminder-message", autoStartup = "${message.auto.start}")
 	public void messageKafkaListener(Reminder message) {		
 		log.info("Received message: {}", message);
 		checkNullInMessage(message);

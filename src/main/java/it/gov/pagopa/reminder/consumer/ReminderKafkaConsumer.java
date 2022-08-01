@@ -45,7 +45,7 @@ public class ReminderKafkaConsumer{
 	private CountDownLatch latch = new CountDownLatch(1);
 	private String payload = "";
 
-	@KafkaListener(topics = "${kafka.send}", groupId = "reminder-message-send", containerFactory = "kafkaListenerContainerFactoryNotify")
+	@KafkaListener(topics = "${kafka.send}", groupId = "reminder-message-send", containerFactory = "kafkaListenerContainerFactoryNotify", autoStartup = "${messagesend.auto.start}")
 	public void reminderKafkaListener(Reminder reminder) {		
 
 		log.info("Received message-send: {}", reminder);
