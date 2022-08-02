@@ -8,8 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
-import it.gov.pagopa.reminder.dto.avro.MessageContentType;
-import it.gov.pagopa.reminder.dto.avro.MessageFeatureLevelType;
+import dto.FeatureLevelType;
+import dto.MessageContentType;
 import it.gov.pagopa.reminder.model.Reminder;
 import it.gov.pagopa.reminder.service.ReminderService;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +30,7 @@ public class MessageKafkaConsumer {
 		log.info("Received message: {}", message);
 		checkNullInMessage(message);
 
-		if(MessageFeatureLevelType.ADVANCED.toString().equalsIgnoreCase(message.getFeatureLevelType().toString())) {
+		if(FeatureLevelType.ADVANCED.toString().equalsIgnoreCase(message.getFeature_level_type().toString())) {
 
 			if(MessageContentType.PAYMENT.toString().equalsIgnoreCase(message.getContent_type().toString())) {
 				Reminder reminder = reminderService.getPaymentByNoticeNumberAndFiscalCode(message.getContent_paymentData_noticeNumber(), message.getContent_paymentData_payeeFiscalCode());

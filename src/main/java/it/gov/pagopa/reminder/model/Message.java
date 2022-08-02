@@ -8,8 +8,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 
-import it.gov.pagopa.reminder.dto.avro.MessageContentType;
-import it.gov.pagopa.reminder.dto.avro.MessageFeatureLevelType;
+import dto.FeatureLevelType;
+import dto.MessageContentType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -32,10 +32,7 @@ public class Message {
 	protected String content_paymentData_noticeNumber;
 	protected boolean content_paymentData_invalidAfterDueDate;
 	protected String content_paymentData_payeeFiscalCode;
-	protected long timestamp;
-	protected String fiscal_code;
-	@JsonDeserialize(using = LocalDateDeserializer.class)
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-	protected LocalDate content_paymentData_dueDate;
-	protected MessageFeatureLevelType featureLevelType;
+	protected String fiscalCode;
+	protected Long dueDate;
+	protected FeatureLevelType feature_level_type;
 }

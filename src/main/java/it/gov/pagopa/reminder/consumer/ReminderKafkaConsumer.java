@@ -54,7 +54,7 @@ public class ReminderKafkaConsumer{
 
 			String createdAt = DateFormatUtils.format(reminder.getCreatedAt(), Constants.DATE_FORMAT);
 			NotificationMessage notificationMessage =  new NotificationMessage(
-					reminder.getId(), reminder.getFiscal_code(), 
+					reminder.getId(), reminder.getFiscalCode(), 
 					createdAt, reminder.getSenderServiceId(), 
 					reminder.getTimeToLiveSeconds());
 

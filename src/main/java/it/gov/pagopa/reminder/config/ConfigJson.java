@@ -22,7 +22,7 @@ import it.gov.pagopa.reminder.util.RestTemplateUtils;
 @Configuration
 public class ConfigJson {
 
-	@Value("classpath:data/messageSchema.json")
+	@Value("classpath:avro/message.json")
 	private Resource messageSchema;
 
 	@Value("classpath:data/messageStatusSchema.json")

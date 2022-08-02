@@ -353,25 +353,68 @@
 					</excludes>
 				</configuration>
 			</plugin>
+			
+			<plugin>
+			    <groupId>org.apache.maven.plugins</groupId>
+			    <artifactId>maven-antrun-plugin</artifactId>
+			    <executions>
+			        <execution>
+			            <id>download-files</id>
+			            <phase>generate-sources</phase>
+			            <goals>
+			                <goal>run</goal>
+			            </goals>
+			            <configuration>
+			                <target>
+			                    <!-- download file -->
+			                    <get src="https://raw.githubusercontent.com/pagopa/io-functions-messages-cqrs/master/avro/message.json"
+			                         dest="${project.basedir}/src/main/resources/avro"
+			                         verbose="false"
+			                         usetimestamp="true"/>
+			                 </target>
+			             </configuration>
+			         </execution>
+			     </executions>
+			 </plugin>
 
-			<!--[Avro]  
+			<!--[Avro]  -->
 			<plugin>
 				<groupId>org.apache.avro</groupId>
 				<artifactId>avro-maven-plugin</artifactId>
 				<version>1.8.1</version>
 				<executions>
 					<execution>
+						<id>avro generation</id>
 						<phase>generate-sources</phase>
 						<goals>
 							<goal>schema</goal>
 						</goals>
 						<configuration>
+						     <includes>
+                                <include>**/*.json</include>
+                            </includes>
 							<sourceDirectory>${project.basedir}/src/main/resources/avro</sourceDirectory>
-							<outputDirectory>${project.basedir}/src/main/java</outputDirectory>
+							<outputDirectory>${project.basedir}/target/generated-sources/src/main/java</outputDirectory>
+							<stringType>String</stringType>
+						</configuration>
+					</execution>
+					<execution>
+					<id>avro test generation</id>
+						<phase>generate-test-sources</phase>
+						<goals>
+							<goal>schema</goal>
+						</goals>
+						<configuration>
+						     <includes>
+                                <include>**/*.json</include>
+                            </includes>
+							<sourceDirectory>${project.basedir}/src/main/resources/avro</sourceDirectory>
+							<outputDirectory>${project.basedir}/target/generated-sources/src/main/java</outputDirectory>
+							<stringType>String</stringType>
 						</configuration>
 					</execution>
 				</executions>
-			</plugin> -->
+			</plugin> 
 
 		</plugins>
 	</build>

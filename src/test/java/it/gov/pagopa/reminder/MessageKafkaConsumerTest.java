@@ -24,11 +24,11 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
+import dto.FeatureLevelType;
 import it.gov.pagopa.reminder.consumer.MessageKafkaConsumer;
 import it.gov.pagopa.reminder.consumer.MessageStatusKafkaConsumer;
 import it.gov.pagopa.reminder.consumer.PaymentUpdatesKafkaConsumer;
 import it.gov.pagopa.reminder.consumer.ReminderKafkaConsumer;
-import it.gov.pagopa.reminder.dto.avro.MessageFeatureLevelType;
 import it.gov.pagopa.reminder.model.Reminder;
 import it.gov.pagopa.reminder.producer.ReminderProducer;
 import it.gov.pagopa.reminder.util.ApplicationContextProvider;
@@ -151,7 +151,7 @@ public class MessageKafkaConsumerTest extends AbstractMock{
 		mockObj.setContent_paymentData_payeeFiscalCode("fiscal");
 		mockObj.setInsertionDate(LocalDateTime.now());
 		mockObj.setSenderServiceId("id");
-		mockObj.setFeatureLevelType(MessageFeatureLevelType.ADVANCED);
+		mockObj.setFeature_level_type(FeatureLevelType.ADVANCED);
 		selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456", 3);
 		messageKafkaConsumer.messageKafkaListener(mockObj);
 		Assertions.assertTrue(messageKafkaConsumer.getPayload().contains("paidFlag=false"));
