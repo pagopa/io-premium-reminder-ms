@@ -144,7 +144,8 @@ public class AbstractMock {
 			returnReminder1.setId(id);
 			returnReminder1.setContent_type(MessageContentType.valueOf(contentType));
 			returnReminder1.setFiscalCode(fiscalCode);
-			returnReminder1.setContent_paymentData_noticeNumber(noticeNumber);	
+			returnReminder1.setContent_paymentData_noticeNumber(noticeNumber);
+			returnReminder1.setRptId(fiscalCode.concat(noticeNumber));
 		};
 		return returnReminder1;
 	}

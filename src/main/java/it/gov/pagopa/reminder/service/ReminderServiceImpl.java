@@ -35,6 +35,8 @@ import it.gov.pagopa.reminder.dto.request.ProxyPaymentResponse;
 import it.gov.pagopa.reminder.model.Reminder;
 import it.gov.pagopa.reminder.producer.ReminderProducer;
 import it.gov.pagopa.reminder.repository.ReminderRepository;
+import it.gov.pagopa.reminder.restclient.proxy.ApiClient;
+import it.gov.pagopa.reminder.restclient.proxy.api.DefaultApi;
 import it.gov.pagopa.reminder.util.ApplicationContextProvider;
 import it.gov.pagopa.reminder.util.Constants;
 import lombok.extern.slf4j.Slf4j;
@@ -200,13 +202,18 @@ public class ReminderServiceImpl implements ReminderService {
 		Map<String, Boolean> map = new HashMap<>();
 		map.put("isPaid", false);
 		try {
-			String url = urlProxy.concat("%s");
-			url = String.format(url, rptId);
-
-			HttpHeaders headers = new HttpHeaders();
-			if(enableRestKey) headers.set(Constants.OCP_APIM_SUB_KEY, proxyEndpointKey);
-			HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
-			restTemplate.exchange(url, HttpMethod.GET, requestEntity, ProxyPaymentResponse.class);				
+			
+			ApiClient apiClient = new ApiClient();
+			if (enableRestKey) {
+				apiClient.setApiKey(proxyEndpointKey);
+			}
+			apiClient.setBasePath(urlProxy);
+			
+			DefaultApi defaultApi = new DefaultApi();
+			defaultApi.setApiClient(apiClient);		
+			defaultApi.getPaymentInfo(rptId, Constants.X_CLIENT_ID);
+			
+			
 			return map;
 
 		} catch (HttpServerErrorException errorException) {
