@@ -182,6 +182,7 @@ public class ReminderServiceImpl implements ReminderService {
 		Map<String, Boolean> map;
 		map = callProxyCheck(reminder.getRptId());
 
+		//TODO! Se la data è diversa non fare niente.
 		if (map.get("isPaid")) {
 			reminder.setPaidFlag(true);
 			reminder.setPaidDate(LocalDateTime.now());					
