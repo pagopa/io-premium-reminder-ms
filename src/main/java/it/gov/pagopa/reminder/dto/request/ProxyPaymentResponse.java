@@ -14,5 +14,6 @@ public class ProxyPaymentResponse {
 	private String detail;
 	private String detail_v2;
 	private String instance;
+	private String duedate;
 
 }

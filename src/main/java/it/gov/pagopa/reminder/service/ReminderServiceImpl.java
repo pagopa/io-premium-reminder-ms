@@ -1,7 +1,10 @@
 package it.gov.pagopa.reminder.service;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,13 +12,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.TimeZone;
 import java.util.function.Function;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -37,6 +39,7 @@ import it.gov.pagopa.reminder.producer.ReminderProducer;
 import it.gov.pagopa.reminder.repository.ReminderRepository;
 import it.gov.pagopa.reminder.restclient.proxy.ApiClient;
 import it.gov.pagopa.reminder.restclient.proxy.api.DefaultApi;
+import it.gov.pagopa.reminder.restclient.proxy.model.PaymentRequestsGetResponse;
 import it.gov.pagopa.reminder.util.ApplicationContextProvider;
 import it.gov.pagopa.reminder.util.Constants;
 import lombok.extern.slf4j.Slf4j;
@@ -176,45 +179,60 @@ public class ReminderServiceImpl implements ReminderService {
 		return health;
 	}
 
-
 	private String callPaymentCheck(Reminder reminder){
 
-		Map<String, Boolean> map;
+		Map<String, String> map;
 		map = callProxyCheck(reminder.getRptId());
 
-		//TODO! Se la data è diversa non fare niente.
-		if (map.get("isPaid")) {
-			reminder.setPaidFlag(true);
-			reminder.setPaidDate(LocalDateTime.now());					
-		} else {	
-			try {
-				sendReminderToProducer(reminder);
-			} catch (JsonProcessingException e) {
-				log.error("Producer error sending notification {} to message-send queue", reminder.getId());
-				log.error(e.getMessage());
-			}
-		}	
+		if (map.containsKey("dueDate")) {
+			String proxyDueDate = map.get("dueDate");
 
+			if(StringUtils.isNotEmpty(proxyDueDate)) {
+				LocalDate localDateProxyDueDate = LocalDate.parse(proxyDueDate);
+				
+				long longDueDate = reminder.getDueDate() != null ? reminder.getDueDate().longValue() : 0L;
+				LocalDate reminderDueDate = LocalDateTime.ofInstant(Instant.ofEpochSecond(longDueDate),
+                        TimeZone.getDefault().toZoneId()).toLocalDate();
+				
+				if(localDateProxyDueDate.equals(reminderDueDate)) {
+					if (Boolean.parseBoolean(map.get("isPaid"))) {
+						reminder.setPaidFlag(true);
+						reminder.setPaidDate(LocalDateTime.now());					
+					} else {	
+						try {
+							sendReminderToProducer(reminder);
+						} catch (JsonProcessingException e) {
+							log.error("Producer error sending notification {} to message-send queue", reminder.getId());
+							log.error(e.getMessage());
+						}
+					}	
+				} else {
+		
+					long millis = localDateProxyDueDate.atStartOfDay(TimeZone.getDefault().toZoneId()).toInstant().getEpochSecond();
+					reminder.setDueDate(millis);
+				}
+			}
+		}
 		return "";
 	}
 
-	private Map<String, Boolean> callProxyCheck(String rptId){
+	private Map<String, String> callProxyCheck(String rptId){
 
-		Map<String, Boolean> map = new HashMap<>();
-		map.put("isPaid", false);
+		Map<String, String> map = new HashMap<>();
+		map.put("isPaid", "false");
 		try {
-			
+
 			ApiClient apiClient = new ApiClient();
 			if (enableRestKey) {
 				apiClient.setApiKey(proxyEndpointKey);
 			}
 			apiClient.setBasePath(urlProxy);
-			
+
 			DefaultApi defaultApi = new DefaultApi();
 			defaultApi.setApiClient(apiClient);		
-			defaultApi.getPaymentInfo(rptId, Constants.X_CLIENT_ID);
-			
-			
+			PaymentRequestsGetResponse resp = defaultApi.getPaymentInfo(rptId, Constants.X_CLIENT_ID);
+			map.put("dueDate", resp.getDueDate());
+
 			return map;
 
 		} catch (HttpServerErrorException errorException) {
@@ -225,7 +243,8 @@ public class ReminderServiceImpl implements ReminderService {
 				if (res.getDetail_v2().equals("PPT_RPT_DUPLICATA") && errorException.getStatusCode().equals(HttpStatus.INTERNAL_SERVER_ERROR)) {
 					Reminder rem = reminderRepository.getPaymentByRptId(rptId);				
 					if (Objects.nonNull(rem)) {					
-						map.put("isPaid", true);
+						map.put("isPaid", "true");
+						map.put("dueDate", res.getDuedate());
 					}
 				} else {
 					throw errorException;

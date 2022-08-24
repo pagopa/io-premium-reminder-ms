@@ -50,6 +50,7 @@ public class TestSchedulerNotifyIntegrationTest extends AbstractMock{
 		Reminder newReminder = modifiedList.get(1);
 		newReminder.setReadFlag(true);
 		modifiedList.add(newReminder);
+		mockGetPaymentByNoticeNumber(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456", 3));
 		mockGetReadMessageToNotifyWithResponse(selectListReminderMockObject("full"));
 		mockGetPaidMessageToNotifyWithResponse(modifiedList);
 		getMockRestGetForEntity(MessageStatus.class, urlPayment.concat("123456"), new MessageStatus("1", true, false), HttpStatus.OK);
@@ -61,6 +62,7 @@ public class TestSchedulerNotifyIntegrationTest extends AbstractMock{
 	
 	@Test
 	public void test_CheckRemindersToNotifyJob_Payd_AllResponse_OK() throws SchedulerException, InterruptedException {
+		mockGetPaymentByNoticeNumber(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456", 3));
 		mockGetReadMessageToNotifyWithResponse(selectListReminderMockObject("full"));
 		mockGetPaidMessageToNotifyWithResponse(selectListReminderMockObject("full"));
 		getMockRestGetForEntity(MessageStatus.class, urlPayment.concat("123456"), new MessageStatus("1", false, true), HttpStatus.OK);
@@ -72,6 +74,7 @@ public class TestSchedulerNotifyIntegrationTest extends AbstractMock{
 	
 	@Test
 	public void test_CheckRemindersToNotifyJob_NoReadResponse_OK() throws SchedulerException, InterruptedException {
+		mockGetPaymentByNoticeNumber(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456", 3));
 		mockGetReadMessageToNotifyWithResponse(selectListReminderMockObject("empty"));
 		mockGetPaidMessageToNotifyWithResponse(selectListReminderMockObject("full"));
 		getMockRestGetForEntity(MessageStatus.class, urlPayment.concat("123456"), new MessageStatus("1", false, true), HttpStatus.OK);
@@ -83,6 +86,7 @@ public class TestSchedulerNotifyIntegrationTest extends AbstractMock{
 	
 	@Test
 	public void test_CheckRemindersToNotifyJob_NoPaidResponse_OK() throws SchedulerException, InterruptedException {
+		mockGetPaymentByNoticeNumber(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456", 3));
 		mockGetReadMessageToNotifyWithResponse(selectListReminderMockObject("full"));
 		mockGetPaidMessageToNotifyWithResponse(selectListReminderMockObject("empty"));
 		getMockRestGetForEntity(MessageStatus.class, urlPayment.concat("123456"), new MessageStatus("1", true, true), HttpStatus.OK);
@@ -94,6 +98,7 @@ public class TestSchedulerNotifyIntegrationTest extends AbstractMock{
 	
 	@Test
 	public void test_CheckRemindersToNotifyJob_NoResponse_OK() throws SchedulerException, InterruptedException {
+		mockGetPaymentByNoticeNumber(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456", 3));
 		mockGetReadMessageToNotifyWithResponse(selectListReminderMockObject("empty"));
 		mockGetPaidMessageToNotifyWithResponse(selectListReminderMockObject("empty"));
 		getMockRestGetForEntity(MessageStatus.class, urlPayment.concat("123456"), new MessageStatus("1", true, true), HttpStatus.OK);
@@ -105,6 +110,7 @@ public class TestSchedulerNotifyIntegrationTest extends AbstractMock{
 	
 	@Test
 	public void test_CheckRemindersToNotifyJob_AllResponse_Generic_OK() throws SchedulerException, InterruptedException {
+		mockGetPaymentByNoticeNumber(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456", 3));
 		mockGetReadMessageToNotifyWithResponse(selectListReminderMockObject("full"));
 		mockGetPaidMessageToNotifyWithResponse(selectListReminderMockObject("full"));
 		getMockRestGetForEntity(MessageStatus.class, urlPayment.concat("123456"), new MessageStatus("1", true, true), HttpStatus.OK);
@@ -116,6 +122,8 @@ public class TestSchedulerNotifyIntegrationTest extends AbstractMock{
 	
 	@Test
 	public void test_CheckRemindersToNotifyJob_AllResponse_Paid_OK() throws SchedulerException, InterruptedException {
+		mockGetPaymentByNoticeNumber(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456", 3));
+		mockGetPaymentByNoticeNumber(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456", 3));
 		mockGetReadMessageToNotifyWithResponse(selectListReminderMockObject("full"));
 		mockGetPaidMessageToNotifyWithResponse(selectListReminderMockObject("full"));
 		getMockRestGetForEntity(MessageStatus.class, urlPayment.concat("123456"), new MessageStatus("1", true, true), HttpStatus.OK);

@@ -58,6 +58,11 @@ public class AbstractMock {
 	@Value("${paymentupdater.url}")
 	private String urlPayment;
 
+	
+	public void mockGetPaymentByNoticeNumber(Reminder reminder) {
+		Mockito.when(mockRepository.getPaymentByRptId(Mockito.anyString())).thenReturn(reminder);
+	}
+	
 	protected void mockSaveWithResponse(Reminder returnReminder) {
 		Mockito.when(mockRepository.save(Mockito.any(Reminder.class))).thenReturn(returnReminder);
 	}
@@ -145,7 +150,8 @@ public class AbstractMock {
 			returnReminder1.setContent_type(MessageContentType.valueOf(contentType));
 			returnReminder1.setFiscalCode(fiscalCode);
 			returnReminder1.setContent_paymentData_noticeNumber(noticeNumber);
-			returnReminder1.setRptId(fiscalCode.concat(noticeNumber));
+			returnReminder1.setRptId("ALSDK54654asdA1234567890200");
+			returnReminder1.setDueDate(1652572800L);
 		};
 		return returnReminder1;
 	}
