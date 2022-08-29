@@ -27,7 +27,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import dto.MessageContentType;
-import it.gov.pagopa.reminder.dto.MessageStatus;
+import dto.messageStatus;
 import it.gov.pagopa.reminder.dto.PaymentMessage;
 import it.gov.pagopa.reminder.dto.request.ProxyPaymentResponse;
 import it.gov.pagopa.reminder.model.Reminder;
@@ -150,9 +150,10 @@ public class AbstractMock {
 		return returnReminder1;
 	}
 	
-	protected MessageStatus selectMessageStatusMockObject(String type, String messageId, boolean isRead, boolean isPaid) {
-		MessageStatus messageStatus = null;
-		messageStatus = new MessageStatus(messageId, isRead, isPaid);
+	protected messageStatus selectMessageStatusMockObject(String messageId, boolean isRead) {
+		messageStatus messageStatus = new messageStatus();
+		messageStatus.setMessageId(messageId);
+		messageStatus.setIsRead(isRead);
 		return messageStatus;
 	}	
 

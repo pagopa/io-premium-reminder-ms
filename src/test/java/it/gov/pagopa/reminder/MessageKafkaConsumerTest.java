@@ -127,7 +127,7 @@ public class MessageKafkaConsumerTest extends AbstractMock{
 		consumerMessStatus = (MessageStatusKafkaConsumer) ApplicationContextProvider.getBean("messageStatusEventKafkaConsumer");
 		mockSaveWithResponse(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456", 3));
 		mockFindIdWithResponse(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456", 3));
-		consumerMessStatus.messageStatusKafkaListener(selectMessageStatusMockObject("", "1", false, true));
+		consumerMessStatus.messageStatusKafkaListener(selectMessageStatusMockObject("1", false));
 		Assertions.assertTrue(consumerMessStatus.getPayload().contains("messageId"));
 		Assertions.assertEquals(0L, consumerMessStatus.getLatch().getCount());
 	}	
@@ -137,7 +137,7 @@ public class MessageKafkaConsumerTest extends AbstractMock{
 		consumerMessStatus = (MessageStatusKafkaConsumer) ApplicationContextProvider.getBean("messageStatusEventKafkaConsumer");
 		mockSaveWithResponse(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456", 3));
 		mockFindIdWithResponse(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456", 3));
-		consumerMessStatus.messageStatusKafkaListener(selectMessageStatusMockObject("", "1", true, false));
+		consumerMessStatus.messageStatusKafkaListener(selectMessageStatusMockObject( "1", true));
 		Assertions.assertTrue(consumerMessStatus.getPayload().contains("messageId"));
 		Assertions.assertEquals(0L, consumerMessStatus.getLatch().getCount());
 	}

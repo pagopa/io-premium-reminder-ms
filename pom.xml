@@ -371,6 +371,10 @@
 			                         dest="${project.basedir}/src/main/resources/avro"
 			                         verbose="false"
 			                         usetimestamp="true"/>
+			                    <!--  <get src="https://raw.githubusercontent.com/pagopa/io-functions-elt/main/avro/message-status.json"
+			                         dest="${project.basedir}/src/main/resources/avro"
+			                         verbose="false"
+			                         usetimestamp="true"/>-->
 			                    <!-- download swagger proxy pagopa-->
 			                    <get src="https://raw.githubusercontent.com/pagopa/io-pagopa-proxy/main/api-spec/api-pagopa-proxy.yaml"
 			                         dest="${project.basedir}/src/main/resources"

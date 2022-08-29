@@ -23,11 +23,11 @@ import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import dto.messageStatus;
 import it.gov.pagopa.reminder.deserializer.AvroMessageDeserializer;
 import it.gov.pagopa.reminder.deserializer.AvroMessageStatusDeserializer;
 import it.gov.pagopa.reminder.deserializer.PaymentMessageDeserializer;
 import it.gov.pagopa.reminder.deserializer.ReminderDeserializer;
-import it.gov.pagopa.reminder.dto.MessageStatus;
 import it.gov.pagopa.reminder.dto.PaymentMessage;
 import it.gov.pagopa.reminder.model.JsonLoader;
 import it.gov.pagopa.reminder.model.Reminder;
@@ -74,19 +74,20 @@ public class MockDeserializerIntegrationTest extends AbstractMock{
 	@Test
 	public void test_messageDeserialize_ok() throws JsonMappingException, JsonProcessingException {
 		byte[] byteArrray = "".getBytes();
-		avroMessageDeserializer = new AvroMessageDeserializer(messageSchema, mapper);
-		avroMessageDeserializer.setConverter(converter);
-		Mockito.when(converter.convertToJson(Mockito.any(), Mockito.anyString())).thenReturn(byteArrray);
-		Mockito.when(mapper.readValue(Mockito.anyString(), Mockito.any(Class.class))).thenReturn(new Reminder());
-		Reminder rem = avroMessageDeserializer.deserialize(null, messageSchema.getJsonString().getBytes());
+		avroMessageDeserializer = new AvroMessageDeserializer();
+		Reminder reminder = selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456", 3);
+		
+//		avroMessageDeserializer.setConverter(converter);
+//		Mockito.when(mapper.readValue(Mockito.anyString(), Mockito.any(Class.class))).thenReturn(new Reminder());
+		Reminder rem = avroMessageDeserializer.deserialize(null, mapper.writeValueAsString(reminder).getBytes());
 		Assertions.assertNotNull(rem);
 	}
 	
 	@Test
 	public void test_messageDeserialize_ko() {
 		byte[] byteArrray = null;
-		avroMessageDeserializer = new AvroMessageDeserializer(messageSchema, mapper);
-		avroMessageDeserializer.setConverter(converter);
+//		avroMessageDeserializer = new AvroMessageDeserializer(messageSchema, mapper);
+//		avroMessageDeserializer.setConverter(converter);
 		Mockito.when(converter.convertToJson(Mockito.any(), Mockito.anyString())).thenReturn(byteArrray);
 		avroMessageDeserializer.deserialize(null, messageSchema.getJsonString().getBytes());
 		Assertions.assertTrue(true);
@@ -96,19 +97,19 @@ public class MockDeserializerIntegrationTest extends AbstractMock{
 	@Test
 	public void test_messageStatusDeserialize_ok() throws JsonMappingException, JsonProcessingException {
 		byte[] byteArrray = "".getBytes();
-		avroMessageStatusDeserializer = new AvroMessageStatusDeserializer(messageStatusSchema, mapper);
-		avroMessageStatusDeserializer.setConverter(converter);
+//		avroMessageStatusDeserializer = new AvroMessageStatusDeserializer(messageStatusSchema, mapper);
+//		avroMessageStatusDeserializer.setConverter(converter);
 		Mockito.when(converter.convertToJson(Mockito.any(), Mockito.anyString())).thenReturn(byteArrray);
-		Mockito.when(mapper.readValue(Mockito.anyString(), Mockito.any(Class.class))).thenReturn(new MessageStatus());
-		MessageStatus status = avroMessageStatusDeserializer.deserialize(null, messageSchema.getJsonString().getBytes());
+		Mockito.when(mapper.readValue(Mockito.anyString(), Mockito.any(Class.class))).thenReturn(new messageStatus());
+		messageStatus status = avroMessageStatusDeserializer.deserialize(null, messageSchema.getJsonString().getBytes());
 		Assertions.assertNotNull(status);
 	}
 	
 	@Test
 	public void test_messageStatusDeserialize_ko() {
 		byte[] byteArrray = null;
-		avroMessageStatusDeserializer = new AvroMessageStatusDeserializer(messageStatusSchema, mapper);
-		avroMessageStatusDeserializer.setConverter(converter);
+//		avroMessageStatusDeserializer = new AvroMessageStatusDeserializer(messageStatusSchema, mapper);
+//		avroMessageStatusDeserializer.setConverter(converter);
 		Mockito.when(converter.convertToJson(Mockito.any(), Mockito.anyString())).thenReturn(byteArrray);
 		avroMessageStatusDeserializer.deserialize(null, messageStatusSchema.getJsonString().getBytes());
 		Assertions.assertTrue(true);

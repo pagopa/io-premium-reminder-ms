@@ -6,7 +6,7 @@ import java.util.concurrent.CountDownLatch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 
-import it.gov.pagopa.reminder.dto.MessageStatus;
+import dto.messageStatus;
 import it.gov.pagopa.reminder.service.ReminderService;
 import lombok.extern.slf4j.Slf4j;
 @Slf4j
@@ -19,14 +19,15 @@ public class MessageStatusKafkaConsumer{
     private String payload = null;
 	
 	@KafkaListener(topics = "${kafka.status}", groupId = "reminder-message-status", containerFactory = "kafkaListenerContainerFactoryMessStat", autoStartup = "${messagestatus.auto.start}")
-    public void messageStatusKafkaListener(MessageStatus messageStatus) {
+    public void messageStatusKafkaListener(messageStatus messageStatus) {
 
 		log.info("Received message-status: {}", messageStatus);
 		
 		if (Objects.nonNull(messageStatus)) {
 
 	        payload = messageStatus.toString();
-			reminderService.updateReminder(messageStatus.getMessageId(), messageStatus.getIsRead(), messageStatus.getIsPaid());
+	        //TODO check flag
+			reminderService.updateReminder(messageStatus.getMessageId(), messageStatus.getIsRead(), false);
 		}	
 		latch.countDown();
     }
