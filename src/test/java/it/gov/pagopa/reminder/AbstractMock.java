@@ -27,6 +27,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import dto.MessageContentType;
+import dto.MessageStatusCrudOperation;
+import dto.MessageStatusDescription;
+import dto.message;
 import dto.messageStatus;
 import it.gov.pagopa.reminder.dto.PaymentMessage;
 import it.gov.pagopa.reminder.dto.request.ProxyPaymentResponse;
@@ -150,10 +153,33 @@ public class AbstractMock {
 		return returnReminder1;
 	}
 	
+	
+	protected message selectMessageMockObject(String type, String id, String contentType, String fiscalCode, String noticeNumber) {
+		message returnReminder1 = null;
+		switch (type){
+		case EMPTY:
+			returnReminder1 = new message();
+		default:
+			returnReminder1 = new message();
+			returnReminder1.setId(id);
+			returnReminder1.setContentType(MessageContentType.valueOf(contentType));;
+			returnReminder1.setFiscalCode(fiscalCode);
+			returnReminder1.setContentPaymentDataNoticeNumber(noticeNumber);
+			returnReminder1.setContentPaymentDataPayeeFiscalCode(fiscalCode);
+			returnReminder1.setContentSubject("ASubject");
+			returnReminder1.setSenderServiceId("ASenderServiceId");
+			returnReminder1.setSenderUserId("ASenderUserId");
+		};
+		return returnReminder1;
+	}
+	
 	protected messageStatus selectMessageStatusMockObject(String messageId, boolean isRead) {
 		messageStatus messageStatus = new messageStatus();
+		messageStatus.setId("ID");
 		messageStatus.setMessageId(messageId);
 		messageStatus.setIsRead(isRead);
+		messageStatus.setOp(MessageStatusCrudOperation.CREATE);
+		messageStatus.setStatus(MessageStatusDescription.ACCEPTED);
 		return messageStatus;
 	}	
 

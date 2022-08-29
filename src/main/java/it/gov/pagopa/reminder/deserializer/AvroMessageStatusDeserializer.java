@@ -8,6 +8,7 @@ import org.apache.kafka.common.serialization.Deserializer;
 import org.springframework.kafka.support.serializer.DeserializationException;
 
 import dto.messageStatus;
+import it.gov.pagopa.reminder.exception.AvroDeserializerException;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -24,9 +25,9 @@ public class AvroMessageStatusDeserializer implements Deserializer<messageStatus
 				returnObject = reader.read(null, decoder);
 			}catch(Exception e) {
 				log.error("Error in deserializing the MessageStatus for consumer message-status|ERROR=" + e.getMessage());
-				throw new DeserializationException(
+				throw new AvroDeserializerException(
 						"Error in deserializing the MessageStatus for consumer message-status|ERROR=" + e.getMessage(),
-						bytes, false, e);
+						bytes);
 			}
 		}	
 		return returnObject;
