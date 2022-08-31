@@ -29,7 +29,12 @@ import it.gov.pagopa.reminder.scheduler.CheckRemindersToNotifyJob;
 @AutoConfigureMockMvc
 @ExtendWith(MockitoExtension.class)
 public class TestSchedulerNotifyIntegrationTest extends AbstractMock{
-
+	
+	private static final String GENERIC = "GENERIC";
+	private static final String PAYMENT = "PAYMENT";
+	private static final String EMPTY = "empty";
+	private static final String FULL = "full";
+	
     @Autowired
     private CheckRemindersToNotifyJob job;
 	
@@ -54,40 +59,40 @@ public class TestSchedulerNotifyIntegrationTest extends AbstractMock{
     	mockGetReadMessageToNotifyWithResponse(modifiedList);
 		mockGetPaidMessageToNotifyWithResponse(selectListReminderMockObject(type2));
 		getMockRestGetForEntity(messageStatus.class, urlPayment.concat("123456"), selectMessageStatusMockObject("1", true), HttpStatus.OK);
-		mockSaveWithResponse(selectReminderMockObject("", "1",contentType,"AAABBB77Y66A444A", "123456", 3));
-		mockFindIdWithResponse(selectReminderMockObject("", "1",contentType,"AAABBB77Y66A444A", "123456", 3));
+		mockSaveWithResponse(selectReminderMockObject("", "1", contentType, "AAABBB77Y66A444A", "123456", 3));
+		mockFindIdWithResponse(selectReminderMockObject("", "1", contentType, "AAABBB77Y66A444A", "123456", 3));
 		job.execute(null);
 		Assertions.assertTrue(true);
     }
  
 	@Test
 	public void test_CheckRemindersToNotifyJob_AllResponse_OK() throws SchedulerException, InterruptedException {
-		test_CheckRemindersToNotifyJob(true, "full", "full", "GENERIC");
+		test_CheckRemindersToNotifyJob(true, FULL, FULL, GENERIC);
 	}
 	
 	@Test
 	public void test_CheckRemindersToNotifyJob_NoResponse_OK() throws SchedulerException, InterruptedException {
-		test_CheckRemindersToNotifyJob(false, "empty", "empty","GENERIC");
+		test_CheckRemindersToNotifyJob(false, EMPTY, EMPTY, GENERIC);
 	}
 
 	
 	@Test
 	public void test_CheckRemindersToNotifyJob_AllResponse_Paid_OK() throws SchedulerException, InterruptedException {
-		test_CheckRemindersToNotifyJob(false, "full", "full","PAYMENT");
+		test_CheckRemindersToNotifyJob(false, FULL, FULL, PAYMENT);
 	}
 	
 	@Test
 	public void test_CheckRemindersToNotifyJob_AllResponse_Paid_WithProxy_KO() throws SchedulerException, InterruptedException, JsonProcessingException {
 		proxyKo("PPT_RPT_DUPLICATA");
-		mockGetPaymentByRptId(selectReminderMockObject("", "1","PAYMENT","AAABBB77Y66A444A", "123456", 3));
-		test_CheckRemindersToNotifyJob(false, "full", "full","PAYMENT");
+		mockGetPaymentByRptId(selectReminderMockObject("", "1", PAYMENT, "AAABBB77Y66A444A", "123456", 3));
+		test_CheckRemindersToNotifyJob(false, FULL, FULL, PAYMENT);
 	}
 	
 	@Test
     public void test_CheckRemindersToNotifyJob_AllResponse_Paid_WithProxy_KO2() throws SchedulerException, InterruptedException, JsonProcessingException {
-        proxyKo("PPT_RPT_DUPLICATA_NOTFOUND");
-        mockGetPaymentByRptId(selectReminderMockObject("", "1","PAYMENT","AAABBB77Y66A444A", "123456", 3));
-        test_CheckRemindersToNotifyJob(false, "full", "full","PAYMENT");
+        proxyKo("PPT_RPT_NOTFOUND");
+        mockGetPaymentByRptId(selectReminderMockObject("", "1", PAYMENT, "AAABBB77Y66A444A", "123456", 3));
+        test_CheckRemindersToNotifyJob(false, FULL, FULL, PAYMENT);
     }
 
 }
