@@ -26,8 +26,7 @@ public class MessageStatusKafkaConsumer{
 		if (Objects.nonNull(messageStatus)) {
 
 	        payload = messageStatus.toString();
-	        //TODO check flag
-			reminderService.updateReminder(messageStatus.getMessageId(), messageStatus.getIsRead(), false);
+			reminderService.updateReminder(messageStatus.getMessageId(), messageStatus.getIsRead());
 		}	
 		latch.countDown();
     }

@@ -96,17 +96,13 @@ public class ReminderServiceImpl implements ReminderService {
 
 
 	@Override
-	public void updateReminder(String reminderId, boolean isRead, boolean isPaid) {
+	public void updateReminder(String reminderId, boolean isRead) {
 		Reminder reminderToUpdate = findById(reminderId);
 		if(null != reminderToUpdate) {
-			reminderToUpdate.setPaidFlag(isPaid);
 			reminderToUpdate.setReadFlag(isRead);
 			if(isRead) {
 				reminderToUpdate.setReadDate(LocalDateTime.now());
 			}
-			if(isPaid) {
-				reminderToUpdate.setPaidDate(LocalDateTime.now());
-			}	
 			save(reminderToUpdate);
 		}
 	}
@@ -177,8 +173,7 @@ public class ReminderServiceImpl implements ReminderService {
 
 	private String callPaymentCheck(Reminder reminder){
 
-		Map<String, Boolean> map;
-		map = callProxyCheck(reminder.getRptId());
+		Map<String, Boolean> map = callProxyCheck(reminder.getRptId());
 
 		if (map.containsKey("isPaid") && map.get("isPaid").booleanValue()) {
 			reminder.setPaidFlag(true);
