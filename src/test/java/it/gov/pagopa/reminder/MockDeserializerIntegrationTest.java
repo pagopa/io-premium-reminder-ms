@@ -35,6 +35,7 @@ import it.gov.pagopa.reminder.deserializer.PaymentMessageDeserializer;
 import it.gov.pagopa.reminder.deserializer.ReminderDeserializer;
 import it.gov.pagopa.reminder.dto.PaymentMessage;
 import it.gov.pagopa.reminder.exception.AvroDeserializerException;
+import it.gov.pagopa.reminder.exception.UnexpectedDataException;
 import it.gov.pagopa.reminder.model.JsonLoader;
 import it.gov.pagopa.reminder.model.Reminder;
 import tech.allegro.schema.json2avro.converter.JsonAvroConverter;
@@ -96,11 +97,24 @@ public class MockDeserializerIntegrationTest extends AbstractMock{
 		Assertions.assertThrows(AvroDeserializerException.class,
 				() -> avroMessageDeserializer.deserialize(null, messageSchema.getJsonString().getBytes()));
 	}
-
+	
+	@Test
+	public void test_messageDeserialize_UnexpectedDataExceptionWithFiscalCode() throws IOException {
+		avroMessageDeserializer = new AvroMessageDeserializer();
+		message mess = selectMessageMockObject("", "1","PAYMENT","AAABBB77Y66A444A", "");
+		DatumWriter<message> writer = new SpecificDatumWriter<>(
+				message.class);
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		Encoder encoder = EncoderFactory.get().binaryEncoder(bos, null);
+		writer.write(mess, encoder);
+		encoder.flush();
+		Assertions.assertThrows(UnexpectedDataException.class,
+				() -> avroMessageDeserializer.deserialize(null, bos.toByteArray()));
+		Assertions.assertTrue(true);
+	}
 
 	@Test
 	public void test_messageStatusDeserialize_ok() throws IOException {
-		
 		avroMessageStatusDeserializer = new AvroMessageStatusDeserializer();
 		messageStatus messStatus = selectMessageStatusMockObject("1", true);
 		DatumWriter<messageStatus> writer = new SpecificDatumWriter<>(

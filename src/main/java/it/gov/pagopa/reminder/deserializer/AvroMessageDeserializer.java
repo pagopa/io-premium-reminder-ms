@@ -41,8 +41,7 @@ public class AvroMessageDeserializer implements Deserializer<Reminder> {
 				throw new SkipDataException("Skip Data that not satisfies constraints", returnObject);
 			}
 			if (returnObject.getContent_type().equals(MessageContentType.PAYMENT)
-					&& (StringUtils.isEmpty(returnObject.getContent_paymentData_noticeNumber())
-							|| StringUtils.isEmpty(returnObject.getContent_paymentData_payeeFiscalCode())))
+					&& (StringUtils.isEmpty(returnObject.getContent_paymentData_noticeNumber()) || StringUtils.isEmpty(returnObject.getContent_paymentData_payeeFiscalCode())))
 				throw new UnexpectedDataException("Unexpected Data", returnObject);
 					
 			return returnObject;
