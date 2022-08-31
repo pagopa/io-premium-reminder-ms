@@ -43,97 +43,51 @@ public class TestSchedulerNotifyIntegrationTest extends AbstractMock{
     public void setUp() {
     	before();
     }
+    
+    public void test_CheckRemindersToNotifyJob(boolean isRead, String type1, String type2, String contentType) {
+    	List<Reminder> modifiedList = selectListReminderMockObject(type1);
+    	if(isRead) {
+    		Reminder newReminder = modifiedList.get(1);
+    		newReminder.setReadFlag(true);
+    		modifiedList.add(newReminder);
+    	}
+    	mockGetReadMessageToNotifyWithResponse(modifiedList);
+		mockGetPaidMessageToNotifyWithResponse(selectListReminderMockObject(type2));
+		getMockRestGetForEntity(messageStatus.class, urlPayment.concat("123456"), selectMessageStatusMockObject("1", true), HttpStatus.OK);
+		mockSaveWithResponse(selectReminderMockObject("", "1",contentType,"AAABBB77Y66A444A", "123456", 3));
+		mockFindIdWithResponse(selectReminderMockObject("", "1",contentType,"AAABBB77Y66A444A", "123456", 3));
+		job.execute(null);
+		Assertions.assertTrue(true);
+    }
  
 	@Test
 	public void test_CheckRemindersToNotifyJob_AllResponse_OK() throws SchedulerException, InterruptedException {
-		List<Reminder> modifiedList = selectListReminderMockObject("full");
-		Reminder newReminder = modifiedList.get(1);
-		newReminder.setReadFlag(true);
-		modifiedList.add(newReminder);
-		mockGetReadMessageToNotifyWithResponse(selectListReminderMockObject("full"));
-		mockGetPaidMessageToNotifyWithResponse(modifiedList);
-		getMockRestGetForEntity(messageStatus.class, urlPayment.concat("123456"), selectMessageStatusMockObject("1", true), HttpStatus.OK);
-		mockSaveWithResponse(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456", 3));
-		mockFindIdWithResponse(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456", 3));
-		job.execute(null);
-		Assertions.assertTrue(true);
-	}
-	
-	@Test
-	public void test_CheckRemindersToNotifyJob_Payd_AllResponse_OK() throws SchedulerException, InterruptedException {
-		mockGetReadMessageToNotifyWithResponse(selectListReminderMockObject("full"));
-		mockGetPaidMessageToNotifyWithResponse(selectListReminderMockObject("full"));
-		getMockRestGetForEntity(messageStatus.class, urlPayment.concat("123456"), selectMessageStatusMockObject("1", true), HttpStatus.OK);
-		mockSaveWithResponse(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456", 3));
-		mockFindIdWithResponse(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456", 3));
-		job.execute(null);
-		Assertions.assertTrue(true);
-	}
-	
-	@Test
-	public void test_CheckRemindersToNotifyJob_NoReadResponse_OK() throws SchedulerException, InterruptedException {
-		mockGetReadMessageToNotifyWithResponse(selectListReminderMockObject("empty"));
-		mockGetPaidMessageToNotifyWithResponse(selectListReminderMockObject("full"));
-		getMockRestGetForEntity(messageStatus.class, urlPayment.concat("123456"),selectMessageStatusMockObject("1", true), HttpStatus.OK);
-		mockSaveWithResponse(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456", 3));
-		mockFindIdWithResponse(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456", 3));
-		job.execute(null);
-		Assertions.assertTrue(true);
-	}
-	
-	@Test
-	public void test_CheckRemindersToNotifyJob_NoPaidResponse_OK() throws SchedulerException, InterruptedException {
-		mockGetReadMessageToNotifyWithResponse(selectListReminderMockObject("full"));
-		mockGetPaidMessageToNotifyWithResponse(selectListReminderMockObject("empty"));
-		getMockRestGetForEntity(messageStatus.class, urlPayment.concat("123456"), selectMessageStatusMockObject("1", true), HttpStatus.OK);
-		mockSaveWithResponse(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456", 3));
-		mockFindIdWithResponse(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456", 3));
-		job.execute(null);
-		Assertions.assertTrue(true);
+		test_CheckRemindersToNotifyJob(true, "full", "full", "GENERIC");
 	}
 	
 	@Test
 	public void test_CheckRemindersToNotifyJob_NoResponse_OK() throws SchedulerException, InterruptedException {
-		mockGetReadMessageToNotifyWithResponse(selectListReminderMockObject("empty"));
-		mockGetPaidMessageToNotifyWithResponse(selectListReminderMockObject("empty"));
-		getMockRestGetForEntity(messageStatus.class, urlPayment.concat("123456"), selectMessageStatusMockObject("1", true), HttpStatus.OK);
-		mockSaveWithResponse(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456", 3));
-		mockFindIdWithResponse(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456", 3));
-		job.execute(null);
-		Assertions.assertTrue(true);
+		test_CheckRemindersToNotifyJob(false, "empty", "empty","GENERIC");
 	}
-	
-	@Test
-	public void test_CheckRemindersToNotifyJob_AllResponse_Generic_OK() throws SchedulerException, InterruptedException {
-		mockGetReadMessageToNotifyWithResponse(selectListReminderMockObject("full"));
-		mockGetPaidMessageToNotifyWithResponse(selectListReminderMockObject("full"));
-		getMockRestGetForEntity(messageStatus.class, urlPayment.concat("123456"), selectMessageStatusMockObject("1", true), HttpStatus.OK);
-		mockSaveWithResponse(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456", 3));
-		mockFindIdWithResponse(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456", 3));
-		job.execute(null);
-		Assertions.assertTrue(true);
-	}
+
 	
 	@Test
 	public void test_CheckRemindersToNotifyJob_AllResponse_Paid_OK() throws SchedulerException, InterruptedException {
-		mockGetReadMessageToNotifyWithResponse(selectListReminderMockObject("full"));
-		mockGetPaidMessageToNotifyWithResponse(selectListReminderMockObject("full"));
-		getMockRestGetForEntity(messageStatus.class, urlPayment.concat("123456"), selectMessageStatusMockObject("1", true), HttpStatus.OK);
-		mockSaveWithResponse(selectReminderMockObject("", "1","PAYMENT","AAABBB77Y66A444A", "123456", 3));
-		mockFindIdWithResponse(selectReminderMockObject("", "1","PAYMENT","AAABBB77Y66A444A", "123456", 3));
-		job.execute(null);
-		Assertions.assertTrue(true);
+		test_CheckRemindersToNotifyJob(false, "full", "full","PAYMENT");
 	}
 	
 	@Test
 	public void test_CheckRemindersToNotifyJob_AllResponse_Paid_WithProxy_KO() throws SchedulerException, InterruptedException, JsonProcessingException {
-		proxyKo();
-		mockGetReadMessageToNotifyWithResponse(selectListReminderMockObject("full"));
-		mockGetPaidMessageToNotifyWithResponse(selectListReminderMockObject("full"));
-		getMockRestGetForEntity(messageStatus.class, urlPayment.concat("123456"), selectMessageStatusMockObject("1", true), HttpStatus.OK);
-		mockSaveWithResponse(selectReminderMockObject("", "1","PAYMENT","AAABBB77Y66A444A", "123456", 3));
-		mockFindIdWithResponse(selectReminderMockObject("", "1","PAYMENT","AAABBB77Y66A444A", "123456", 3));
-		job.execute(null);
-		Assertions.assertTrue(true);
+		proxyKo("PPT_RPT_DUPLICATA");
+		mockGetPaymentByRptId(selectReminderMockObject("", "1","PAYMENT","AAABBB77Y66A444A", "123456", 3));
+		test_CheckRemindersToNotifyJob(false, "full", "full","PAYMENT");
 	}
+	
+	@Test
+    public void test_CheckRemindersToNotifyJob_AllResponse_Paid_WithProxy_KO2() throws SchedulerException, InterruptedException, JsonProcessingException {
+        proxyKo("PPT_RPT_DUPLICATA_NOTFOUND");
+        mockGetPaymentByRptId(selectReminderMockObject("", "1","PAYMENT","AAABBB77Y66A444A", "123456", 3));
+        test_CheckRemindersToNotifyJob(false, "full", "full","PAYMENT");
+    }
+
 }

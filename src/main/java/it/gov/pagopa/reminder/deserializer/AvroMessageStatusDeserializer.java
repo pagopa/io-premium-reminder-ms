@@ -5,7 +5,6 @@ import org.apache.avro.io.Decoder;
 import org.apache.avro.io.DecoderFactory;
 import org.apache.avro.specific.SpecificDatumReader;
 import org.apache.kafka.common.serialization.Deserializer;
-import org.springframework.kafka.support.serializer.DeserializationException;
 
 import dto.messageStatus;
 import it.gov.pagopa.reminder.exception.AvroDeserializerException;

@@ -13,9 +13,6 @@ import java.util.function.Function;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -49,6 +46,7 @@ public class ReminderServiceImpl implements ReminderService {
 	@Autowired ReminderRepository reminderRepository;
 	@Autowired ObjectMapper mapper;
 	@Autowired RestTemplate restTemplate;
+	@Autowired DefaultApi defaultApi;
 	@Value("${interval.function}")
 	private int intervalFunction;
 	@Value("${attempts.max}")
@@ -182,7 +180,7 @@ public class ReminderServiceImpl implements ReminderService {
 		Map<String, Boolean> map;
 		map = callProxyCheck(reminder.getRptId());
 
-		if (map.get("isPaid")) {
+		if (map.containsKey("isPaid") && map.get("isPaid").booleanValue()) {
 			reminder.setPaidFlag(true);
 			reminder.setPaidDate(LocalDateTime.now());					
 		} else {	
@@ -209,7 +207,6 @@ public class ReminderServiceImpl implements ReminderService {
 			}
 			apiClient.setBasePath(urlProxy);
 			
-			DefaultApi defaultApi = new DefaultApi();
 			defaultApi.setApiClient(apiClient);		
 			defaultApi.getPaymentInfo(rptId, Constants.X_CLIENT_ID);
 			

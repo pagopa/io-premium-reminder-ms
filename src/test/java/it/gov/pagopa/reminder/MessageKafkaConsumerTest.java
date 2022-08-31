@@ -72,74 +72,58 @@ public class MessageKafkaConsumerTest extends AbstractMock{
     	before();
     }
     
-	@SuppressWarnings("unchecked")
-	@Test
-	public void test_scheduleMockSchedulerNotifyIntegrationTest2_KO() throws SchedulerException, InterruptedException, JsonProcessingException {				
-		Mockito.when(restTemplate.postForObject(Mockito.anyString(), Mockito.any(), Mockito.any())).thenThrow(new RuntimeException("500!"));
-		kafkaTemplate = new KafkaTemplate<>((ProducerFactory<String, String>) ApplicationContextProvider.getBean("producerFactory"));
-		consumerRem = (ReminderKafkaConsumer) ApplicationContextProvider.getBean("reminderEventKafkaConsumer");
-		producer.sendReminder(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456", 3), kafkaTemplate, mapper, "message-send");
-		consumerRem.reminderKafkaListener(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456", 3));
-        Assertions.assertEquals(0L, consumerRem.getLatch().getCount());
-	}
-	
-	@SuppressWarnings({ "unchecked", "static-access", "rawtypes" })
-	@Test
-	public void test_scheduleMockSchedulerNotifyIntegrationTest2_OK() throws SchedulerException, InterruptedException, JsonProcessingException {
-		Mockito.when(restTemplate.postForObject(Mockito.anyString(), Mockito.any(), Mockito.any())).thenReturn(new ResponseEntity(HttpStatus.OK).accepted().body("{}"));
-		kafkaTemplate = new KafkaTemplate<>((ProducerFactory<String, String>) ApplicationContextProvider.getBean("producerFactory"));
+    @SuppressWarnings("unchecked")
+	public void test_scheduleMockSchedulerNotifyIntegrationTest() throws JsonProcessingException {
+    	kafkaTemplate = new KafkaTemplate<>((ProducerFactory<String, String>) ApplicationContextProvider.getBean("producerFactory"));
 		consumerRem = (ReminderKafkaConsumer) ApplicationContextProvider.getBean("reminderEventKafkaConsumer");
 		producer.sendReminder(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456", 3), kafkaTemplate, mapper, "message-send");
 		consumerRem.reminderKafkaListener(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456", 3));
 		Assertions.assertEquals(0L, consumerRem.getLatch().getCount());
+    }
+    
+    public void test_scheduleMockSchedulerNotifyIntegrationTest2(String contentType, String contentType2, String source) {
+    	consumer = (PaymentUpdatesKafkaConsumer) ApplicationContextProvider.getBean("paymentUpdatesEventKafkaConsumer");
+    	mockGetPaymentByNoticeNumberAndFiscalCodeWithResponse(selectReminderMockObject("", "1",contentType,"AAABBB77Y66A444A", "123456", 3));
+		mockSaveWithResponse(selectReminderMockObject("", "1",contentType2,"AAABBB77Y66A444A", "123456", 3));
+		consumer.paymentUpdatesKafkaListener(getPaymentMessage("123", "456", true, null, 5d, source, "BBBPPP77J99A888A"));
+		Assertions.assertEquals(0L, consumer.getLatch().getCount());
+    }
+    
+    public void test_MessageStatusKafkaConsumerTest(boolean isRead) {
+    	consumerMessStatus = (MessageStatusKafkaConsumer) ApplicationContextProvider.getBean("messageStatusEventKafkaConsumer");
+		mockSaveWithResponse(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456", 3));
+		mockFindIdWithResponse(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456", 3));
+		consumerMessStatus.messageStatusKafkaListener(selectMessageStatusMockObject("1", isRead));
+		Assertions.assertTrue(consumerMessStatus.getPayload().contains("messageId"));
+		Assertions.assertEquals(0L, consumerMessStatus.getLatch().getCount());
+    }
+    
+	@Test
+	public void test_scheduleMockSchedulerNotifyIntegrationTest2_KO() throws SchedulerException, InterruptedException, JsonProcessingException {				
+		Mockito.when(restTemplate.postForObject(Mockito.anyString(), Mockito.any(), Mockito.any())).thenThrow(new RuntimeException("500!"));
+		test_scheduleMockSchedulerNotifyIntegrationTest();
+	}
+	
+	@SuppressWarnings({ "static-access", "rawtypes" })
+	@Test
+	public void test_scheduleMockSchedulerNotifyIntegrationTest2_OK() throws SchedulerException, InterruptedException, JsonProcessingException {
+		Mockito.when(restTemplate.postForObject(Mockito.anyString(), Mockito.any(), Mockito.any())).thenReturn(new ResponseEntity(HttpStatus.OK).accepted().body("{}"));
+		test_scheduleMockSchedulerNotifyIntegrationTest();
 	}
 	
 	@Test
 	public void test_scheduleMockSchedulerNotifyIntegrationTest_GENERIC_OK() throws SchedulerException, InterruptedException, JsonProcessingException {
-		consumer = (PaymentUpdatesKafkaConsumer) ApplicationContextProvider.getBean("paymentUpdatesEventKafkaConsumer");
-		mockGetPaymentByNoticeNumberAndFiscalCodeWithResponse(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456", 3));
-		mockSaveWithResponse(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456", 3));
-		consumer.paymentUpdatesKafkaListener(getPaymentMessage("123", "456", true, null, 5d, "payments", "BBBPPP77J99A888A"));
-		Assertions.assertEquals(0L, consumer.getLatch().getCount());
+		test_scheduleMockSchedulerNotifyIntegrationTest2("GENERIC","GENERIC", "payments");
 	}
 
 	@Test
 	public void test_scheduleMockSchedulerNotifyIntegrationTest_PAYMENTS_OK() throws SchedulerException, InterruptedException, JsonProcessingException {
-		consumer = (PaymentUpdatesKafkaConsumer) ApplicationContextProvider.getBean("paymentUpdatesEventKafkaConsumer");
-		mockGetPaymentByNoticeNumberAndFiscalCodeWithResponse(selectReminderMockObject("", "1","PAYMENT","AAABBB77Y66A444A", "123456", 3));
-		mockSaveWithResponse(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456", 3));
-		consumer.paymentUpdatesKafkaListener(getPaymentMessage("123", "456", true, null, 5d, "payments", "BBBPPP77J99A888A"));
-		Assertions.assertEquals(0L, consumer.getLatch().getCount());
-	}
-
-	@Test
-	public void test_scheduleMockSchedulerNotifyIntegrationTest_MESSAGES_OK() throws SchedulerException, InterruptedException, JsonProcessingException {
-		consumer = (PaymentUpdatesKafkaConsumer) ApplicationContextProvider.getBean("paymentUpdatesEventKafkaConsumer");
-		mockGetPaymentByNoticeNumberAndFiscalCodeWithResponse(selectReminderMockObject("", "1","PAYMENT","AAABBB77Y66A444A", "123456", 3));
-		mockSaveWithResponse(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456", 3));
-		consumer.paymentUpdatesKafkaListener(getPaymentMessage("123", "456", true, null, 5d, "message", "BBBPPP77J99A888A"));
-		Assertions.assertTrue(consumer.getPayload().contains("message"));
-		Assertions.assertEquals(0L, consumer.getLatch().getCount());
-	}
-	
-	@Test
-	public void test_MessageStatusKafkaConsumerTest_Payd_MESSAGES_OK() throws SchedulerException, InterruptedException, JsonProcessingException {
-		consumerMessStatus = (MessageStatusKafkaConsumer) ApplicationContextProvider.getBean("messageStatusEventKafkaConsumer");
-		mockSaveWithResponse(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456", 3));
-		mockFindIdWithResponse(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456", 3));
-		consumerMessStatus.messageStatusKafkaListener(selectMessageStatusMockObject("1", false));
-		Assertions.assertTrue(consumerMessStatus.getPayload().contains("messageId"));
-		Assertions.assertEquals(0L, consumerMessStatus.getLatch().getCount());
+		test_scheduleMockSchedulerNotifyIntegrationTest2("PAYMENT","PAYMENT", "payments");
 	}	
 	
 	@Test
 	public void test_MessageStatusKafkaConsumerTest_Read_MESSAGES_OK() throws SchedulerException, InterruptedException, JsonProcessingException {
-		consumerMessStatus = (MessageStatusKafkaConsumer) ApplicationContextProvider.getBean("messageStatusEventKafkaConsumer");
-		mockSaveWithResponse(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456", 3));
-		mockFindIdWithResponse(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456", 3));
-		consumerMessStatus.messageStatusKafkaListener(selectMessageStatusMockObject( "1", true));
-		Assertions.assertTrue(consumerMessStatus.getPayload().contains("messageId"));
-		Assertions.assertEquals(0L, consumerMessStatus.getLatch().getCount());
+		test_MessageStatusKafkaConsumerTest(true);
 	}
 	
 	@Test

@@ -16,8 +16,6 @@ import org.mockito.junit.MockitoRule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpServerErrorException;
@@ -35,6 +33,7 @@ import it.gov.pagopa.reminder.dto.PaymentMessage;
 import it.gov.pagopa.reminder.dto.request.ProxyPaymentResponse;
 import it.gov.pagopa.reminder.model.Reminder;
 import it.gov.pagopa.reminder.repository.ReminderRepository;
+import it.gov.pagopa.reminder.restclient.proxy.api.DefaultApi;
 import it.gov.pagopa.reminder.service.ReminderServiceImpl;
 
 public class AbstractMock {
@@ -48,6 +47,9 @@ public class AbstractMock {
 
     @MockBean
     protected RestTemplate restTemplate;
+    
+    @MockBean
+    protected DefaultApi mockDefaultApi;
     
 	@MockBean
 	protected ReminderRepository mockRepository;
@@ -69,9 +71,9 @@ public class AbstractMock {
 		Mockito.when(mockRepository.findById(Mockito.anyString())).thenReturn(Optional.of(returnReminder1));
 	}
 	
-	protected void proxyKo() throws JsonProcessingException {
+	protected void proxyKo(String detail) throws JsonProcessingException {
 		ProxyPaymentResponse dto = new ProxyPaymentResponse();
-		dto.setDetail_v2("PPT_RPT_DUPLICATA");
+		dto.setDetail_v2(detail);
 		dto.setCodiceContestoPagamento("32");
 		dto.setImportoSingoloVersamento("30");
 		dto.setCodiceContestoPagamento("abc");
@@ -80,10 +82,11 @@ public class AbstractMock {
 		dto.setStatus(500);
 		dto.setTitle("");
     	HttpServerErrorException errorResponse = new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "", mapper.writeValueAsString(dto).getBytes(), Charset.defaultCharset());	   	
-		Mockito.when(restTemplate.exchange(ArgumentMatchers.anyString(), ArgumentMatchers.any(HttpMethod.class),
-				ArgumentMatchers.any(HttpEntity.class), ArgumentMatchers.<Class<String>>any()))
+		Mockito.when(mockDefaultApi.getPaymentInfo(ArgumentMatchers.anyString(), ArgumentMatchers.anyString()))
 				.thenThrow(errorResponse);
 	}
+	
+	
 
 	public void mockGetPaymentByNoticeNumberAndFiscalCodeWithResponse(Reminder reminder) {
 		List<Reminder> listReminder = new ArrayList<>();
@@ -107,6 +110,10 @@ public class AbstractMock {
 	
 	protected void mockDeletePaidMessageWithResponse(int retValue) {
 		Mockito.when(mockRepository.deletePaidMessage(Mockito.anyInt(), Mockito.anyString())).thenReturn(retValue);
+	}
+	
+	protected void mockGetPaymentByRptId(Reminder rem) {
+		Mockito.when(mockRepository.getPaymentByRptId(Mockito.anyString())).thenReturn(rem);
 	}
 
 
@@ -196,4 +203,6 @@ public class AbstractMock {
 	protected void getMockRestGetForEntity(Class classResult, String url, Object resp, HttpStatus status) {
 		Mockito.when(restTemplate.getForEntity(url, classResult)).thenReturn(new ResponseEntity(resp, status));
 	}
+	
+	
 }
