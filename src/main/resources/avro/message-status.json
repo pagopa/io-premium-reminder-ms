@@ -5,18 +5,6 @@
   "doc": "Kafka JS schema for cosmos api container 'message-status'",
   "fields": [
     {
-      "name": "op",
-      "type": {
-        "type": "enum",
-        "name": "MessageStatusCrudOperation",
-        "symbols": [
-          "CREATE",
-          "UPDATE",
-          "DELETE"
-        ]
-      }
-    },
-    {
       "name": "id",
       "type": "string",
       "default": "undefined"
@@ -36,20 +24,6 @@
       "name": "version",
       "type": "int",
       "default": 0
-    },
-    {
-      "name": "status",
-      "type": {
-        "type": "enum",
-        "name": "MessageStatusDescription",
-        "symbols": [
-          "ACCEPTED",
-          "THROTTLED",
-          "FAILED",
-          "PROCESSED",
-          "REJECTED"
-        ]
-      }
     },
     {
       "name": "isRead",

@@ -25,8 +25,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import dto.MessageContentType;
-import dto.MessageStatusCrudOperation;
-import dto.MessageStatusDescription;
 import dto.message;
 import dto.messageStatus;
 import it.gov.pagopa.reminder.dto.PaymentMessage;
@@ -198,8 +196,6 @@ public class AbstractMock {
 		messageStatus.setId("ID");
 		messageStatus.setMessageId(messageId);
 		messageStatus.setIsRead(isRead);
-		messageStatus.setOp(MessageStatusCrudOperation.CREATE);
-		messageStatus.setStatus(MessageStatusDescription.ACCEPTED);
 		return messageStatus;
 	}
 
