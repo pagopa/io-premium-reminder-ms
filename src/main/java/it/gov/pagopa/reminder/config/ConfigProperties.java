@@ -1,8 +1,9 @@
 package it.gov.pagopa.reminder.config;
 
-import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import lombok.Getter;
 
 @Getter
 @Component

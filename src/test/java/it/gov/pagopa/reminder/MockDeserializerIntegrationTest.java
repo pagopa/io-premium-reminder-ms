@@ -2,6 +2,10 @@ package it.gov.pagopa.reminder;
 
 import java.io.IOException;
 
+import org.apache.avro.io.DatumWriter;
+import org.apache.avro.io.Encoder;
+import org.apache.avro.io.EncoderFactory;
+import org.apache.avro.specific.SpecificDatumWriter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
@@ -14,21 +18,24 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.kafka.support.serializer.DeserializationException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.databind.DatabindException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.microsoft.applicationinsights.core.dependencies.apachecommons.io.output.ByteArrayOutputStream;
 
+import dto.message;
+import dto.messageStatus;
 import it.gov.pagopa.reminder.deserializer.AvroMessageDeserializer;
 import it.gov.pagopa.reminder.deserializer.AvroMessageStatusDeserializer;
 import it.gov.pagopa.reminder.deserializer.PaymentMessageDeserializer;
 import it.gov.pagopa.reminder.deserializer.ReminderDeserializer;
-import it.gov.pagopa.reminder.dto.MessageStatus;
 import it.gov.pagopa.reminder.dto.PaymentMessage;
+import it.gov.pagopa.reminder.exception.AvroDeserializerException;
+import it.gov.pagopa.reminder.exception.UnexpectedDataException;
 import it.gov.pagopa.reminder.model.JsonLoader;
 import it.gov.pagopa.reminder.model.Reminder;
 import tech.allegro.schema.json2avro.converter.JsonAvroConverter;
@@ -70,48 +77,60 @@ public class MockDeserializerIntegrationTest extends AbstractMock{
     	before();
     }
  
-	@SuppressWarnings("unchecked")
 	@Test
-	public void test_messageDeserialize_ok() throws JsonMappingException, JsonProcessingException {
-		byte[] byteArrray = "".getBytes();
-		avroMessageDeserializer = new AvroMessageDeserializer(messageSchema, mapper);
-		avroMessageDeserializer.setConverter(converter);
-		Mockito.when(converter.convertToJson(Mockito.any(), Mockito.anyString())).thenReturn(byteArrray);
-		Mockito.when(mapper.readValue(Mockito.anyString(), Mockito.any(Class.class))).thenReturn(new Reminder());
-		Reminder rem = avroMessageDeserializer.deserialize(null, messageSchema.getJsonString().getBytes());
+	public void test_messageDeserialize_ok() throws IOException {
+		
+		avroMessageDeserializer = new AvroMessageDeserializer();
+		message mess = selectMessageMockObject("", "1","GENERIC","AAABBB77Y66A444A", "123456");
+		DatumWriter<message> writer = new SpecificDatumWriter<>(
+				message.class);
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		Encoder encoder = EncoderFactory.get().binaryEncoder(bos, null);
+		writer.write(mess, encoder);
+		encoder.flush();
+		Reminder rem = avroMessageDeserializer.deserialize(null, bos.toByteArray());
 		Assertions.assertNotNull(rem);
 	}
 	
 	@Test
 	public void test_messageDeserialize_ko() {
-		byte[] byteArrray = null;
-		avroMessageDeserializer = new AvroMessageDeserializer(messageSchema, mapper);
-		avroMessageDeserializer.setConverter(converter);
-		Mockito.when(converter.convertToJson(Mockito.any(), Mockito.anyString())).thenReturn(byteArrray);
-		avroMessageDeserializer.deserialize(null, messageSchema.getJsonString().getBytes());
+		Assertions.assertThrows(AvroDeserializerException.class,
+				() -> avroMessageDeserializer.deserialize(null, messageSchema.getJsonString().getBytes()));
+	}
+	
+	@Test
+	public void test_messageDeserialize_UnexpectedDataExceptionWithFiscalCode() throws IOException {
+		avroMessageDeserializer = new AvroMessageDeserializer();
+		message mess = selectMessageMockObject("", "1","PAYMENT","AAABBB77Y66A444A", "");
+		DatumWriter<message> writer = new SpecificDatumWriter<>(
+				message.class);
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		Encoder encoder = EncoderFactory.get().binaryEncoder(bos, null);
+		writer.write(mess, encoder);
+		encoder.flush();
+		Assertions.assertThrows(UnexpectedDataException.class,
+				() -> avroMessageDeserializer.deserialize(null, bos.toByteArray()));
 		Assertions.assertTrue(true);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
-	public void test_messageStatusDeserialize_ok() throws JsonMappingException, JsonProcessingException {
-		byte[] byteArrray = "".getBytes();
-		avroMessageStatusDeserializer = new AvroMessageStatusDeserializer(messageStatusSchema, mapper);
-		avroMessageStatusDeserializer.setConverter(converter);
-		Mockito.when(converter.convertToJson(Mockito.any(), Mockito.anyString())).thenReturn(byteArrray);
-		Mockito.when(mapper.readValue(Mockito.anyString(), Mockito.any(Class.class))).thenReturn(new MessageStatus());
-		MessageStatus status = avroMessageStatusDeserializer.deserialize(null, messageSchema.getJsonString().getBytes());
-		Assertions.assertNotNull(status);
+	public void test_messageStatusDeserialize_ok() throws IOException {
+		avroMessageStatusDeserializer = new AvroMessageStatusDeserializer();
+		messageStatus messStatus = selectMessageStatusMockObject("1", true);
+		DatumWriter<messageStatus> writer = new SpecificDatumWriter<>(
+				messageStatus.class);
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		Encoder encoder = EncoderFactory.get().binaryEncoder(bos, null);
+		writer.write(messStatus, encoder);
+		encoder.flush();
+		messageStatus rem = avroMessageStatusDeserializer.deserialize(null, bos.toByteArray());
+		Assertions.assertNotNull(rem);
 	}
 	
 	@Test
 	public void test_messageStatusDeserialize_ko() {
-		byte[] byteArrray = null;
-		avroMessageStatusDeserializer = new AvroMessageStatusDeserializer(messageStatusSchema, mapper);
-		avroMessageStatusDeserializer.setConverter(converter);
-		Mockito.when(converter.convertToJson(Mockito.any(), Mockito.anyString())).thenReturn(byteArrray);
-		avroMessageStatusDeserializer.deserialize(null, messageStatusSchema.getJsonString().getBytes());
-		Assertions.assertTrue(true);
+		Assertions.assertThrows(AvroDeserializerException.class,
+				() -> avroMessageStatusDeserializer.deserialize(null, messageStatusSchema.getJsonString().getBytes()));
 	}
 
 	
@@ -127,10 +146,9 @@ public class MockDeserializerIntegrationTest extends AbstractMock{
 	
 	@Test
 	public void test_paymentDeserialize_KO() throws StreamReadException, DatabindException, IOException {
-		byte[] byteArrray = "ko".getBytes();
 		paymentMessageDeserializer = new PaymentMessageDeserializer(null);
-		paymentMessageDeserializer.deserialize(null, byteArrray);
-		Assertions.assertTrue(true);
+		Assertions.assertThrows(DeserializationException.class,
+				() -> paymentMessageDeserializer.deserialize(null, "".getBytes()));
 	}
 	
 	@Test
@@ -142,15 +160,5 @@ public class MockDeserializerIntegrationTest extends AbstractMock{
 		reminderDeserializer.deserialize(null, byteArrray);
 		Assertions.assertTrue(true);
 	}
-	
-	@Test
-	public void test_reminderDeserialize_KO() throws StreamReadException, DatabindException, IOException {
-		byte[] byteArrray = "ko".getBytes();
-		reminderDeserializer = new ReminderDeserializer(null);
-		reminderDeserializer.deserialize(null, byteArrray);
-		Assertions.assertTrue(true);
-	}
-
-
 
 }

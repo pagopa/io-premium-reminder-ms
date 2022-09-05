@@ -3,6 +3,7 @@ package it.gov.pagopa.reminder.service;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -52,6 +53,8 @@ public class ReminderServiceImpl implements ReminderService {
 	@Autowired ReminderRepository reminderRepository;
 	@Autowired ObjectMapper mapper;
 	@Autowired RestTemplate restTemplate;
+	@Autowired DefaultApi defaultApi;
+	@Autowired ApiClient apiClient;
 	@Value("${interval.function}")
 	private int intervalFunction;
 	@Value("${attempts.max}")
@@ -101,17 +104,13 @@ public class ReminderServiceImpl implements ReminderService {
 
 
 	@Override
-	public void updateReminder(String reminderId, boolean isRead, boolean isPaid) {
+	public void updateReminder(String reminderId, boolean isRead) {
 		Reminder reminderToUpdate = findById(reminderId);
 		if(null != reminderToUpdate) {
-			reminderToUpdate.setPaidFlag(isPaid);
 			reminderToUpdate.setReadFlag(isRead);
 			if(isRead) {
 				reminderToUpdate.setReadDate(LocalDateTime.now());
 			}
-			if(isPaid) {
-				reminderToUpdate.setPaidDate(LocalDateTime.now());
-			}	
 			save(reminderToUpdate);
 		}
 	}
@@ -169,7 +168,7 @@ public class ReminderServiceImpl implements ReminderService {
 		int readMessage = reminderRepository.deleteReadMessage(maxReadMessageSend, MessageContentType.PAYMENT.toString());
 		log.info("Delete: {} readMessage", readMessage);
 
-		int paidMessage = reminderRepository.deletePaidMessage(maxPaidMessageSend, MessageContentType.PAYMENT.toString());
+		int paidMessage = reminderRepository.deletePaidMessage(maxPaidMessageSend, MessageContentType.PAYMENT.toString(), LocalDate.now());
 		log.info("Delete: {} paidMessage", paidMessage);
 	}
 
@@ -181,20 +180,16 @@ public class ReminderServiceImpl implements ReminderService {
 
 	private String callPaymentCheck(Reminder reminder){
 
-		Map<String, String> map;
-		map = callProxyCheck(reminder.getRptId());
+		Map<String, String> map = callProxyCheck(reminder.getRptId());
 
 		if (map.containsKey("dueDate")) {
 			String proxyDueDate = map.get("dueDate");
 
 			if(StringUtils.isNotEmpty(proxyDueDate)) {
 				LocalDate localDateProxyDueDate = LocalDate.parse(proxyDueDate);
-				
-				long longDueDate = reminder.getDueDate() != null ? reminder.getDueDate().longValue() : 0L;
-				LocalDate reminderDueDate = LocalDateTime.ofInstant(Instant.ofEpochSecond(longDueDate),
-                        TimeZone.getDefault().toZoneId()).toLocalDate();
-				
-				if(localDateProxyDueDate.equals(reminderDueDate)) {
+				LocalDate reminderDueDate = reminder.getDueDate() != null ? reminder.getDueDate().toLocalDate() : null;
+
+				if(reminderDueDate != null && localDateProxyDueDate.equals(reminderDueDate)) {
 					if (Boolean.parseBoolean(map.get("isPaid"))) {
 						reminder.setPaidFlag(true);
 						reminder.setPaidDate(LocalDateTime.now());					
@@ -207,11 +202,8 @@ public class ReminderServiceImpl implements ReminderService {
 						}
 					}	
 				} else {
-		
-					long millis = localDateProxyDueDate.atStartOfDay(TimeZone.getDefault().toZoneId()).toInstant().getEpochSecond();
-					reminder.setDueDate(millis);
-				}
-			}
+					reminder.setDueDate(LocalDateTime.of(localDateProxyDueDate, LocalTime.of(12, 0)));
+				}			}
 		}
 		return "";
 	}
@@ -221,14 +213,11 @@ public class ReminderServiceImpl implements ReminderService {
 		Map<String, String> map = new HashMap<>();
 		map.put("isPaid", "false");
 		try {
-
-			ApiClient apiClient = new ApiClient();
 			if (enableRestKey) {
 				apiClient.setApiKey(proxyEndpointKey);
 			}
 			apiClient.setBasePath(urlProxy);
 
-			DefaultApi defaultApi = new DefaultApi();
 			defaultApi.setApiClient(apiClient);		
 			PaymentRequestsGetResponse resp = defaultApi.getPaymentInfo(rptId, Constants.X_CLIENT_ID);
 			map.put("dueDate", resp.getDueDate());

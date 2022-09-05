@@ -1,12 +1,8 @@
 package it.gov.pagopa.reminder.model;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import org.springframework.data.annotation.Id;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 
 import dto.FeatureLevelType;
 import dto.MessageContentType;
@@ -33,6 +29,6 @@ public class Message {
 	protected boolean content_paymentData_invalidAfterDueDate;
 	protected String content_paymentData_payeeFiscalCode;
 	protected String fiscalCode;
-	protected Long dueDate;
+	protected LocalDateTime dueDate;
 	protected FeatureLevelType feature_level_type;
 }

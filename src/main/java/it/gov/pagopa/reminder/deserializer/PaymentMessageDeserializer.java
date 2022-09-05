@@ -1,6 +1,7 @@
 package it.gov.pagopa.reminder.deserializer;
 
 import org.apache.kafka.common.serialization.Deserializer;
+import org.springframework.kafka.support.serializer.DeserializationException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -17,14 +18,14 @@ public class PaymentMessageDeserializer implements Deserializer<PaymentMessage> 
 	
 
 	@Override
-	public PaymentMessage deserialize(String s, byte[] bytes) {
-			
+	public PaymentMessage deserialize(String s, byte[] bytes) {			
 		PaymentMessage paymentMessage = null;
 		try {
 			paymentMessage = mapper.readValue(bytes, PaymentMessage.class);
 		} catch (Exception e) {
-			log.error("Error in deserializing the PaymentMessage for consumer payment-updates");
-			log.error(e.getMessage());
+			log.error("Error in deserializing the PaymentMessage for consumer payment-updates|ERROR=" + e.getMessage());
+			throw new DeserializationException(
+					"Error in deserializing the PaymentMessage for consumer payment-updates|ERROR=" + e.getMessage(), bytes, false, e);
 		}
 		return paymentMessage;
 	}
