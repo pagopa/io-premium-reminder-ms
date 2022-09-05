@@ -160,7 +160,7 @@ public class ReminderServiceImpl implements ReminderService {
 		int readMessage = reminderRepository.deleteReadMessage(maxReadMessageSend, MessageContentType.PAYMENT.toString());
 		log.info("Delete: {} readMessage", readMessage);
 
-		int paidMessage = reminderRepository.deletePaidMessage(maxPaidMessageSend, MessageContentType.PAYMENT.toString());
+		int paidMessage = reminderRepository.deletePaidMessage(maxPaidMessageSend, MessageContentType.PAYMENT.toString(), LocalDate.now());
 		log.info("Delete: {} paidMessage", paidMessage);
 	}
 

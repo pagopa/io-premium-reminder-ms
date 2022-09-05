@@ -116,7 +116,7 @@ public class AbstractMock {
 	}
 
 	protected void mockDeletePaidMessageWithResponse(int retValue) {
-		Mockito.when(mockRepository.deletePaidMessage(Mockito.anyInt(), Mockito.anyString())).thenReturn(retValue);
+		Mockito.when(mockRepository.deletePaidMessage(Mockito.anyInt(), Mockito.anyString(), Mockito.any(LocalDate.class))).thenReturn(retValue);
 	}
 
 	protected void mockGetPaymentByRptId(Reminder rem) {

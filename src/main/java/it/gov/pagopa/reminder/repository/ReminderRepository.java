@@ -21,8 +21,11 @@ public interface ReminderRepository extends MongoRepository<Reminder, String>{
 	int deleteReadMessage(int maxReadMessageSend, String typeMessage);
 	
 	
-	@Query(value="{content_type:?1, $or:[{paidFlag:true}, {maxPaidMessageSend:{$gte:?0}}]}",delete = true)
-	int deletePaidMessage(int maxPaidMessageSend, String typeMessage);
+//	@Query(value="{content_type:?1, $or:[{paidFlag:true}, {maxPaidMessageSend:{$gte:?0}}]}",delete = true)
+//	int deletePaidMessage(int maxPaidMessageSend, String typeMessage);
+	
+	@Query(value="{content_type:?1, $or:[{paidFlag:true}, {maxPaidMessageSend:{$gte:?0}}, {$and:[{dueDate:{$exists: true}}, {dueDate:{$lt:?2}}]}]}",delete = true)
+	int deletePaidMessage(int maxPaidMessageSend, String typeMessage, LocalDate today);
 
 	/**
 	 * Retrieval of unread, unpaid reminders that have not exceeded the maximum number of notifications.
