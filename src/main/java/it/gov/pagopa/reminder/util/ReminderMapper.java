@@ -3,7 +3,6 @@ package it.gov.pagopa.reminder.util;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.TimeZone;
 
 import dto.message;
@@ -18,7 +17,7 @@ public class ReminderMapper {
         if(msg.getDueDate() != 0L) {
         	LocalDate reminderDueDate = LocalDateTime.ofInstant(Instant.ofEpochSecond(msg.getDueDate()),
                     TimeZone.getDefault().toZoneId()).toLocalDate();
-        	reminder.setDueDate(LocalDateTime.of(reminderDueDate, LocalTime.of(12, 0)));
+        	reminder.setDueDate(ReminderUtil.getLocalDateTime(reminderDueDate));
         }
         reminder.setFiscalCode(msg.getFiscalCode());
         reminder.setFeature_level_type(msg.getFeatureLevelType());

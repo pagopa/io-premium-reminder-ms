@@ -1,11 +1,7 @@
 package it.gov.pagopa.reminder.service;
 
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.TimeZone;
 import java.util.function.Function;
 
 import org.apache.commons.lang3.StringUtils;
@@ -43,6 +38,7 @@ import it.gov.pagopa.reminder.restclient.proxy.api.DefaultApi;
 import it.gov.pagopa.reminder.restclient.proxy.model.PaymentRequestsGetResponse;
 import it.gov.pagopa.reminder.util.ApplicationContextProvider;
 import it.gov.pagopa.reminder.util.Constants;
+import it.gov.pagopa.reminder.util.ReminderUtil;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
@@ -185,25 +181,26 @@ public class ReminderServiceImpl implements ReminderService {
 		if (map.containsKey("dueDate")) {
 			String proxyDueDate = map.get("dueDate");
 
-			if(StringUtils.isNotEmpty(proxyDueDate)) {
+			if (StringUtils.isNotEmpty(proxyDueDate)) {
 				LocalDate localDateProxyDueDate = LocalDate.parse(proxyDueDate);
 				LocalDate reminderDueDate = reminder.getDueDate() != null ? reminder.getDueDate().toLocalDate() : null;
 
-				if(reminderDueDate != null && localDateProxyDueDate.equals(reminderDueDate)) {
+				if (reminderDueDate != null && localDateProxyDueDate.equals(reminderDueDate)) {
 					if (Boolean.parseBoolean(map.get("isPaid"))) {
 						reminder.setPaidFlag(true);
-						reminder.setPaidDate(LocalDateTime.now());					
-					} else {	
+						reminder.setPaidDate(LocalDateTime.now());
+					} else {
 						try {
 							sendReminderToProducer(reminder);
 						} catch (JsonProcessingException e) {
 							log.error("Producer error sending notification {} to message-send queue", reminder.getId());
 							log.error(e.getMessage());
 						}
-					}	
+					}
 				} else {
-					reminder.setDueDate(LocalDateTime.of(localDateProxyDueDate, LocalTime.of(12, 0)));
-				}			}
+					reminder.setDueDate(ReminderUtil.getLocalDateTime(localDateProxyDueDate));
+				}
+			}
 		}
 		return "";
 	}
