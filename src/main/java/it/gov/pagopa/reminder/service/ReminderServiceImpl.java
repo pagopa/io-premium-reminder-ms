@@ -191,7 +191,7 @@ public class ReminderServiceImpl implements ReminderService {
 		LocalDate localDateProxyDueDate = proxyResp.getDueDate();
 		LocalDate reminderDueDate = reminder.getDueDate() != null ? reminder.getDueDate().toLocalDate() : null;
 		List<Reminder> reminders = reminderRepository.getPaymentByRptId(reminder.getRptId());
-		
+
 		if (localDateProxyDueDate != null && localDateProxyDueDate.equals(reminderDueDate)) {
 			if (proxyResp.isPaid()) {				
 				for (Reminder rem: reminders) {
@@ -203,7 +203,7 @@ public class ReminderServiceImpl implements ReminderService {
 				try {
 					Reminder rem = Collections.min(reminders, Comparator.comparing(c -> c.getInsertionDate()));
 					sendReminderToProducer(rem);
-					
+
 					for (Reminder reminderToUpdate : reminders) {
 						updateCounter(reminderToUpdate);
 						reminderRepository.save(reminderToUpdate);
@@ -214,8 +214,10 @@ public class ReminderServiceImpl implements ReminderService {
 				}
 			}
 		} else {
-			reminder.setDueDate(ReminderUtil.getLocalDateTime(localDateProxyDueDate));
-			reminderRepository.save(reminder);
+			for (Reminder reminderToUpdate : reminders) {
+				reminderToUpdate.setDueDate(ReminderUtil.getLocalDateTime(localDateProxyDueDate));
+				reminderRepository.save(reminderToUpdate);
+			}
 		}
 
 		return "";
@@ -286,9 +288,9 @@ public class ReminderServiceImpl implements ReminderService {
 		kafkaTemplatePayments = (KafkaTemplate<String, String>) ApplicationContextProvider.getBean("kafkaTemplatePayments");
 		remProd.sendReminder(reminder, kafkaTemplatePayments, mapper, producerTopic);	
 	}	
-	
+
 	private void updateCounter(Reminder reminder) {	
-		
+
 		if(!reminder.isReadFlag()) {
 			int countRead = reminder.getMaxReadMessageSend()+1;
 			reminder.setMaxReadMessageSend(countRead);
@@ -308,6 +310,11 @@ public class ReminderServiceImpl implements ReminderService {
 	public List<Reminder> getPaymentsByRptid(String rptId) {
 		List<Reminder> reminders = reminderRepository.getPaymentByRptId(rptId);
 		return reminders == null ? new ArrayList<>() : reminders;
+	}
+
+	@Override
+	public int countFindById(String id) {
+		return reminderRepository.countFindById(id);
 	}
 
 }

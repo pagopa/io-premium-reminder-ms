@@ -35,7 +35,10 @@ public class MessageKafkaConsumer {
 			if(MessageContentType.PAYMENT.toString().equalsIgnoreCase(message.getContent_type().toString())) {
 				message.setRptId(message.getContent_paymentData_payeeFiscalCode().concat(message.getContent_paymentData_noticeNumber()));
 			}
-			reminderService.save(message);
+
+			if(reminderService.countFindById(message.getId()) == 0) {
+				reminderService.save(message);
+			}
 		}
 		payload = message.toString();
 		latch.countDown();
