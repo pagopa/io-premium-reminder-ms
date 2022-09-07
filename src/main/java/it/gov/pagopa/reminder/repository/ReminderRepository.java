@@ -49,7 +49,7 @@ public interface ReminderRepository extends MongoRepository<Reminder, String>{
 	List<Reminder> getPaidMessageToNotify(String typeMessage, Integer maxPaidMessageSend, LocalDateTime dateTimePayment, LocalDate startDateReminder);
 
 	@Query("{rptId:?0}")
-	Reminder getPaymentByRptId(String rptId);
+	List<Reminder> getPaymentByRptId(String rptId);
 
 
 

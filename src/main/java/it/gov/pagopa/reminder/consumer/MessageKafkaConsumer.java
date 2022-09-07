@@ -33,14 +33,9 @@ public class MessageKafkaConsumer {
 		if(FeatureLevelType.ADVANCED.toString().equalsIgnoreCase(message.getFeature_level_type().toString())) {
 
 			if(MessageContentType.PAYMENT.toString().equalsIgnoreCase(message.getContent_type().toString())) {
-				Reminder reminder = reminderService.getPaymentByNoticeNumberAndFiscalCode(message.getContent_paymentData_noticeNumber(), message.getContent_paymentData_payeeFiscalCode());
-				if(reminder == null) {
-					message.setRptId(message.getContent_paymentData_payeeFiscalCode().concat(message.getContent_paymentData_noticeNumber()));
-					reminderService.save(message);
-				}
-			} else {
-				reminderService.save(message);
+				message.setRptId(message.getContent_paymentData_payeeFiscalCode().concat(message.getContent_paymentData_noticeNumber()));
 			}
+			reminderService.save(message);
 		}
 		payload = message.toString();
 		latch.countDown();

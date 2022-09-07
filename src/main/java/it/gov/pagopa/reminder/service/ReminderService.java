@@ -1,5 +1,7 @@
 package it.gov.pagopa.reminder.service;
 
+import java.util.List;
+
 import it.gov.pagopa.reminder.model.Reminder;
 
 public interface ReminderService {
@@ -11,4 +13,5 @@ public interface ReminderService {
 	Reminder getPaymentByNoticeNumberAndFiscalCode(String noticeNumber, String payeeFiscalCode);
 	void getMessageToNotify();
 	void deleteMessage();
+	List<Reminder> getPaymentsByRptid(String rptId);
 }

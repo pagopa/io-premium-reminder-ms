@@ -65,10 +65,6 @@ public class AbstractMock {
 	private String urlPayment;
 
 	
-	public void mockGetPaymentByNoticeNumber(Reminder reminder) {
-		Mockito.when(mockRepository.getPaymentByRptId(Mockito.anyString())).thenReturn(reminder);
-	}
-	
 	protected void mockSaveWithResponse(Reminder returnReminder) {
 		Mockito.when(mockRepository.save(Mockito.any(Reminder.class))).thenReturn(returnReminder);
 	}
@@ -124,7 +120,7 @@ public class AbstractMock {
 		Mockito.when(mockRepository.deletePaidMessage(Mockito.anyInt(), Mockito.anyString(), Mockito.any(LocalDate.class))).thenReturn(retValue);
 	}
 
-	protected void mockGetPaymentByRptId(Reminder rem) {
+	protected void mockGetPaymentByRptId(List<Reminder> rem) {
 		Mockito.when(mockRepository.getPaymentByRptId(Mockito.anyString())).thenReturn(rem);
 	}
 

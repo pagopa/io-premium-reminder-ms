@@ -1,5 +1,6 @@
 package it.gov.pagopa.reminder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
@@ -86,7 +87,9 @@ public class TestSchedulerNotifyIntegrationTest extends AbstractMock{
 	@Test
 	public void test_CheckRemindersToNotifyJob_AllResponse_Paid_WithProxy_KO() throws SchedulerException, InterruptedException, JsonProcessingException {
 		proxyKo("PPT_RPT_DUPLICATA");
-		mockGetPaymentByRptId(selectReminderMockObject("", "1", PAYMENT, "AAABBB77Y66A444A", "123456", 3));
+		List<Reminder> listRem = new ArrayList<>();
+		listRem.add(selectReminderMockObject("", "1", PAYMENT, "AAABBB77Y66A444A", "123456", 3));
+		mockGetPaymentByRptId(listRem);
 		test_CheckRemindersToNotifyJob(false, FULL, FULL, PAYMENT);
 
 
@@ -95,7 +98,9 @@ public class TestSchedulerNotifyIntegrationTest extends AbstractMock{
 	@Test
 	public void test_CheckRemindersToNotifyJob_AllResponse_Paid_WithProxy_KO2() throws SchedulerException, InterruptedException, JsonProcessingException {
 		proxyKo("PPT_RPT_NOTFOUND");
-		mockGetPaymentByRptId(selectReminderMockObject("", "1", PAYMENT, "AAABBB77Y66A444A", "123456", 3));
+		List<Reminder> listRem = new ArrayList<>();
+		listRem.add(selectReminderMockObject("", "1", PAYMENT, "AAABBB77Y66A444A", "123456", 3));
+		mockGetPaymentByRptId(listRem);
 		test_CheckRemindersToNotifyJob(false, FULL, FULL, PAYMENT);
 	}
 
