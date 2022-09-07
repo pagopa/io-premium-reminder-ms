@@ -7,7 +7,6 @@ import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -24,8 +23,6 @@ public class RestTemplateUtils {
 	
 	@Autowired
 	RestTemplate restTemplate;
-	
-	public RestTemplateUtils() {}
 	
 	public void sendNotification(String url, NotificationDTO notification) {
 		HttpHeaders requestHeaders = new HttpHeaders();

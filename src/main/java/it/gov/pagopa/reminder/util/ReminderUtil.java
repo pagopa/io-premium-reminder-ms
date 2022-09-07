@@ -1,6 +1,8 @@
 package it.gov.pagopa.reminder.util;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,6 +43,10 @@ public class ReminderUtil {
 		String creationTime = LocalDateTime.now().toString();
 		properties.put(creationTime, message);
 		return properties;
+	}
+	
+	public static LocalDateTime getLocalDateTime(LocalDate date) {
+		return LocalDateTime.of(date, LocalTime.of(12,0));
 	}
 
 }
