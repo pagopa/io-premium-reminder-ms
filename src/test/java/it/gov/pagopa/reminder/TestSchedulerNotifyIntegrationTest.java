@@ -35,7 +35,6 @@ public class TestSchedulerNotifyIntegrationTest extends AbstractMock{
 	private static final String PAYMENT = "PAYMENT";
 	private static final String EMPTY = "empty";
 	private static final String FULL = "full";
-	private static final String NULL_DUEDATE = "null_duedate";
 	
 	@Autowired
 	private CheckRemindersToNotifyJob job;
