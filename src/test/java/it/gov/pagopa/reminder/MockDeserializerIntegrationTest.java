@@ -1,11 +1,23 @@
 package it.gov.pagopa.reminder;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.avro.io.DatumWriter;
 import org.apache.avro.io.Encoder;
 import org.apache.avro.io.EncoderFactory;
 import org.apache.avro.specific.SpecificDatumWriter;
+import org.apache.kafka.clients.consumer.Consumer;
+import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.common.TopicPartition;
+import org.apache.kafka.common.serialization.BytesDeserializer;
+import org.apache.kafka.common.serialization.LongDeserializer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
@@ -18,6 +30,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.kafka.listener.CommonErrorHandler;
 import org.springframework.kafka.support.serializer.DeserializationException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -35,9 +48,11 @@ import it.gov.pagopa.reminder.deserializer.PaymentMessageDeserializer;
 import it.gov.pagopa.reminder.deserializer.ReminderDeserializer;
 import it.gov.pagopa.reminder.dto.PaymentMessage;
 import it.gov.pagopa.reminder.exception.AvroDeserializerException;
+import it.gov.pagopa.reminder.exception.SkipDataException;
 import it.gov.pagopa.reminder.exception.UnexpectedDataException;
 import it.gov.pagopa.reminder.model.JsonLoader;
 import it.gov.pagopa.reminder.model.Reminder;
+import it.gov.pagopa.reminder.util.ApplicationContextProvider;
 import tech.allegro.schema.json2avro.converter.JsonAvroConverter;
 
 @SpringBootTest(classes = Application.class,webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -63,7 +78,10 @@ public class MockDeserializerIntegrationTest extends AbstractMock{
 	
 	@InjectMocks
 	ReminderDeserializer reminderDeserializer = null;
-
+	
+	@Autowired
+	CommonErrorHandler commonErrorHandler;
+	
 	@Autowired 
 	@Qualifier("messageSchema") 
 	JsonLoader messageSchema;
@@ -160,5 +178,74 @@ public class MockDeserializerIntegrationTest extends AbstractMock{
 		reminderDeserializer.deserialize(null, byteArrray);
 		Assertions.assertTrue(true);
 	}
+	protected void mockKafkaDeserializationErrorHandler(Exception unexpectedException) {
+		List<ConsumerRecord<?, ?>> records = new ArrayList<>();
+		ConsumerRecord<?, ?> record = new ConsumerRecord<>("message", 0, 439198, null, null);
+		records.add(record);
+		Map<String, Object> props = new HashMap<>();
+		props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "PLAINTEXT://localhost:9065");
+		props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+		props.put(ConsumerConfig.GROUP_ID_CONFIG, "baeldung");
+		props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, BytesDeserializer.class.getName());
+		props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, LongDeserializer.class.getName());
+		Consumer<?, ?> consumer = new KafkaConsumer<>(props);
+		Collection<TopicPartition> assignment = new ArrayList<>();
+		assignment.add(new TopicPartition("message", 0));
+		consumer.assign(assignment);
 
+		commonErrorHandler = (CommonErrorHandler) ApplicationContextProvider.getBean("commonErrorHandler");
+		commonErrorHandler.handleRemaining(unexpectedException, (List<ConsumerRecord<?, ?>>) records, consumer,
+				null);
+	}
+	
+	@Test
+	public void test_DeserializationException() {
+		Exception deserializationException = new DeserializationException("Deserialization Exception", "Deserialization Exception".getBytes(), false, new Exception());
+		mockKafkaDeserializationErrorHandler(deserializationException);
+		Assertions.assertTrue(true);
+	}
+	
+	@Test
+	public void test_AvroDeserializerException() {
+		Exception avroDeserializerException = new AvroDeserializerException("Avro deserializer exception!", "Avro deserializer exception!".getBytes());
+		mockKafkaDeserializationErrorHandler(avroDeserializerException);
+		Assertions.assertTrue(true);
+	}
+	
+	@Test
+	public void test_UnexpectedDataException() {
+		Exception unexpectedDataException = new UnexpectedDataException("Unexpected data exception!", new Object());
+		mockKafkaDeserializationErrorHandler(unexpectedDataException);
+		Assertions.assertTrue(true);
+	}
+	
+	@Test
+	public void test_SkipDataException() {
+		Exception skipDataException = new SkipDataException("Skip data exception!", new Object());
+		mockKafkaDeserializationErrorHandler(skipDataException);
+		Assertions.assertTrue(true);
+	}
+	
+	@Test
+	public void mockKafkaDeserializationErrorHandler() {
+		List<ConsumerRecord<?, ?>> records = new ArrayList<>();
+		
+		Map<String, Object> props = new HashMap<>();
+		props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "PLAINTEXT://localhost:9065");
+		props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+		props.put(ConsumerConfig.GROUP_ID_CONFIG, "baeldung");
+		props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, BytesDeserializer.class.getName());
+		props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, LongDeserializer.class.getName());
+		Consumer<?, ?> consumer = new KafkaConsumer<>(props);
+		Collection<TopicPartition> assignment = new ArrayList<>();
+		assignment.add(new TopicPartition("message", 0));
+		consumer.assign(assignment);
+		
+		Exception unexpectedDataException = new UnexpectedDataException("Unexpected data exception!", new Object());
+		
+		commonErrorHandler = (CommonErrorHandler) ApplicationContextProvider.getBean("commonErrorHandler");
+		commonErrorHandler.handleRemaining(unexpectedDataException, (List<ConsumerRecord<?, ?>>) records, consumer,
+				null);
+		Assertions.assertTrue(true);
+	}
 }

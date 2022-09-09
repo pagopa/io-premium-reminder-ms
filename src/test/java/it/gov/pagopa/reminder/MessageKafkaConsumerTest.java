@@ -29,6 +29,7 @@ import it.gov.pagopa.reminder.consumer.MessageKafkaConsumer;
 import it.gov.pagopa.reminder.consumer.MessageStatusKafkaConsumer;
 import it.gov.pagopa.reminder.consumer.PaymentUpdatesKafkaConsumer;
 import it.gov.pagopa.reminder.consumer.ReminderKafkaConsumer;
+import it.gov.pagopa.reminder.dto.PaymentMessage;
 import it.gov.pagopa.reminder.model.Reminder;
 import it.gov.pagopa.reminder.producer.ReminderProducer;
 import it.gov.pagopa.reminder.util.ApplicationContextProvider;
@@ -87,13 +88,14 @@ public class MessageKafkaConsumerTest extends AbstractMock{
     
     public void MockSchedulerNotifyIntegrationPaymentUpdatesKafkaConsumerTest(String contentType, String contentType2, String source) {
     	consumer = (PaymentUpdatesKafkaConsumer) ApplicationContextProvider.getBean("paymentUpdatesEventKafkaConsumer");
+    	
     	mockGetPaymentByNoticeNumberAndFiscalCodeWithResponse(selectReminderMockObject("", "1", contentType, "AAABBB77Y66A444A", "123456", 3));
 		mockSaveWithResponse(selectReminderMockObject("", "1", contentType2, "AAABBB77Y66A444A", "123456", 3));
 		consumer.paymentUpdatesKafkaListener(getPaymentMessage("123", "456", true, null, 5d, source, "BBBPPP77J99A888A"));
 		Assertions.assertTrue(consumer.getPayload().contains("paid=true"));
 		Assertions.assertEquals(0L, consumer.getLatch().getCount());
     }
-    
+
     public void MockMessageStatusKafkaConsumerTest(boolean isRead) {
     	consumerMessStatus = (MessageStatusKafkaConsumer) ApplicationContextProvider.getBean("messageStatusEventKafkaConsumer");
 		mockSaveWithResponse(selectReminderMockObject("", "1", GENERIC, "AAABBB77Y66A444A", "123456", 3));
@@ -155,5 +157,21 @@ public class MessageKafkaConsumerTest extends AbstractMock{
 		mockGetPaymentByNoticeNumberAndFiscalCode();
 		MockMessageKafkaConsumerConsumerTest_MESSAGES(PAYMENT);
 	}
+	
+	@Test
+    public void MockSchedulerPaymentUpdatesKafkaConsumerTest() {
+    	consumer = (PaymentUpdatesKafkaConsumer) ApplicationContextProvider.getBean("paymentUpdatesEventKafkaConsumer");
+    	
+    	Reminder reminder = selectReminderMockObject("", "1", PAYMENT, "AAABBB77Y66A444A", "123456", 3);
+    	
+        mockGetPaymentsByRptId(reminder);
+    	mockSaveWithResponse(reminder);
+		
+		PaymentMessage message = getPaymentMessage("123", "456", true, null, 5d, "payments", "BBBPPP77J99A888A");
+		consumer.paymentUpdatesKafkaListener(message);
+		
+		Assertions.assertTrue(consumer.getPayload().contains("paid=true"));
+		Assertions.assertEquals(0L, consumer.getLatch().getCount());
+    }
 }
 

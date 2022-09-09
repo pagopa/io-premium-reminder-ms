@@ -10,7 +10,6 @@ public interface ReminderService {
 	void save(Reminder reminder);
 	void updateReminder(String reminderId, boolean isRead);
 	String healthCheck();
-	Reminder getPaymentByNoticeNumberAndFiscalCode(String noticeNumber, String payeeFiscalCode);
 	void getMessageToNotify();
 	void deleteMessage();
 	List<Reminder> getPaymentsByRptid(String rptId);

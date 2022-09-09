@@ -113,15 +113,6 @@ public class ReminderServiceImpl implements ReminderService {
 	}
 
 	@Override
-	public Reminder getPaymentByNoticeNumberAndFiscalCode(String noticeNumber, String fiscalCode) {
-
-		List<Reminder> listReminder = reminderRepository.getPaymentByNoticeNumberAndFiscalCode(noticeNumber, fiscalCode); 
-
-		return listReminder.isEmpty() ? null : listReminder.get(0);
-	}
-
-
-	@Override
 	public void getMessageToNotify() {
 
 		LocalDateTime todayTime = LocalDateTime.now(ZonedDateTime.now().getZone());

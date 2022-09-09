@@ -33,6 +33,7 @@ import it.gov.pagopa.reminder.model.Reminder;
 import it.gov.pagopa.reminder.producer.ReminderProducer;
 import it.gov.pagopa.reminder.repository.ReminderRepository;
 import it.gov.pagopa.reminder.restclient.proxy.api.DefaultApi;
+import it.gov.pagopa.reminder.restclient.proxy.model.PaymentRequestsGetResponse;
 import it.gov.pagopa.reminder.service.ReminderServiceImpl;
 
 public class AbstractMock {
@@ -79,6 +80,12 @@ public class AbstractMock {
 				.thenReturn(listReminder);
 	}
 
+	protected void mockGetPaymentsByRptId(Reminder reminder) {
+		List<Reminder> listReminder = new ArrayList<>();
+		listReminder.add(reminder);
+		Mockito.when(mockRepository.getPaymentByRptId(Mockito.anyString())).thenReturn(listReminder);
+	}
+	
 	protected void proxyKo(String detail) throws JsonProcessingException {
 		ProxyPaymentResponse dto = new ProxyPaymentResponse();
 		dto.setDetail_v2(detail);
@@ -93,6 +100,16 @@ public class AbstractMock {
 				mapper.writeValueAsString(dto).getBytes(), Charset.defaultCharset());
 		Mockito.when(mockDefaultApi.getPaymentInfo(ArgumentMatchers.anyString(), ArgumentMatchers.anyString()))
 				.thenThrow(errorResponse);
+	}
+	
+	protected void proxy(boolean dueDateIsNull) throws JsonProcessingException {
+		PaymentRequestsGetResponse mockPaymentRequestsGetResponse = new PaymentRequestsGetResponse();
+		if(dueDateIsNull) {
+			mockPaymentRequestsGetResponse.setDueDate("2022-05-16");
+		}
+		mockPaymentRequestsGetResponse.setIbanAccredito("IT39939410293855");
+		mockPaymentRequestsGetResponse.setImportoSingoloVersamento(80);
+		Mockito.when(mockDefaultApi.getPaymentInfo(ArgumentMatchers.anyString(), ArgumentMatchers.anyString())).thenReturn(mockPaymentRequestsGetResponse);
 	}
 
 	public void mockGetPaymentByNoticeNumberAndFiscalCodeWithResponse(Reminder reminder) {
