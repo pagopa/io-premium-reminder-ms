@@ -178,10 +178,15 @@ public class MockDeserializerIntegrationTest extends AbstractMock{
 		reminderDeserializer.deserialize(null, byteArrray);
 		Assertions.assertTrue(true);
 	}
-	protected void mockKafkaDeserializationErrorHandler(Exception unexpectedException) {
+	
+	protected void mockKafkaDeserializationErrorHandler(Exception unexpectedException, boolean recordIsNotNull) {
 		List<ConsumerRecord<?, ?>> records = new ArrayList<>();
-		ConsumerRecord<?, ?> record = new ConsumerRecord<>("message", 0, 439198, null, null);
-		records.add(record);
+		
+		if (recordIsNotNull) {
+			ConsumerRecord<?, ?> record = new ConsumerRecord<>("message", 0, 439198, null, null);
+			records.add(record);
+		}
+		
 		Map<String, Object> props = new HashMap<>();
 		props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "PLAINTEXT://localhost:9065");
 		props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
@@ -194,58 +199,44 @@ public class MockDeserializerIntegrationTest extends AbstractMock{
 		consumer.assign(assignment);
 
 		commonErrorHandler = (CommonErrorHandler) ApplicationContextProvider.getBean("commonErrorHandler");
-		commonErrorHandler.handleRemaining(unexpectedException, (List<ConsumerRecord<?, ?>>) records, consumer,
-				null);
+		commonErrorHandler.handleRemaining(unexpectedException, (List<ConsumerRecord<?, ?>>) records, consumer, null);
 	}
-	
+
 	@Test
 	public void test_DeserializationException() {
-		Exception deserializationException = new DeserializationException("Deserialization Exception", "Deserialization Exception".getBytes(), false, new Exception());
-		mockKafkaDeserializationErrorHandler(deserializationException);
+		Exception deserializationException = new DeserializationException("Deserialization Exception",
+				"Deserialization Exception".getBytes(), false, new Exception());
+		mockKafkaDeserializationErrorHandler(deserializationException, true);
 		Assertions.assertTrue(true);
 	}
-	
+
 	@Test
 	public void test_AvroDeserializerException() {
-		Exception avroDeserializerException = new AvroDeserializerException("Avro deserializer exception!", "Avro deserializer exception!".getBytes());
-		mockKafkaDeserializationErrorHandler(avroDeserializerException);
+		Exception avroDeserializerException = new AvroDeserializerException("Avro deserializer exception!",
+				"Avro deserializer exception!".getBytes());
+		mockKafkaDeserializationErrorHandler(avroDeserializerException, true);
 		Assertions.assertTrue(true);
 	}
-	
+
 	@Test
 	public void test_UnexpectedDataException() {
 		Exception unexpectedDataException = new UnexpectedDataException("Unexpected data exception!", new Object());
-		mockKafkaDeserializationErrorHandler(unexpectedDataException);
+		mockKafkaDeserializationErrorHandler(unexpectedDataException, true);
 		Assertions.assertTrue(true);
 	}
-	
+
 	@Test
 	public void test_SkipDataException() {
 		Exception skipDataException = new SkipDataException("Skip data exception!", new Object());
-		mockKafkaDeserializationErrorHandler(skipDataException);
+		mockKafkaDeserializationErrorHandler(skipDataException, true);
 		Assertions.assertTrue(true);
 	}
-	
+
 	@Test
-	public void mockKafkaDeserializationErrorHandler() {
-		List<ConsumerRecord<?, ?>> records = new ArrayList<>();
-		
-		Map<String, Object> props = new HashMap<>();
-		props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "PLAINTEXT://localhost:9065");
-		props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
-		props.put(ConsumerConfig.GROUP_ID_CONFIG, "baeldung");
-		props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, BytesDeserializer.class.getName());
-		props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, LongDeserializer.class.getName());
-		Consumer<?, ?> consumer = new KafkaConsumer<>(props);
-		Collection<TopicPartition> assignment = new ArrayList<>();
-		assignment.add(new TopicPartition("message", 0));
-		consumer.assign(assignment);
-		
-		Exception unexpectedDataException = new UnexpectedDataException("Unexpected data exception!", new Object());
-		
-		commonErrorHandler = (CommonErrorHandler) ApplicationContextProvider.getBean("commonErrorHandler");
-		commonErrorHandler.handleRemaining(unexpectedDataException, (List<ConsumerRecord<?, ?>>) records, consumer,
-				null);
+	public void mockKafkaDeserializationErrorHandlerConsumerRecordIsNull() {
+		Exception avroDeserializerException = new AvroDeserializerException("Avro deserializer exception!",
+				"Avro deserializer exception!".getBytes());
+		mockKafkaDeserializationErrorHandler(avroDeserializerException, false);
 		Assertions.assertTrue(true);
 	}
 }

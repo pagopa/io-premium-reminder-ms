@@ -164,7 +164,7 @@ public class MessageKafkaConsumerTest extends AbstractMock{
     	
     	Reminder reminder = selectReminderMockObject("", "1", PAYMENT, "AAABBB77Y66A444A", "123456", 3);
     	
-        mockGetPaymentsByRptId(reminder);
+    	mockFindIdWithResponse(reminder);
     	mockSaveWithResponse(reminder);
 		
 		PaymentMessage message = getPaymentMessage("12", "123", "456", true, null, 5d, "payments", "BBBPPP77J99A888A");
