@@ -14,6 +14,7 @@ import lombok.ToString;
 @ToString
 public class PaymentMessage {
 
+	String messageId;
 	String noticeNumber;
 	String payeeFiscalCode;
 	boolean paid;
@@ -21,4 +22,5 @@ public class PaymentMessage {
 	double amount;
 	String source;
 	String fiscalCode;
+
 }

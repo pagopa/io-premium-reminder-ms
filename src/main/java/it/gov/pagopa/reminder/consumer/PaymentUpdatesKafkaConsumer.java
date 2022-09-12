@@ -1,7 +1,6 @@
 package it.gov.pagopa.reminder.consumer;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 
@@ -31,12 +30,14 @@ public class PaymentUpdatesKafkaConsumer {
 			payload = message.toString();
 
 			if("payments".equalsIgnoreCase(message.getSource())) {
-				List<Reminder> reminders = reminderService.getPaymentsByRptid(message.getPayeeFiscalCode().concat(message.getNoticeNumber()));
-				reminders.stream().forEach(reminderToUpdate -> {				
+
+				Reminder reminderToUpdate = reminderService.findById(message.getMessageId());
+				if(reminderToUpdate!=null) {
 					reminderToUpdate.setPaidFlag(true);
 					reminderToUpdate.setPaidDate(LocalDateTime.now());
 					reminderService.save(reminderToUpdate);
-				});
+				}
+
 			}
 		}
 		this.latch.countDown();

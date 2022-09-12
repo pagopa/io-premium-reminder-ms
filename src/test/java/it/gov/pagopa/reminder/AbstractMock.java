@@ -218,9 +218,9 @@ public class AbstractMock {
 		return messageStatus;
 	}
 
-	protected PaymentMessage getPaymentMessage(String noticeNumber, String fiscalCodePayee, boolean paid, LocalDateTime d,
+	protected PaymentMessage getPaymentMessage(String messageId, String noticeNumber, String fiscalCodePayee, boolean paid, LocalDateTime d,
 			Double amount, String source, String fiscalCode) {
-		PaymentMessage pm = new PaymentMessage(noticeNumber, fiscalCodePayee, paid, d, amount, source, fiscalCode);
+		PaymentMessage pm = new PaymentMessage(messageId, noticeNumber, fiscalCodePayee, paid, d, amount, source, fiscalCode);
 		return pm;
 	}
 
