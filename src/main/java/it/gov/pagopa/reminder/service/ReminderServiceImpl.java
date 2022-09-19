@@ -139,6 +139,9 @@ public class ReminderServiceImpl implements ReminderService {
 					updateCounter(reminder);
 					reminderRepository.save(reminder);
 				} else if(!rptidMap.containsKey(reminder.getRptId())) {
+					/*  If rptId is not present in rptidMap, 
+						we send the notification to the IO backend. 
+						This avoids sending the same message multiple times. */
 					sendNotificationWithRetry(reminder);
 					rptidMap.put(reminder.getRptId(), true);
 				}
@@ -187,7 +190,6 @@ public class ReminderServiceImpl implements ReminderService {
 			if (proxyResp.isPaid()) {				
 				for (Reminder rem: reminders) {
 					rem.setPaidFlag(true);
-					rem.setPaidDate(LocalDateTime.now());
 					reminderRepository.save(rem);
 				}
 			} else {
@@ -304,8 +306,8 @@ public class ReminderServiceImpl implements ReminderService {
 	}
 
 	@Override
-	public int countFindById(String id) {
-		return reminderRepository.countFindById(id);
+	public int countById(String id) {
+		return reminderRepository.countById(id);
 	}
 
 }

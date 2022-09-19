@@ -198,7 +198,7 @@ public class MockDeserializerIntegrationTest extends AbstractMock{
 		assignment.add(new TopicPartition("message", 0));
 		consumer.assign(assignment);
 
-		commonErrorHandler = (CommonErrorHandler) ApplicationContextProvider.getBean("commonErrorHandler");
+		//commonErrorHandler = (CommonErrorHandler) ApplicationContextProvider.getBean("commonErrorHandler");
 		commonErrorHandler.handleRemaining(unexpectedException, (List<ConsumerRecord<?, ?>>) records, consumer, null);
 	}
 

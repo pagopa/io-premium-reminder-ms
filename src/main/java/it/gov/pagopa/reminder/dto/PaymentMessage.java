@@ -1,5 +1,6 @@
 package it.gov.pagopa.reminder.dto;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
@@ -22,5 +23,6 @@ public class PaymentMessage {
 	double amount;
 	String source;
 	String fiscalCode;
+	LocalDate paymentDateTime;
 
 }

@@ -47,7 +47,7 @@ public interface ReminderRepository extends MongoRepository<Reminder, String>{
 	@Query("{rptId:?0}")
 	List<Reminder> getPaymentByRptId(String rptId);
 	
-	int countFindById(String id);
+	int countById(String id);
 
 
 

@@ -13,5 +13,5 @@ public interface ReminderService {
 	void getMessageToNotify();
 	void deleteMessage();
 	List<Reminder> getPaymentsByRptid(String rptId);
-	int countFindById(String id);
+	int countById(String id);
 }

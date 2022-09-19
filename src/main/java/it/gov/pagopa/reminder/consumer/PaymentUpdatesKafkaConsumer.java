@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import it.gov.pagopa.reminder.dto.PaymentMessage;
 import it.gov.pagopa.reminder.model.Reminder;
 import it.gov.pagopa.reminder.service.ReminderService;
+import it.gov.pagopa.reminder.util.ReminderUtil;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -34,7 +35,7 @@ public class PaymentUpdatesKafkaConsumer {
 				Reminder reminderToUpdate = reminderService.findById(message.getMessageId());
 				if(reminderToUpdate!=null) {
 					reminderToUpdate.setPaidFlag(true);
-					reminderToUpdate.setPaidDate(LocalDateTime.now());
+					reminderToUpdate.setPaidDate(ReminderUtil.getLocalDateTime(message.getPaymentDateTime()));
 					reminderService.save(reminderToUpdate);
 				}
 
