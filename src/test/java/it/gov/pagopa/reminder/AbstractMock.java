@@ -33,6 +33,7 @@ import it.gov.pagopa.reminder.model.Reminder;
 import it.gov.pagopa.reminder.producer.ReminderProducer;
 import it.gov.pagopa.reminder.repository.ReminderRepository;
 import it.gov.pagopa.reminder.restclient.proxy.api.DefaultApi;
+import it.gov.pagopa.reminder.restclient.proxy.model.PaymentRequestsGetResponse;
 import it.gov.pagopa.reminder.service.ReminderServiceImpl;
 
 public class AbstractMock {
@@ -65,10 +66,6 @@ public class AbstractMock {
 	private String urlPayment;
 
 	
-	public void mockGetPaymentByNoticeNumber(Reminder reminder) {
-		Mockito.when(mockRepository.getPaymentByRptId(Mockito.anyString())).thenReturn(reminder);
-	}
-	
 	protected void mockSaveWithResponse(Reminder returnReminder) {
 		Mockito.when(mockRepository.save(Mockito.any(Reminder.class))).thenReturn(returnReminder);
 	}
@@ -83,6 +80,12 @@ public class AbstractMock {
 				.thenReturn(listReminder);
 	}
 
+	protected void mockGetPaymentsByRptId(Reminder reminder) {
+		List<Reminder> listReminder = new ArrayList<>();
+		listReminder.add(reminder);
+		Mockito.when(mockRepository.getPaymentByRptId(Mockito.anyString())).thenReturn(listReminder);
+	}
+	
 	protected void proxyKo(String detail) throws JsonProcessingException {
 		ProxyPaymentResponse dto = new ProxyPaymentResponse();
 		dto.setDetail_v2(detail);
@@ -97,6 +100,16 @@ public class AbstractMock {
 				mapper.writeValueAsString(dto).getBytes(), Charset.defaultCharset());
 		Mockito.when(mockDefaultApi.getPaymentInfo(ArgumentMatchers.anyString(), ArgumentMatchers.anyString()))
 				.thenThrow(errorResponse);
+	}
+	
+	protected void proxy(boolean dueDateIsNull) throws JsonProcessingException {
+		PaymentRequestsGetResponse mockPaymentRequestsGetResponse = new PaymentRequestsGetResponse();
+		if(dueDateIsNull) {
+			mockPaymentRequestsGetResponse.setDueDate("2022-05-16");
+		}
+		mockPaymentRequestsGetResponse.setIbanAccredito("IT39939410293855");
+		mockPaymentRequestsGetResponse.setImportoSingoloVersamento(80);
+		Mockito.when(mockDefaultApi.getPaymentInfo(ArgumentMatchers.anyString(), ArgumentMatchers.anyString())).thenReturn(mockPaymentRequestsGetResponse);
 	}
 
 	public void mockGetPaymentByNoticeNumberAndFiscalCodeWithResponse(Reminder reminder) {
@@ -124,7 +137,7 @@ public class AbstractMock {
 		Mockito.when(mockRepository.deletePaidMessage(Mockito.anyInt(), Mockito.anyString(), Mockito.any(LocalDate.class))).thenReturn(retValue);
 	}
 
-	protected void mockGetPaymentByRptId(Reminder rem) {
+	protected void mockGetPaymentByRptId(List<Reminder> rem) {
 		Mockito.when(mockRepository.getPaymentByRptId(Mockito.anyString())).thenReturn(rem);
 	}
 
@@ -205,9 +218,9 @@ public class AbstractMock {
 		return messageStatus;
 	}
 
-	protected PaymentMessage getPaymentMessage(String noticeNumber, String fiscalCodePayee, boolean paid, LocalDate d,
-			Double amount, String source, String fiscalCode) {
-		PaymentMessage pm = new PaymentMessage(noticeNumber, fiscalCodePayee, paid, d, amount, source, fiscalCode);
+	protected PaymentMessage getPaymentMessage(String messageId, String noticeNumber, String fiscalCodePayee, boolean paid, LocalDateTime d,
+			Double amount, String source, String fiscalCode, LocalDate paymentDateTime) {
+		PaymentMessage pm = new PaymentMessage(messageId, noticeNumber, fiscalCodePayee, paid, d, amount, source, fiscalCode, paymentDateTime);
 		return pm;
 	}
 

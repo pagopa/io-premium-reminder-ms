@@ -15,7 +15,7 @@ import it.gov.pagopa.reminder.model.Reminder;
 public class ReminderUtil {
 
 	private ReminderUtil() {}
-	
+
 	private static final String UNDEFINED = "undefined";
 
 	public static void checkNullInMessage(Reminder reminder) {
@@ -37,16 +37,29 @@ public class ReminderUtil {
 			}
 		}
 	}
-	
+
 	public static Map<String, String> getErrorMap(String message) {
 		Map<String, String> properties = new HashMap<>();
 		String creationTime = LocalDateTime.now().toString();
 		properties.put(creationTime, message);
 		return properties;
 	}
-	
+
 	public static LocalDateTime getLocalDateTime(LocalDate date) {
-		return LocalDateTime.of(date, LocalTime.of(12,0));
+		LocalDateTime localDateTime = null;
+		if(date!=null) {
+			localDateTime = LocalDateTime.of(date, LocalTime.of(12,0));
+		}
+		return localDateTime;
 	}
+
+	public static LocalDate getLocalDateFromString(String date) {
+		LocalDate localDate = null;
+		if (StringUtils.isNotEmpty(date)) {
+			localDate = LocalDate.parse(date);
+		}
+		return localDate;
+	}
+
 
 }
