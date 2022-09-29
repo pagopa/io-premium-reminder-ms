@@ -85,7 +85,7 @@ public class MessageKafkaConsumerTest extends AbstractMock{
     public void MockSchedulerNotifyIntegrationPaymentUpdatesKafkaConsumerTest(String contentType, String contentType2, String source) {
     	mockGetPaymentByNoticeNumberAndFiscalCodeWithResponse(selectReminderMockObject("", "1", contentType, "AAABBB77Y66A444A", "123456", 3));
 		mockSaveWithResponse(selectReminderMockObject("", "1", contentType2, "AAABBB77Y66A444A", "123456", 3));
-		paymentUpdatesEventKafkaConsumer.paymentUpdatesKafkaListener(getPaymentMessage("12", "123", "456", true, null, 5d, source, "BBBPPP77J99A888A", LocalDate.now()));
+		paymentUpdatesEventKafkaConsumer.paymentUpdatesKafkaListener(getPaymentMessage("12", "123", "456", true, null, 5d, source, "BBBPPP77J99A888A", LocalDateTime.now()));
 		Assertions.assertTrue(paymentUpdatesEventKafkaConsumer.getPayload().contains("paid=true"));
 		Assertions.assertEquals(0L, paymentUpdatesEventKafkaConsumer.getLatch().getCount());
     }
@@ -157,7 +157,7 @@ public class MessageKafkaConsumerTest extends AbstractMock{
     	mockFindIdWithResponse(reminder);
     	mockSaveWithResponse(reminder);
 		
-		PaymentMessage message = getPaymentMessage("12", "123", "456", true, null, 5d, "payments", "BBBPPP77J99A888A", LocalDate.now());
+		PaymentMessage message = getPaymentMessage("12", "123", "456", true, null, 5d, "payments", "BBBPPP77J99A888A", LocalDateTime.now());
 		paymentUpdatesEventKafkaConsumer.paymentUpdatesKafkaListener(message);
 		
 		Assertions.assertTrue(paymentUpdatesEventKafkaConsumer.getPayload().contains("paid=true"));
