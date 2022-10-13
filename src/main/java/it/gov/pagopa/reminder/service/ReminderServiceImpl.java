@@ -14,7 +14,6 @@ import java.util.function.Function;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -238,7 +237,10 @@ public class ReminderServiceImpl implements ReminderService {
 			ProxyPaymentResponse res;
 			try {
 				res = mapper.readValue(errorException.getResponseBodyAsString(), ProxyPaymentResponse.class);
-				if (res.getDetail_v2().equals("PPT_RPT_DUPLICATA") && errorException.getStatusCode().equals(HttpStatus.INTERNAL_SERVER_ERROR)) {
+				int code = errorException.getStatusCode().value();
+				if ((code == 400 || code == 404 || code == 409) && 
+						(res.getDetail_v2().equals("PPT_RPT_DUPLICATA") || res.getDetail_v2().equals("PPT_PAGAMENTO_DUPLICATO")
+								|| res.getDetail_v2().equals("PAA_PAGAMENTO_DUPLICATO"))) {
 
 					LocalDate dueDate = ReminderUtil.getLocalDateFromString(res.getDuedate());	
 					proxyResp.setPaid(true);
