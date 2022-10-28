@@ -23,7 +23,7 @@ microservice-chart:
     port: 9090
   ingress:
     create: true
-    host: "weuprod01.reminder.internal.io.pagopa.it"
+    host: "weuprod01.messages.internal.io.pagopa.it"
     path: "/(api/v1/reminder/.*)"
   resources:
     requests:
