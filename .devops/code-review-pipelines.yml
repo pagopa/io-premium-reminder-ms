@@ -8,11 +8,11 @@
 trigger: none
 
 pool:
-  vmImage: 'ubuntu-20.04'
+  vmImage: "ubuntu-20.04"
 
 variables:
   MAVEN_CACHE_FOLDER: $(Pipeline.Workspace)/.m2/repository
-  MAVEN_OPTS: '-Dmaven.repo.local=$(MAVEN_CACHE_FOLDER)'
+  MAVEN_OPTS: "-Dmaven.repo.local=$(MAVEN_CACHE_FOLDER)"
 
 steps:
   - task: Cache@2
@@ -25,10 +25,10 @@ steps:
     displayName: Cache Maven local repo
 
   - task: SonarCloudPrepare@1
-    displayName: 'Prepare SonarCloud analysis configuration'
+    displayName: "Prepare SonarCloud analysis configuration"
     inputs:
-      SonarCloud: '$(SONARCLOUD_SERVICE_CONN)'
-      organization: '$(SONARCLOUD_ORG)'
+      SonarCloud: "$(SONARCLOUD_SERVICE_CONN)"
+      organization: "$(SONARCLOUD_ORG)"
       scannerMode: Other
       extraProperties: |
         sonar.projectKey=$(SONARCLOUD_PROJECT_KEY)
@@ -36,17 +36,17 @@ steps:
 
   - task: Maven@3
     inputs:
-      mavenPomFile: 'pom.xml'
-      mavenOptions: '-Xmx3072m $(MAVEN_OPTS)'
-      javaHomeOption: 'JDKVersion'
-      jdkVersionOption: '1.11'
-      jdkArchitectureOption: 'x64'
+      mavenPomFile: "pom.xml"
+      mavenOptions: "-Xmx3072m $(MAVEN_OPTS)"
+      javaHomeOption: "JDKVersion"
+      jdkVersionOption: "1.11"
+      jdkArchitectureOption: "x64"
       publishJUnitResults: true
-      testResultsFiles: '**/surefire-reports/TEST-*.xml'
-      goals: 'package'
+      testResultsFiles: "**/surefire-reports/TEST-*.xml"
+      goals: "package"
       sonarQubeRunAnalysis: true
 
   - task: SonarCloudPublish@1
-    displayName: 'Publish SonarCloud results on build summary'
+    displayName: "Publish SonarCloud results on build summary"
     inputs:
-      pollingTimeoutSec: '300'
+      pollingTimeoutSec: "300"

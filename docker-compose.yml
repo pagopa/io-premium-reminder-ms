@@ -2,7 +2,7 @@ version: '2'
 
 services:
   app:
-    image: 'microservice:latest'
+    image: 'reminder:latest'
     cpus: 1.0
     mem_limit: "3g"
     build:
@@ -14,3 +14,5 @@ services:
       - SPRING_PROFILES_ACTIVE=prod
       - SPRING_SERVLET_MULTIPART_MAX_FILE_SIZE=200MB
       - JAVA_OPTS=-XX:+UseG1GC -XX:MaxGCPauseMillis=100 -XX:+UseStringDeduplication
+      - HEALTH_VALUE = Reminder-dev-end-var-docker
+      - QUARTZ_SCHEDULER_TIMER_NOTIFY=0 * * ? * *
