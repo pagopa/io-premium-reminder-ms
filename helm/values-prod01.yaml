@@ -45,7 +45,7 @@ microservice-chart:
           value: "70"
   envConfig:
     # required
-    WEBSITE_SITE_NAME: "io-p-weuprod01-premium-reminder-ms" # required to show cloud role name in application insights
+    WEBSITE_SITE_NAME: "io-p-weuprod01-reminder-ms" # required to show cloud role name in application insights
     # app specific
 
   envSecret:
