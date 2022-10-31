@@ -43,16 +43,59 @@ microservice-chart:
       - type: cpu
         metadata:
           type: Utilization
-          value: "70"
+          value: "70"   
   envConfig:
     # required
-    WEBSITE_SITE_NAME: "io-p-weubeta-reminder-ms" # required to show cloud role name in application insights
+    WEBSITE_SITE_NAME: "io-p-weubeta-reminder-ms"  # required to show cloud role name in application insights
+    REMINDER_MAX:"10"
+    REMINDER_DAY:"0"
+    PAYMENT_DAY:"0"
+    TEST_ACTIVE:"false"
+    MAX_READ_MESSAGE:"10"
+    MAX_PAID_MESSAGE:"20"
+    START_DAY:"60"
+    SENDER_SERVICE_NAME:"Reminder"
+    SENDER_ORGANIZATION_NAME:"PagoPA"
+    SENDER_DEPARTMENT_NAME:"AppIO"
+    QUARTZ_SCHEDULER_TIMER_NOTIFY:"0 /3 * ? * *"
+    QUARTZ_SCHEDULER_TIMER_DELETE:"0 * * ? * *"
+    SCHEDULER_REMINDER_NOTIFY_ACTIVE:"false"
+    SCHEDULER_REMINDER_DELETE_ACTIVE:"false"
+    KAFKA_MESSAGE:"message"
+    KAFKA_STATUS:"messages-status"
+    KAFKA_PAYMENT:"payment-updates"
+    KAFKA_SEND:"message-send"
+    RESTCALL_INTERVAL_FUNCTION:"10000"
+    RESTCALL_MAX_ATTEMPTS:"3"
+    ENABLE_REST_KEY:"false"
+    IS_ACTIVE_MESSAGE_CONSUMER:"true"
+    IS_ACTIVE_MESSAGESTATUS_CONSUMER:"true"
+    IS_ACTIVE_PAYMENT_CONSUMER:"true"
+    IS_ACTIVE_MESSAGESEND_CONSUMER:"true"
+    PROXY_ERROR_STATUSCODE:"PAA_PAGAMENTO_DUPLICATO,PPT_RPT_DUPLICATA,PPT_PAGAMENTO_DUPLICATO"
+    PROXY_ENDPOINT:"https://api.platform.pagopa.it/checkout/auth/payments/v1"  
+    SECURITY_PROTOCOL_REMINDER:"SASL_SSL"
+    SASL_MECHANISM_REMINDER:"PLAIN" 
+    SECURITY_PROTOCOL_SHARED:"SASL_SSL"
+    SASL_MECHANISM_SHARED:"SASL_SSL"  
+    BOOTSTRAP_SERVER_MESSAGESEND:""
+    BOOTSTRAP_SERVER_SHARED:""    
+    BOOTSTRAP_SERVER_MESSAGESTATUS:""
+    BOOTSTRAP_SERVER_MESSAGE:""
     # app specific
 
   envSecret:
     # required
     APPLICATIONINSIGHTS_CONNECTION_STRING: "appinsights-connection-string"
-    # app specific
+    MONGO_DATABASE:"db"  # secrets
+    KAFKA_URL_MESSAGE:"" #secrets - message receved from IO
+    KAFKA_URL_MESSAGESTATUS:"" #secrets - change message status receved from IO
+    KAFKA_URL_MESSAGESEND:"" # secrets - internal queue for send message to notify
+    KAFKA_URL_SHARED:"" #secrets - queue messageUpdates from payment updater
+    MONGO_DATABASE_URI:"" # secrets
+    IO_NOTIFY_ENDPOINT:""  #endpoint notify service
+    PAYMENTUPDATER_ENDPOINT:"" #endpoint payment updater - implemented for call proxy by the payment updater, now not used. do not fill
+    PROXY_ENDPOINT_SUBSCRIPTION_KEY:"pagopa-proxy-prod-subscription-key"    
   keyvault:
     name: "io-p-messages-kv"
     tenantId: "7788edaf-0346-4068-9d79-c868aed15b3d"
