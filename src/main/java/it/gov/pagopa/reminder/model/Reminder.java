@@ -13,46 +13,45 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 
 import it.gov.pagopa.reminder.deserializer.CustomLocalDateArrayDeserializer;
 import it.gov.pagopa.reminder.util.Constants;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@Getter 
-@Setter 
+@Getter
+@Setter
 @NoArgsConstructor
 @JsonIgnoreProperties
 @Document
 @ToString(callSuper = true)
-public class Reminder extends Message{
+public class Reminder extends Message {
 
 	private boolean readFlag;
 	private boolean paidFlag;
-		
+
 	@JsonDeserialize(using = LocalDateTimeDeserializer.class)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Constants.DATE_FORMAT_DESERIALIZER)
 	private LocalDateTime insertionDate;
-	
+
 	@JsonDeserialize(using = CustomLocalDateArrayDeserializer.class)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Constants.DATE_FORMAT_DESERIALIZER)
 	private List<LocalDateTime> dateReminder = new ArrayList<>();
-	
+
 	@JsonDeserialize(using = LocalDateTimeDeserializer.class)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Constants.DATE_FORMAT_DESERIALIZER)
 	private LocalDateTime lastDateReminder;
-	
+
 	private int maxReadMessageSend;
 	private int maxPaidMessageSend;
-	
+
 	@JsonDeserialize(using = LocalDateTimeDeserializer.class)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Constants.DATE_FORMAT_DESERIALIZER)
 	private LocalDateTime readDate;
-	
+
 	@JsonDeserialize(using = LocalDateTimeDeserializer.class)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Constants.DATE_FORMAT_DESERIALIZER)
 	private LocalDateTime paidDate;
-	
+
 	private String rptId;
 
 }
