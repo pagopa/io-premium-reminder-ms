@@ -43,10 +43,10 @@ microservice-chart:
       - type: cpu
         metadata:
           type: Utilization
-          value: "70"   
- envConfig:
+          value: "70"
+  envConfig:
     # required
-    WEBSITE_SITE_NAME: "io-p-weubeta-reminder-ms"  # required to show cloud role name in application insights
+    WEBSITE_SITE_NAME: "io-p-weubeta-reminder-ms" # required to show cloud role name in application insights
     REMINDER_MAX: "10"
     REMINDER_DAY: "0"
     PAYMENT_DAY: "0"
@@ -73,29 +73,29 @@ microservice-chart:
     IS_ACTIVE_PAYMENT_CONSUMER: "true"
     IS_ACTIVE_MESSAGESEND_CONSUMER: "true"
     PROXY_ERROR_STATUSCODE: "PAA_PAGAMENTO_DUPLICATO,PPT_RPT_DUPLICATA,PPT_PAGAMENTO_DUPLICATO"
-    PROXY_ENDPOINT: "https://api.platform.pagopa.it/checkout/auth/payments/v1"  
+    PROXY_ENDPOINT: "https://api.platform.pagopa.it/checkout/auth/payments/v1"
     SECURITY_PROTOCOL_REMINDER: "SASL_SSL"
-    SASL_MECHANISM_REMINDER: "PLAIN" 
+    SASL_MECHANISM_REMINDER: "PLAIN"
     SECURITY_PROTOCOL_SHARED: "SASL_SSL"
-    SASL_MECHANISM_SHARED: "SASL_SSL"  
+    SASL_MECHANISM_SHARED: "SASL_SSL"
     BOOTSTRAP_SERVER_MESSAGESEND: "io-p-messages-weu-prod01-evh-ns.servicebus.windows.net:9093" # internal queue for send message to notify
     BOOTSTRAP_SERVER_SHARED: "io-p-payments-weu-prod01-evh-ns.servicebus.windows.net:9093" # queue messageUpdates from payment updater
     BOOTSTRAP_SERVER_MESSAGESTATUS: "io-p-messages-weu-prod01-evh-ns.servicebus.windows.net:9093" # change message status receved from IO
     BOOTSTRAP_SERVER_MESSAGE: "io-p-messages-weu-prod01-evh-ns.servicebus.windows.net:9093" # message receved from IO
     MONGO_DATABASE: "db"
-    IO_NOTIFY_ENDPOINT: "https://api-app.internal.io.pagopa.it"  #endpoint notify service
+    IO_NOTIFY_ENDPOINT: "https://api-app.internal.io.pagopa.it" #endpoint notify service
     PAYMENTUPDATER_ENDPOINT: "https://api-app.internal.io.pagopa.it" #endpoint payment updater - implemented for call proxy by the payment updater, now not used. do not fill
     # app specific
 
   envSecret:
     # required
     APPLICATIONINSIGHTS_CONNECTION_STRING: "appinsights-connection-string"
-    MONGO_DATABASE_URI: "io-p-messages-reminder-mongodb-account-connection-string"  # secrets
+    MONGO_DATABASE_URI: "io-p-messages-reminder-mongodb-account-connection-string" # secrets
     KAFKA_URL_MESSAGE: "messages-io-p-messages-weu-prod01-evh-reminder-jaas-connection-string" #secrets - message receved from IO
     KAFKA_URL_MESSAGESTATUS: "messages-io-p-message-status-weu-prod01-evh-reminder-jaas-connection-string" #secrets - change message status receved from IO
     KAFKA_URL_MESSAGESEND: "messages-io-p-message-reminder-send-weu-prod01-evh-reminder-jaas-connection-string" # secrets - internal queue for send message to notify
     KAFKA_URL_SHARED: "payments-io-p-payment-updates-weu-prod01-evh-reminder-jaas-connection-string" #secrets - queue messageUpdates from payment updater
-    PROXY_ENDPOINT_SUBSCRIPTION_KEY: "pagopa-proxy-prod-subscription-key"   
+    PROXY_ENDPOINT_SUBSCRIPTION_KEY: "pagopa-proxy-prod-subscription-key"
     PAYMENTUPDATER_ENDPOINT_SUBSCRIPTION_KEY: "io-p-reminder-payment-api-subscription-key" # secret - subscription key used to reach payment-updater via APIM
     IO_NOTIFY_ENDPOINT_SUBSCRIPTION_KEY: "io-p-reminder-subscription-key" # secret - subscription key used to reach io-fn-service-messages via APIM
     # app specific
