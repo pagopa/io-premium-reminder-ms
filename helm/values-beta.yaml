@@ -2,7 +2,7 @@ microservice-chart:
   namespace: "messages"
   image:
     repository: "iopcommonacr.azurecr.io/io-premium-reminder-ms"
-    tag: "2.3.0"
+    tag: "0.6.1"
     pullPolicy: Always
   livenessProbe:
     httpGet:
@@ -25,7 +25,6 @@ microservice-chart:
     create: true
     host: "weubeta.messages.internal.io.pagopa.it"
     path: "/(api/v1/reminder/.*)"
-
   resources:
     requests:
       memory: "512Mi"
@@ -86,7 +85,6 @@ microservice-chart:
     IO_NOTIFY_ENDPOINT: "https://api-app.internal.io.pagopa.it" #endpoint notify service
     PAYMENTUPDATER_ENDPOINT: "https://api-app.internal.io.pagopa.it" #endpoint payment updater - implemented for call proxy by the payment updater, now not used. do not fill
     # app specific
-
   envSecret:
     # required
     APPLICATIONINSIGHTS_CONNECTION_STRING: "appinsights-connection-string"
