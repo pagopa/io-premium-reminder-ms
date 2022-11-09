@@ -371,13 +371,18 @@
 			                         dest="${project.basedir}/src/main/resources/avro"
 			                         verbose="false"
 			                         usetimestamp="true"/>
-			                     <get src="https://raw.githubusercontent.com/pagopa/io-functions-messages-cqrs/ICC-232_add_message_status_avro_publish_handler/avro/message-status.json"
+			                     <get src="https://raw.githubusercontent.com/pagopa/io-functions-messages-cqrs/master/avro/message-status.json"
 			                         dest="${project.basedir}/src/main/resources/avro"
 			                         verbose="false"
 			                         usetimestamp="true"/>
 			                    <!-- download swagger proxy pagopa-->
 			                    <get src="https://raw.githubusercontent.com/pagopa/io-pagopa-proxy/main/api-spec/api-pagopa-proxy.yaml"
-			                         dest="${project.basedir}/src/main/resources"
+			                         dest="${project.basedir}/src/main/resources/openapi/"
+			                         verbose="false"
+			                         usetimestamp="true"/>
+								<!-- download swagger service messages-->
+			                    <get src="https://raw.githubusercontent.com/pagopa/io-functions-service-messages/master/openapi/index.yaml"
+			                         dest="${project.basedir}/src/main/resources/openapi/service-messages.yaml"
 			                         verbose="false"
 			                         usetimestamp="true"/>	
 			                 </target>
@@ -430,18 +435,44 @@
 			    <version>2.4.7</version>
 			    <executions>
 			        <execution>
+						<id>1</id>
 			            <goals>
 			                <goal>generate</goal>
 			            </goals>
 			            <configuration>
-			                <inputSpec>${basedir}/src/main/resources/api-pagopa-proxy.yaml</inputSpec>
+			                <inputSpec>${basedir}/src/main/resources/openapi/api-pagopa-proxy.yaml</inputSpec>
 			                <language>java</language>
 			                <library>resttemplate</library>
 			                <output>${project.basedir}/target/generated-sources/</output>
 			
-			                <apiPackage>it.gov.pagopa.reminder.restclient.proxy.api</apiPackage>
-			                <modelPackage>it.gov.pagopa.reminder.restclient.proxy.model</modelPackage>
-			                <invokerPackage>it.gov.pagopa.reminder.restclient.proxy</invokerPackage>
+			                <apiPackage>it.gov.pagopa.reminder.restclient.pagopaproxy.api</apiPackage>
+			                <modelPackage>it.gov.pagopa.reminder.restclient.pagopaproxy.model</modelPackage>
+			                <invokerPackage>it.gov.pagopa.reminder.restclient.pagopaproxy</invokerPackage>
+			
+			                <generateApiTests>false</generateApiTests>
+			                <generateModelTests>false</generateModelTests>
+			                <generateApiDocumentation>false</generateApiDocumentation>
+			                <generateModelDocumentation>false</generateModelDocumentation>
+			                <configOptions>
+			                    <dateLibrary>java8</dateLibrary>
+	
+			                </configOptions>
+			            </configuration>
+			        </execution>
+					<execution>
+						<id>2</id>
+			            <goals>
+			                <goal>generate</goal>
+			            </goals>
+			            <configuration>
+			                <inputSpec>${basedir}/src/main/resources/openapi/service-messages.yaml</inputSpec>
+			                <language>java</language>
+			                <library>resttemplate</library>
+			                <output>${project.basedir}/target/generated-sources/</output>
+			
+			                <apiPackage>it.gov.pagopa.reminder.restclient.servicemessages.api</apiPackage>
+			                <modelPackage>it.gov.pagopa.reminder.restclient.servicemessages.model</modelPackage>
+			                <invokerPackage>it.gov.pagopa.reminder.restclient.servicemessages</invokerPackage>
 			
 			                <generateApiTests>false</generateApiTests>
 			                <generateModelTests>false</generateModelTests>

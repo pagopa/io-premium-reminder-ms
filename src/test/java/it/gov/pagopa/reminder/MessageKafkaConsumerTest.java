@@ -6,7 +6,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +30,6 @@ import it.gov.pagopa.reminder.consumer.ReminderKafkaConsumer;
 import it.gov.pagopa.reminder.dto.PaymentMessage;
 import it.gov.pagopa.reminder.model.Reminder;
 import it.gov.pagopa.reminder.producer.ReminderProducer;
-import it.gov.pagopa.reminder.util.RestTemplateUtils;
 
 @SpringBootTest(classes = Application.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @RunWith(SpringRunner.class)
@@ -61,9 +59,6 @@ public class MessageKafkaConsumerTest extends AbstractMock {
 
 	@Autowired
 	MessageKafkaConsumer messageKafkaConsumer;
-
-	@InjectMocks
-	RestTemplateUtils util;
 
 	@Value("${notification.notifyEndpoint}")
 	private String notifyEndpoint;

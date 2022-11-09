@@ -34,9 +34,8 @@ import it.gov.pagopa.reminder.dto.request.ProxyPaymentResponse;
 import it.gov.pagopa.reminder.model.Reminder;
 import it.gov.pagopa.reminder.producer.ReminderProducer;
 import it.gov.pagopa.reminder.repository.ReminderRepository;
-import it.gov.pagopa.reminder.restclient.proxy.ApiClient;
-import it.gov.pagopa.reminder.restclient.proxy.api.DefaultApi;
-import it.gov.pagopa.reminder.restclient.proxy.model.PaymentRequestsGetResponse;
+import it.gov.pagopa.reminder.restclient.pagopaproxy.model.PaymentRequestsGetResponse;
+import it.gov.pagopa.reminder.restclient.servicemessages.model.NotificationInfo;
 import it.gov.pagopa.reminder.util.ApplicationContextProvider;
 import it.gov.pagopa.reminder.util.Constants;
 import it.gov.pagopa.reminder.util.ReminderUtil;
@@ -54,9 +53,16 @@ public class ReminderServiceImpl implements ReminderService {
 	@Autowired
 	RestTemplate restTemplate;
 	@Autowired
-	DefaultApi defaultApi;
+	it.gov.pagopa.reminder.restclient.pagopaproxy.api.DefaultApi defaultApi;
 	@Autowired
-	ApiClient apiClient;
+	it.gov.pagopa.reminder.restclient.pagopaproxy.ApiClient apiClient;
+
+	@Autowired
+	it.gov.pagopa.reminder.restclient.servicemessages.api.DefaultApi defaultServiceMessagesApi;
+
+	@Autowired
+	it.gov.pagopa.reminder.restclient.servicemessages.ApiClient serviceMessagesApiClient;
+
 	@Value("${interval.function}")
 	private int intervalFunction;
 	@Value("${attempts.max}")
@@ -89,6 +95,12 @@ public class ReminderServiceImpl implements ReminderService {
 
 	@Value("${test.active}")
 	private boolean isTest;
+
+	@Value("${notification.request}")
+	private String serviceMessagesUrl;
+	@Value("${notification_endpoint_subscription_key}")
+	private String notifyEndpointKey;
+
 	@Autowired
 	ReminderProducer remProd;
 
@@ -221,12 +233,40 @@ public class ReminderServiceImpl implements ReminderService {
 		return "";
 	}
 
+	public void sendReminderNotification(Reminder reminder) {
+		try {
+
+			NotificationInfo notificationInfoBody = new NotificationInfo();
+			notificationInfoBody.setFiscalCode(reminder.getFiscalCode());
+			notificationInfoBody.setMessageId(reminder.getId());
+			String notificationType = isPayment(reminder)
+					? reminder.getDueDate().plusDays(1).isEqual(LocalDateTime.now()) ? "REMINDER_PAYMENT_LAST"
+							: "REMINDER_PAYMENT"
+					: "REMINDER_READ";
+			notificationInfoBody.setNotificationType(notificationType);
+
+			serviceMessagesApiClient.addDefaultHeader("Ocp-Apim-Subscription-Key", notifyEndpointKey);
+			serviceMessagesApiClient.setBasePath(serviceMessagesUrl);
+
+			defaultServiceMessagesApi.setApiClient(serviceMessagesApiClient);
+			defaultServiceMessagesApi.notify(notificationInfoBody);
+
+		} catch (HttpServerErrorException errorException) {
+			switch (errorException.getStatusCode()) {
+				case NOT_FOUND:
+					return;
+				default:
+					throw errorException;
+			}
+		}
+	}
+
 	private ProxyResponse callProxyCheck(String rptId) {
 
 		ProxyResponse proxyResp = new ProxyResponse();
 		try {
 			if (enableRestKey) {
-				apiClient.setApiKey(proxyEndpointKey);
+				apiClient.addDefaultHeader("Ocp-Apim-Subscription-Key", proxyEndpointKey);
 			}
 			apiClient.setBasePath(urlProxy);
 
@@ -255,9 +295,9 @@ public class ReminderServiceImpl implements ReminderService {
 						proxyResp.setDueDate(dueDate);
 
 					}
-					
+
 					proxyResp.setPaid(false);
-					
+
 				} else {
 					throw errorException;
 				}
@@ -266,7 +306,7 @@ public class ReminderServiceImpl implements ReminderService {
 			} catch (JsonProcessingException e) {
 				log.error(e.getMessage());
 			}
-			
+
 			return proxyResp;
 		}
 	}
