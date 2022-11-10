@@ -36,6 +36,7 @@ import it.gov.pagopa.reminder.producer.ReminderProducer;
 import it.gov.pagopa.reminder.repository.ReminderRepository;
 import it.gov.pagopa.reminder.restclient.pagopaproxy.model.PaymentRequestsGetResponse;
 import it.gov.pagopa.reminder.restclient.servicemessages.model.NotificationInfo;
+import it.gov.pagopa.reminder.restclient.servicemessages.model.NotificationType;
 import it.gov.pagopa.reminder.util.ApplicationContextProvider;
 import it.gov.pagopa.reminder.util.Constants;
 import it.gov.pagopa.reminder.util.ReminderUtil;
@@ -239,10 +240,11 @@ public class ReminderServiceImpl implements ReminderService {
 			NotificationInfo notificationInfoBody = new NotificationInfo();
 			notificationInfoBody.setFiscalCode(reminder.getFiscalCode());
 			notificationInfoBody.setMessageId(reminder.getId());
-			String notificationType = isPayment(reminder)
-					? reminder.getDueDate().plusDays(1).isEqual(LocalDateTime.now()) ? "REMINDER_PAYMENT_LAST"
-							: "REMINDER_PAYMENT"
-					: "REMINDER_READ";
+			NotificationType notificationType = isPayment(reminder)
+					? reminder.getDueDate().plusDays(1).isEqual(LocalDateTime.now())
+							? NotificationType.REMINDER_PAYMENT_LAST
+							: NotificationType.REMINDER_PAYMENT
+					: NotificationType.REMINDER_READ;
 			notificationInfoBody.setNotificationType(notificationType);
 
 			serviceMessagesApiClient.addDefaultHeader("Ocp-Apim-Subscription-Key", notifyEndpointKey);
