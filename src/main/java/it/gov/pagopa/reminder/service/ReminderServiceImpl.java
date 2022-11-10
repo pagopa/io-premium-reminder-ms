@@ -176,7 +176,6 @@ public class ReminderServiceImpl implements ReminderService {
 				log.error(e.getMessage());
 			}
 		}
-
 	}
 
 	@Override
@@ -262,6 +261,7 @@ public class ReminderServiceImpl implements ReminderService {
 				case NOT_FOUND:
 					return;
 				default:
+					log.error("Error while calling notify|" + errorException.getMessage());
 					throw errorException;
 			}
 		}
