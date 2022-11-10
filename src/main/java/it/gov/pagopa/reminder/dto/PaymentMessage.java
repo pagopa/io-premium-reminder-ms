@@ -1,6 +1,5 @@
 package it.gov.pagopa.reminder.dto;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
@@ -9,7 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Getter
-//@Setter
+// @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString

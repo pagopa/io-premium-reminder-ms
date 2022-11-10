@@ -39,6 +39,7 @@ import it.gov.pagopa.reminder.restclient.servicemessages.model.NotificationInfo;
 import it.gov.pagopa.reminder.restclient.servicemessages.model.NotificationType;
 import it.gov.pagopa.reminder.util.ApplicationContextProvider;
 import it.gov.pagopa.reminder.util.Constants;
+import it.gov.pagopa.reminder.util.DateUtils;
 import it.gov.pagopa.reminder.util.ReminderUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -201,7 +202,8 @@ public class ReminderServiceImpl implements ReminderService {
 		ProxyResponse proxyResp = callProxyCheck(reminder.getRptId());
 
 		LocalDate localDateProxyDueDate = proxyResp.getDueDate();
-		LocalDate reminderDueDate = reminder.getDueDate() != null ? reminder.getDueDate().toLocalDate() : null;
+		LocalDate reminderDueDate = Optional.ofNullable(reminder.getDueDate()).map(dueDate -> dueDate.toLocalDate())
+				.orElse(null);
 		List<Reminder> reminders = reminderRepository.getPaymentByRptId(reminder.getRptId());
 
 		if (localDateProxyDueDate != null && localDateProxyDueDate.equals(reminderDueDate)) {
@@ -240,11 +242,14 @@ public class ReminderServiceImpl implements ReminderService {
 			NotificationInfo notificationInfoBody = new NotificationInfo();
 			notificationInfoBody.setFiscalCode(reminder.getFiscalCode());
 			notificationInfoBody.setMessageId(reminder.getId());
-			NotificationType notificationType = isPayment(reminder)
-					? reminder.getDueDate().plusDays(1).isEqual(LocalDateTime.now())
-							? NotificationType.REMINDER_PAYMENT_LAST
-							: NotificationType.REMINDER_PAYMENT
-					: NotificationType.REMINDER_READ;
+			NotificationType notificationType = Optional.of(reminder).filter(rem -> isPayment(rem))
+					.map(r -> DateUtils.resetLocalDateTimeToSimpleDate(r.getDueDate()))
+					.map(dueDate -> dueDate.minusDays(1)
+							.isEqual(DateUtils.resetLocalDateTimeToSimpleDate(LocalDateTime.now()))
+									? NotificationType.REMINDER_PAYMENT_LAST
+									: NotificationType.REMINDER_PAYMENT)
+					.orElse(NotificationType.REMINDER_READ);
+
 			notificationInfoBody.setNotificationType(notificationType);
 
 			serviceMessagesApiClient.addDefaultHeader("Ocp-Apim-Subscription-Key", notifyEndpointKey);
