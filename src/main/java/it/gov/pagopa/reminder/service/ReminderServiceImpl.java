@@ -110,8 +110,8 @@ public class ReminderServiceImpl implements ReminderService {
 	private KafkaTemplate<String, String> kafkaTemplatePayments;
 
 	@Override
-	public Reminder findById(String id) {
-		return reminderRepository.findById(id).orElse(null);
+	public Optional<Reminder> findById(String id) {
+		return reminderRepository.findById(id);
 	}
 
 	@Override
@@ -122,14 +122,13 @@ public class ReminderServiceImpl implements ReminderService {
 
 	@Override
 	public void updateReminder(String reminderId, boolean isRead) {
-		Reminder reminderToUpdate = findById(reminderId);
-		if (null != reminderToUpdate) {
+		findById(reminderId).ifPresent(reminderToUpdate -> {
 			reminderToUpdate.setReadFlag(isRead);
 			if (isRead) {
 				reminderToUpdate.setReadDate(LocalDateTime.now());
 			}
 			save(reminderToUpdate);
-		}
+		});
 	}
 
 	@Override
@@ -242,7 +241,7 @@ public class ReminderServiceImpl implements ReminderService {
 			NotificationInfo notificationInfoBody = new NotificationInfo();
 			notificationInfoBody.setFiscalCode(reminder.getFiscalCode());
 			notificationInfoBody.setMessageId(reminder.getId());
-			NotificationType notificationType = Optional.of(reminder).filter(rem -> isPayment(rem))
+			NotificationType notificationType = Optional.of(reminder).filter(this::isPayment)
 					.map(r -> DateUtils.resetLocalDateTimeToSimpleDate(r.getDueDate()))
 					.map(dueDate -> dueDate.minusDays(1)
 							.isEqual(DateUtils.resetLocalDateTimeToSimpleDate(LocalDateTime.now()))
@@ -360,8 +359,7 @@ public class ReminderServiceImpl implements ReminderService {
 
 	@Override
 	public List<Reminder> getPaymentsByRptid(String rptId) {
-		List<Reminder> reminders = reminderRepository.getPaymentByRptId(rptId);
-		return reminders == null ? new ArrayList<>() : reminders;
+		return Optional.ofNullable(reminderRepository.getPaymentByRptId(rptId)).orElseGet(ArrayList::new);
 	}
 
 	@Override
