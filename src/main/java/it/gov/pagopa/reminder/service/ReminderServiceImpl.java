@@ -261,7 +261,8 @@ public class ReminderServiceImpl implements ReminderService {
 				case NOT_FOUND:
 					return;
 				default:
-					log.error("Error while calling notify|" + errorException.getMessage());
+					log.error("Error while calling notify|Status Code = {}|Error Message",
+							errorException.getStatusCode(), errorException.getMessage());
 					throw errorException;
 			}
 		}
