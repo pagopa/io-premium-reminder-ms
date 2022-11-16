@@ -58,7 +58,7 @@ microservice-chart:
     SENDER_DEPARTMENT_NAME: "AppIO"
     QUARTZ_SCHEDULER_TIMER_NOTIFY: "0 /3 * ? * *"
     QUARTZ_SCHEDULER_TIMER_DELETE: "0 * * ? * *"
-    SCHEDULER_REMINDER_NOTIFY_ACTIVE: "false"
+    SCHEDULER_REMINDER_NOTIFY_ACTIVE: "true"
     SCHEDULER_REMINDER_DELETE_ACTIVE: "false"
     KAFKA_MESSAGE: "messages"
     KAFKA_STATUS: "message-status"
@@ -66,7 +66,7 @@ microservice-chart:
     KAFKA_SEND: "message-reminder-send"
     RESTCALL_INTERVAL_FUNCTION: "10000"
     RESTCALL_MAX_ATTEMPTS: "3"
-    ENABLE_REST_KEY: "false"
+    ENABLE_REST_KEY: "true"
     IS_ACTIVE_MESSAGE_CONSUMER: "true"
     IS_ACTIVE_MESSAGESTATUS_CONSUMER: "true"
     IS_ACTIVE_PAYMENT_CONSUMER: "true"
@@ -82,7 +82,7 @@ microservice-chart:
     BOOTSTRAP_SERVER_MESSAGESTATUS: "io-p-messages-weu-prod01-evh-ns.servicebus.windows.net:9093" # change message status receved from IO
     BOOTSTRAP_SERVER_MESSAGE: "io-p-messages-weu-prod01-evh-ns.servicebus.windows.net:9093" # message receved from IO
     MONGO_DATABASE: "db"
-    IO_NOTIFY_ENDPOINT: "https://api-app.internal.io.pagopa.it" #endpoint notify service
+    IO_NOTIFY_ENDPOINT: "https://api-internal.io.italia.it/service-messages/api/v1" #endpoint notify service
     PAYMENTUPDATER_ENDPOINT: "https://api-app.internal.io.pagopa.it" #endpoint payment updater - implemented for call proxy by the payment updater, now not used. do not fill
     # app specific
   envSecret:

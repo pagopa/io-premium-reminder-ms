@@ -34,11 +34,12 @@ import it.gov.pagopa.reminder.dto.request.ProxyPaymentResponse;
 import it.gov.pagopa.reminder.model.Reminder;
 import it.gov.pagopa.reminder.producer.ReminderProducer;
 import it.gov.pagopa.reminder.repository.ReminderRepository;
-import it.gov.pagopa.reminder.restclient.proxy.ApiClient;
-import it.gov.pagopa.reminder.restclient.proxy.api.DefaultApi;
-import it.gov.pagopa.reminder.restclient.proxy.model.PaymentRequestsGetResponse;
+import it.gov.pagopa.reminder.restclient.pagopaproxy.model.PaymentRequestsGetResponse;
+import it.gov.pagopa.reminder.restclient.servicemessages.model.NotificationInfo;
+import it.gov.pagopa.reminder.restclient.servicemessages.model.NotificationType;
 import it.gov.pagopa.reminder.util.ApplicationContextProvider;
 import it.gov.pagopa.reminder.util.Constants;
+import it.gov.pagopa.reminder.util.DateUtils;
 import it.gov.pagopa.reminder.util.ReminderUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -54,9 +55,16 @@ public class ReminderServiceImpl implements ReminderService {
 	@Autowired
 	RestTemplate restTemplate;
 	@Autowired
-	DefaultApi defaultApi;
+	it.gov.pagopa.reminder.restclient.pagopaproxy.api.DefaultApi defaultApi;
 	@Autowired
-	ApiClient apiClient;
+	it.gov.pagopa.reminder.restclient.pagopaproxy.ApiClient apiClient;
+
+	@Autowired
+	it.gov.pagopa.reminder.restclient.servicemessages.api.DefaultApi defaultServiceMessagesApi;
+
+	@Autowired
+	it.gov.pagopa.reminder.restclient.servicemessages.ApiClient serviceMessagesApiClient;
+
 	@Value("${interval.function}")
 	private int intervalFunction;
 	@Value("${attempts.max}")
@@ -89,6 +97,12 @@ public class ReminderServiceImpl implements ReminderService {
 
 	@Value("${test.active}")
 	private boolean isTest;
+
+	@Value("${notification.request}")
+	private String serviceMessagesUrl;
+	@Value("${notification_endpoint_subscription_key}")
+	private String notifyEndpointKey;
+
 	@Autowired
 	ReminderProducer remProd;
 
@@ -96,8 +110,8 @@ public class ReminderServiceImpl implements ReminderService {
 	private KafkaTemplate<String, String> kafkaTemplatePayments;
 
 	@Override
-	public Reminder findById(String id) {
-		return reminderRepository.findById(id).orElse(null);
+	public Optional<Reminder> findById(String id) {
+		return reminderRepository.findById(id);
 	}
 
 	@Override
@@ -108,14 +122,13 @@ public class ReminderServiceImpl implements ReminderService {
 
 	@Override
 	public void updateReminder(String reminderId, boolean isRead) {
-		Reminder reminderToUpdate = findById(reminderId);
-		if (null != reminderToUpdate) {
+		findById(reminderId).ifPresent(reminderToUpdate -> {
 			reminderToUpdate.setReadFlag(isRead);
 			if (isRead) {
 				reminderToUpdate.setReadDate(LocalDateTime.now());
 			}
 			save(reminderToUpdate);
-		}
+		});
 	}
 
 	@Override
@@ -163,7 +176,6 @@ public class ReminderServiceImpl implements ReminderService {
 				log.error(e.getMessage());
 			}
 		}
-
 	}
 
 	@Override
@@ -188,7 +200,8 @@ public class ReminderServiceImpl implements ReminderService {
 		ProxyResponse proxyResp = callProxyCheck(reminder.getRptId());
 
 		LocalDate localDateProxyDueDate = proxyResp.getDueDate();
-		LocalDate reminderDueDate = reminder.getDueDate() != null ? reminder.getDueDate().toLocalDate() : null;
+		LocalDate reminderDueDate = Optional.ofNullable(reminder.getDueDate()).map(dueDate -> dueDate.toLocalDate())
+				.orElse(null);
 		List<Reminder> reminders = reminderRepository.getPaymentByRptId(reminder.getRptId());
 
 		if (localDateProxyDueDate != null && localDateProxyDueDate.equals(reminderDueDate)) {
@@ -221,12 +234,46 @@ public class ReminderServiceImpl implements ReminderService {
 		return "";
 	}
 
+	public void sendReminderNotification(Reminder reminder) {
+		try {
+
+			NotificationInfo notificationInfoBody = new NotificationInfo();
+			notificationInfoBody.setFiscalCode(reminder.getFiscalCode());
+			notificationInfoBody.setMessageId(reminder.getId());
+			NotificationType notificationType = Optional.of(reminder).filter(this::isPayment)
+					.map(r -> DateUtils.resetLocalDateTimeToSimpleDate(r.getDueDate()))
+					.map(dueDate -> dueDate.minusDays(1)
+							.isEqual(DateUtils.resetLocalDateTimeToSimpleDate(LocalDateTime.now()))
+									? NotificationType.REMINDER_PAYMENT_LAST
+									: NotificationType.REMINDER_PAYMENT)
+					.orElse(NotificationType.REMINDER_READ);
+
+			notificationInfoBody.setNotificationType(notificationType);
+
+			serviceMessagesApiClient.addDefaultHeader("Ocp-Apim-Subscription-Key", notifyEndpointKey);
+			serviceMessagesApiClient.setBasePath(serviceMessagesUrl);
+
+			defaultServiceMessagesApi.setApiClient(serviceMessagesApiClient);
+			defaultServiceMessagesApi.notify(notificationInfoBody);
+
+		} catch (HttpServerErrorException errorException) {
+			switch (errorException.getStatusCode()) {
+				case NOT_FOUND:
+					return;
+				default:
+					log.error("Error while calling notify|Status Code = {}|Error Message",
+							errorException.getStatusCode(), errorException.getMessage());
+					throw errorException;
+			}
+		}
+	}
+
 	private ProxyResponse callProxyCheck(String rptId) {
 
 		ProxyResponse proxyResp = new ProxyResponse();
 		try {
 			if (enableRestKey) {
-				apiClient.setApiKey(proxyEndpointKey);
+				apiClient.addDefaultHeader("Ocp-Apim-Subscription-Key", proxyEndpointKey);
 			}
 			apiClient.setBasePath(urlProxy);
 
@@ -255,9 +302,9 @@ public class ReminderServiceImpl implements ReminderService {
 						proxyResp.setDueDate(dueDate);
 
 					}
-					
+
 					proxyResp.setPaid(false);
-					
+
 				} else {
 					throw errorException;
 				}
@@ -266,7 +313,7 @@ public class ReminderServiceImpl implements ReminderService {
 			} catch (JsonProcessingException e) {
 				log.error(e.getMessage());
 			}
-			
+
 			return proxyResp;
 		}
 	}
@@ -313,8 +360,7 @@ public class ReminderServiceImpl implements ReminderService {
 
 	@Override
 	public List<Reminder> getPaymentsByRptid(String rptId) {
-		List<Reminder> reminders = reminderRepository.getPaymentByRptId(rptId);
-		return reminders == null ? new ArrayList<>() : reminders;
+		return Optional.ofNullable(reminderRepository.getPaymentByRptId(rptId)).orElseGet(ArrayList::new);
 	}
 
 	@Override

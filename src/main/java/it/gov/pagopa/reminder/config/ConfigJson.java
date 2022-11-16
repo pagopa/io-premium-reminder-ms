@@ -16,8 +16,6 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 
 import it.gov.pagopa.reminder.model.JsonLoader;
-import it.gov.pagopa.reminder.util.RestTemplateUtils;
-
 
 @Configuration
 public class ConfigJson {
@@ -28,16 +26,16 @@ public class ConfigJson {
 	@Value("classpath:data/messageStatusSchema.json")
 	private Resource messageStatusSchema;
 
-	@Bean(name="messageSchema")
+	@Bean(name = "messageSchema")
 	public JsonLoader getMessageSchema() throws IOException {
 		return new JsonLoader(messageSchema);
 	}
 
-	@Bean(name="messageStatusSchema")
+	@Bean(name = "messageStatusSchema")
 	public JsonLoader getMessageStatusSchema() throws IOException {
 		return new JsonLoader(messageStatusSchema);
 	}
-	
+
 	@Bean
 	public ObjectMapper getObjectMapper() {
 		ObjectMapper mapper = new ObjectMapper();
@@ -47,16 +45,10 @@ public class ConfigJson {
 		mapper.registerModule(new JavaTimeModule());
 		return mapper;
 	}
-	
+
 	@Bean
 	public RestTemplate restTemplate(RestTemplateBuilder builder) {
-	   return builder.build();
+		return builder.build();
 	}
-	
-	@Bean
-	public RestTemplateUtils restTemplateUtil(RestTemplateBuilder builder) {
-	   return new RestTemplateUtils();
-	}
-	
 
 }

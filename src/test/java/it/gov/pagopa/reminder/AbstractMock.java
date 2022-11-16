@@ -32,8 +32,8 @@ import it.gov.pagopa.reminder.dto.request.ProxyPaymentResponse;
 import it.gov.pagopa.reminder.model.Reminder;
 import it.gov.pagopa.reminder.producer.ReminderProducer;
 import it.gov.pagopa.reminder.repository.ReminderRepository;
-import it.gov.pagopa.reminder.restclient.proxy.api.DefaultApi;
-import it.gov.pagopa.reminder.restclient.proxy.model.PaymentRequestsGetResponse;
+import it.gov.pagopa.reminder.restclient.pagopaproxy.api.DefaultApi;
+import it.gov.pagopa.reminder.restclient.pagopaproxy.model.PaymentRequestsGetResponse;
 import it.gov.pagopa.reminder.service.ReminderServiceImpl;
 
 public class AbstractMock {
@@ -61,11 +61,10 @@ public class AbstractMock {
 	ObjectMapper mapper;
 	@Autowired
 	ReminderProducer producer;
-	
+
 	@Value("${paymentupdater.url}")
 	private String urlPayment;
 
-	
 	protected void mockSaveWithResponse(Reminder returnReminder) {
 		Mockito.when(mockRepository.save(Mockito.any(Reminder.class))).thenReturn(returnReminder);
 	}
@@ -85,7 +84,7 @@ public class AbstractMock {
 		listReminder.add(reminder);
 		Mockito.when(mockRepository.getPaymentByRptId(Mockito.anyString())).thenReturn(listReminder);
 	}
-	
+
 	protected void proxyKo(String detail) throws JsonProcessingException {
 		ProxyPaymentResponse dto = new ProxyPaymentResponse();
 		dto.setDetail_v2(detail);
@@ -101,15 +100,16 @@ public class AbstractMock {
 		Mockito.when(mockDefaultApi.getPaymentInfo(ArgumentMatchers.anyString(), ArgumentMatchers.anyString()))
 				.thenThrow(errorResponse);
 	}
-	
+
 	protected void proxy(boolean dueDateIsNull) throws JsonProcessingException {
 		PaymentRequestsGetResponse mockPaymentRequestsGetResponse = new PaymentRequestsGetResponse();
-		if(dueDateIsNull) {
+		if (dueDateIsNull) {
 			mockPaymentRequestsGetResponse.setDueDate("2022-05-16");
 		}
 		mockPaymentRequestsGetResponse.setIbanAccredito("IT39939410293855");
 		mockPaymentRequestsGetResponse.setImportoSingoloVersamento(80);
-		Mockito.when(mockDefaultApi.getPaymentInfo(ArgumentMatchers.anyString(), ArgumentMatchers.anyString())).thenReturn(mockPaymentRequestsGetResponse);
+		Mockito.when(mockDefaultApi.getPaymentInfo(ArgumentMatchers.anyString(), ArgumentMatchers.anyString()))
+				.thenReturn(mockPaymentRequestsGetResponse);
 	}
 
 	public void mockGetPaymentByNoticeNumberAndFiscalCodeWithResponse(Reminder reminder) {
@@ -134,7 +134,9 @@ public class AbstractMock {
 	}
 
 	protected void mockDeletePaidMessageWithResponse(int retValue) {
-		Mockito.when(mockRepository.deletePaidMessage(Mockito.anyInt(), Mockito.anyString(), Mockito.any(LocalDate.class))).thenReturn(retValue);
+		Mockito.when(
+				mockRepository.deletePaidMessage(Mockito.anyInt(), Mockito.anyString(), Mockito.any(LocalDate.class)))
+				.thenReturn(retValue);
 	}
 
 	protected void mockGetPaymentByRptId(List<Reminder> rem) {
@@ -146,22 +148,22 @@ public class AbstractMock {
 		Reminder returnReminder1 = null;
 
 		switch (type) {
-		case EMPTY:
-			retList = new ArrayList<Reminder>();
-			break;
-		case FULL:
-			retList = new ArrayList<Reminder>();
-			returnReminder1 = selectReminderMockObject(type, "1", "GENERIC", "AAABBB77Y66A444A", "123456", 3);
-			retList.add(returnReminder1);
-			returnReminder1 = selectReminderMockObject(type, "2", "PAYMENT", "CCCDDD77Y66A444A", "123456", 3);
-			retList.add(returnReminder1);
-			break;
-		case NULL:
-			retList = null;
-			break;
-		default:
-			retList = new ArrayList<Reminder>();
-			break;
+			case EMPTY:
+				retList = new ArrayList<Reminder>();
+				break;
+			case FULL:
+				retList = new ArrayList<Reminder>();
+				returnReminder1 = selectReminderMockObject(type, "1", "GENERIC", "AAABBB77Y66A444A", "123456", 3);
+				retList.add(returnReminder1);
+				returnReminder1 = selectReminderMockObject(type, "2", "PAYMENT", "CCCDDD77Y66A444A", "123456", 3);
+				retList.add(returnReminder1);
+				break;
+			case NULL:
+				retList = null;
+				break;
+			default:
+				retList = new ArrayList<Reminder>();
+				break;
 		}
 		;
 
@@ -173,16 +175,16 @@ public class AbstractMock {
 			String noticeNumber, int numReminder) {
 		Reminder returnReminder1 = null;
 		switch (type) {
-		case EMPTY:
-			returnReminder1 = new Reminder();
-		default:
-			returnReminder1 = new Reminder();
-			returnReminder1.setId(id);
-			returnReminder1.setContent_type(MessageContentType.valueOf(contentType));
-			returnReminder1.setFiscalCode(fiscalCode);
-			returnReminder1.setContent_paymentData_noticeNumber(noticeNumber);
-			returnReminder1.setRptId("ALSDK54654asdA1234567890200");
-			returnReminder1.setDueDate(LocalDateTime.now());
+			case EMPTY:
+				returnReminder1 = new Reminder();
+			default:
+				returnReminder1 = new Reminder();
+				returnReminder1.setId(id);
+				returnReminder1.setContent_type(MessageContentType.valueOf(contentType));
+				returnReminder1.setFiscalCode(fiscalCode);
+				returnReminder1.setContent_paymentData_noticeNumber(noticeNumber);
+				returnReminder1.setRptId("ALSDK54654asdA1234567890200");
+				returnReminder1.setDueDate(LocalDateTime.now());
 		}
 		;
 		return returnReminder1;
@@ -192,19 +194,19 @@ public class AbstractMock {
 			String noticeNumber) {
 		message returnReminder1 = null;
 		switch (type) {
-		case EMPTY:
-			returnReminder1 = new message();
-		default:
-			returnReminder1 = new message();
-			returnReminder1.setId(id);
-			returnReminder1.setContentType(MessageContentType.valueOf(contentType));
-			;
-			returnReminder1.setFiscalCode(fiscalCode);
-			returnReminder1.setContentPaymentDataNoticeNumber(noticeNumber);
-			returnReminder1.setContentPaymentDataPayeeFiscalCode(fiscalCode);
-			returnReminder1.setContentSubject("ASubject");
-			returnReminder1.setSenderServiceId("ASenderServiceId");
-			returnReminder1.setSenderUserId("ASenderUserId");
+			case EMPTY:
+				returnReminder1 = new message();
+			default:
+				returnReminder1 = new message();
+				returnReminder1.setId(id);
+				returnReminder1.setContentType(MessageContentType.valueOf(contentType));
+				;
+				returnReminder1.setFiscalCode(fiscalCode);
+				returnReminder1.setContentPaymentDataNoticeNumber(noticeNumber);
+				returnReminder1.setContentPaymentDataPayeeFiscalCode(fiscalCode);
+				returnReminder1.setContentSubject("ASubject");
+				returnReminder1.setSenderServiceId("ASenderServiceId");
+				returnReminder1.setSenderUserId("ASenderUserId");
 		}
 		;
 		return returnReminder1;
@@ -218,9 +220,11 @@ public class AbstractMock {
 		return messageStatus;
 	}
 
-	protected PaymentMessage getPaymentMessage(String messageId, String noticeNumber, String fiscalCodePayee, boolean paid, LocalDateTime d,
+	protected PaymentMessage getPaymentMessage(String messageId, String noticeNumber, String fiscalCodePayee,
+			boolean paid, LocalDateTime d,
 			Double amount, String source, String fiscalCode, LocalDateTime paymentDateTime) {
-		PaymentMessage pm = new PaymentMessage(messageId, noticeNumber, fiscalCodePayee, paid, d, amount, source, fiscalCode, paymentDateTime);
+		PaymentMessage pm = new PaymentMessage(messageId, noticeNumber, fiscalCodePayee, paid, d, amount, source,
+				fiscalCode, paymentDateTime);
 		return pm;
 	}
 

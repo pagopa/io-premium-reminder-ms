@@ -8,7 +8,6 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
 import it.gov.pagopa.reminder.dto.PaymentMessage;
-import it.gov.pagopa.reminder.model.Reminder;
 import it.gov.pagopa.reminder.service.ReminderService;
 import lombok.extern.slf4j.Slf4j;
 
@@ -23,25 +22,23 @@ public class PaymentUpdatesKafkaConsumer {
 	private String payload = "";
 
 	@KafkaListener(topics = "${kafka.payment}", groupId = "payment-updates-shared", containerFactory = "kafkaListenerContainerFactoryPaymentMessage", autoStartup = "${payment.auto.start}")
-	public void paymentUpdatesKafkaListener(PaymentMessage message) {		
-		if(Objects.nonNull(message)) {		
+	public void paymentUpdatesKafkaListener(PaymentMessage message) {
+		if (Objects.nonNull(message)) {
 			log.info("Received payment-updates: {}", message);
 			payload = message.toString();
 
-			if("payments".equalsIgnoreCase(message.getSource())) {
+			if ("payments".equalsIgnoreCase(message.getSource())) {
 
-				Reminder reminderToUpdate = reminderService.findById(message.getMessageId());
-				if(reminderToUpdate!=null) {
+				reminderService.findById(message.getMessageId()).ifPresent(reminderToUpdate -> {
 					reminderToUpdate.setPaidFlag(true);
 					reminderToUpdate.setPaidDate(message.getPaymentDateTime());
 					reminderService.save(reminderToUpdate);
-				}
+				});
 
 			}
 		}
 		this.latch.countDown();
 	}
-
 
 	public CountDownLatch getLatch() {
 		return latch;
