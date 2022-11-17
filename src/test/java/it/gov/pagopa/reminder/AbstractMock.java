@@ -16,6 +16,9 @@ import org.mockito.junit.MockitoRule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpServerErrorException;
@@ -119,14 +122,16 @@ public class AbstractMock {
 				.thenReturn(listReminder);
 	}
 
-	protected void mockGetReadMessageToNotifyWithResponse(List<Reminder> listReturnReminder) {
-		Mockito.when(mockRepository.getReadMessageToNotify(Mockito.anyInt(), Mockito.any(LocalDateTime.class)))
-				.thenReturn(listReturnReminder);
+	protected void mockGetReadMessageToNotifyWithResponse(List<Reminder> pageReturnReminder) {
+		Mockito.when(mockRepository.getReadMessageToNotify(Mockito.anyInt(), Mockito.any(LocalDateTime.class),
+				Mockito.any(PageRequest.class)))
+				.thenReturn(new PageImpl<>(pageReturnReminder));
 	}
 
-	protected void mockGetPaidMessageToNotifyWithResponse(List<Reminder> listReturnReminder) {
+	protected void mockGetPaidMessageToNotifyWithResponse(List<Reminder> pageReturnReminder) {
 		Mockito.when(mockRepository.getPaidMessageToNotify(Mockito.anyString(), Mockito.anyInt(),
-				Mockito.any(LocalDateTime.class), Mockito.any(LocalDate.class))).thenReturn(listReturnReminder);
+				Mockito.any(LocalDateTime.class), Mockito.any(LocalDate.class),
+				Mockito.any(PageRequest.class))).thenReturn(new PageImpl<>(pageReturnReminder));
 	}
 
 	protected void mockDeleteReadMessageWithResponse(int retValue) {

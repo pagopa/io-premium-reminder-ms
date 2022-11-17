@@ -5,6 +5,7 @@ import java.time.Instant;
 
 import javax.transaction.Transactional;
 
+import org.quartz.DisallowConcurrentExecution;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,13 +13,15 @@ import org.springframework.stereotype.Component;
 
 import it.gov.pagopa.reminder.service.ReminderService;
 import lombok.extern.slf4j.Slf4j;
+
 @Component
 @Slf4j
+@DisallowConcurrentExecution
 public class CheckRemindersToNotifyJob implements Job {
 
 	private static final String JOB_LOG_NAME = "Reminders to NOTIFY Job ";
 
-	private final ReminderService reminderService;  
+	private final ReminderService reminderService;
 
 	@Autowired
 	public CheckRemindersToNotifyJob(ReminderService reminderService) {
