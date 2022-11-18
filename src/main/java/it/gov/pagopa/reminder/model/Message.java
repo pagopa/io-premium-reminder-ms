@@ -29,7 +29,7 @@ public class Message {
 	protected boolean content_paymentData_invalidAfterDueDate;
 	protected String content_paymentData_payeeFiscalCode;
 	protected String fiscalCode;
-	protected String shard = "A";
+	protected String shard = "0";
 	protected LocalDateTime dueDate;
 	protected FeatureLevelType feature_level_type;
 }
