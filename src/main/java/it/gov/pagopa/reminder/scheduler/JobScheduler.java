@@ -1,8 +1,9 @@
 package it.gov.pagopa.reminder.scheduler;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.TimeZone;
-import java.util.stream.IntStream;
 
 import org.quartz.CronScheduleBuilder;
 import org.quartz.Job;
@@ -22,7 +23,10 @@ public class JobScheduler {
 
     private static final String REMINDERS_JOB_GROUP = "reminders";
     private final Scheduler scheduler;
-    private static final List<String> SHARDS = IntStream.range(0, 16).mapToObj(Integer::toHexString).toList();
+    // private static final List<String> SHARDS = IntStream.range(0,
+    // 16).mapToObj(Integer::toHexString).toList();
+    private static final List<String> SHARDS = new ArrayList<String>(
+            Arrays.asList("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"));
 
     @Value("${scheduler.reminderstonotify.cron-expression}")
     private String cronExpressionNotify;
