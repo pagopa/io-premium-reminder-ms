@@ -130,7 +130,7 @@ public class MessageKafkaConsumerTest extends AbstractMock {
 		MockMessageStatusKafkaConsumerTest(true);
 	}
 
-	public void MockMessageKafkaConsumerConsumerTest_MESSAGES(String contentType) {
+	public void MockMessageKafkaConsumerConsumerTest_MESSAGES(String contentType) throws Exception {
 		Reminder mockObj = selectReminderMockObject("", "1", contentType, "AAABBB77Y66A444A", "123456", 3);
 		mockObj.setContent_paymentData_noticeNumber("12345");
 		mockObj.setContent_paymentData_payeeFiscalCode("fiscal");
@@ -145,13 +145,13 @@ public class MessageKafkaConsumerTest extends AbstractMock {
 
 	@Test
 	public void test_MessageKafkaConsumerConsumerTest_MESSAGES_OK()
-			throws SchedulerException, InterruptedException, JsonProcessingException {
+			throws Exception {
 		MockMessageKafkaConsumerConsumerTest_MESSAGES(GENERIC);
 	}
 
 	@Test
 	public void test_MessageKafkaConsumerConsumerTest_MESSAGES_PAYMENT()
-			throws SchedulerException, InterruptedException, JsonProcessingException {
+			throws Exception {
 		mockGetPaymentByNoticeNumberAndFiscalCode();
 		MockMessageKafkaConsumerConsumerTest_MESSAGES(PAYMENT);
 	}

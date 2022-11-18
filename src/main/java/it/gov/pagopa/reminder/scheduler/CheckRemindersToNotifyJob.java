@@ -32,7 +32,7 @@ public class CheckRemindersToNotifyJob implements Job {
 	public void execute(JobExecutionContext context) {
 		log.info(JOB_LOG_NAME + "started");
 		Instant start = Instant.now();
-		reminderService.getMessageToNotify();
+		reminderService.getMessageToNotify(context.getMergedJobDataMap().getString("shard"));
 		Instant end = Instant.now();
 		log.info(JOB_LOG_NAME + "ended in " + Duration.between(start, end).getSeconds() + " seconds");
 	}

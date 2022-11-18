@@ -1,6 +1,8 @@
 package it.gov.pagopa.reminder.scheduler;
 
+import java.util.List;
 import java.util.TimeZone;
+import java.util.stream.IntStream;
 
 import org.quartz.CronScheduleBuilder;
 import org.quartz.Job;
@@ -12,43 +14,51 @@ import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 @Service
 public class JobScheduler {
-	
-	private static final String REMINDERS_JOB_GROUP = "reminders";	
-	private final Scheduler scheduler;
-	
-	@Value("${scheduler.reminderstonotify.cron-expression}")
-	private String cronExpressionNotify;
-	@Value("${scheduler.reminderstodelete.cron-expression}")
-	private String cronExpressionDelete;
-	@Value("${scheduler.reminderstonotify.active}")
-	private boolean isActiveNotifyJob;
-	@Value("${scheduler.reminderstodelete.active}")
-	private boolean isActiveDeleteJob;
-	
+
+    private static final String REMINDERS_JOB_GROUP = "reminders";
+    private final Scheduler scheduler;
+    private static final List<String> SHARDS = IntStream.range(0, 16).mapToObj(Integer::toHexString).toList();
+
+    @Value("${scheduler.reminderstonotify.cron-expression}")
+    private String cronExpressionNotify;
+    @Value("${scheduler.reminderstodelete.cron-expression}")
+    private String cronExpressionDelete;
+    @Value("${scheduler.reminderstonotify.active}")
+    private boolean isActiveNotifyJob;
+    @Value("${scheduler.reminderstodelete.active}")
+    private boolean isActiveDeleteJob;
+
     public JobScheduler(Scheduler scheduler) {
         this.scheduler = scheduler;
     }
-    
+
     public void startRemindersJob() throws SchedulerException {
-    	if (isActiveNotifyJob) scheduleCheckRemindersToNotifyJob();
-    	if (isActiveDeleteJob)  scheduleCheckRemindersToDeleteJob();
+        if (isActiveNotifyJob)
+            scheduleCheckRemindersToNotifyJob();
+        if (isActiveDeleteJob)
+            scheduleCheckRemindersToDeleteJob();
     }
-  
+
     public void scheduleCheckRemindersToNotifyJob() throws SchedulerException {
-        JobKey jobKey = JobKey.jobKey("check-reminders-notifications", REMINDERS_JOB_GROUP);
-        scheduleJob(jobKey, cronExpressionNotify, CheckRemindersToNotifyJob.class);
+        for (String shard : SHARDS) {
+            JobKey jobKey = JobKey.jobKey("check-reminders-notifications-" + shard, REMINDERS_JOB_GROUP);
+            scheduleJob(jobKey, cronExpressionNotify, CheckRemindersToNotifyJob.class, shard);
+        }
     }
-    
+
     public void scheduleCheckRemindersToDeleteJob() throws SchedulerException {
         JobKey jobKey = JobKey.jobKey("check-reminders-delete", REMINDERS_JOB_GROUP);
-        scheduleJob(jobKey, cronExpressionDelete, CheckRemindersToDeleteJob.class);
+        scheduleJob(jobKey, cronExpressionDelete, CheckRemindersToDeleteJob.class, null);
     }
-    
-    private void scheduleJob(JobKey jobKey, String cronExpression, Class<? extends Job> jobClass) throws SchedulerException {
+
+    private void scheduleJob(JobKey jobKey, String cronExpression, Class<? extends Job> jobClass,
+            @Nullable String shard)
+            throws SchedulerException {
         for (Trigger trigger : scheduler.getTriggersOfJob(jobKey)) {
             scheduler.unscheduleJob(trigger.getKey());
         }
@@ -56,6 +66,7 @@ public class JobScheduler {
         JobDetail job = JobBuilder.newJob(jobClass).withIdentity(jobKey).build();
 
         Trigger trigger = TriggerBuilder.newTrigger()
+                .usingJobData("shard", shard)
                 .withSchedule(
                         CronScheduleBuilder
                                 .cronSchedule(cronExpression)

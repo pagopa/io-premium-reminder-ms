@@ -8,14 +8,17 @@ import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.quartz.JobDataMap;
+import org.quartz.JobExecutionContext;
 import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -43,6 +46,9 @@ public class TestSchedulerNotifyIntegrationTest extends AbstractMock {
 	@MockBean
 	ReminderProducer reminderProducer;
 
+	@Mock
+	private JobExecutionContext ctx;
+
 	@Value("${paymentupdater.url}")
 	private String urlPayment;
 
@@ -53,6 +59,9 @@ public class TestSchedulerNotifyIntegrationTest extends AbstractMock {
 
 	public void test_CheckRemindersToNotifyJob(boolean isRead, String type1, String type2, String contentType) {
 		List<Reminder> modifiedList = selectListReminderMockObject(type1);
+		JobDataMap jobDataMap = new JobDataMap();
+		jobDataMap.put("shard", "0");
+		Mockito.when(ctx.getMergedJobDataMap()).thenReturn(jobDataMap);
 		if (isRead) {
 			Reminder newReminder = modifiedList.get(1);
 			newReminder.setReadFlag(true);
@@ -64,7 +73,7 @@ public class TestSchedulerNotifyIntegrationTest extends AbstractMock {
 				selectMessageStatusMockObject("1", true), HttpStatus.OK);
 		mockSaveWithResponse(selectReminderMockObject("", "1", contentType, "AAABBB77Y66A444A", "123456", 3));
 		mockFindIdWithResponse(selectReminderMockObject("", "1", contentType, "AAABBB77Y66A444A", "123456", 3));
-		job.execute(null);
+		job.execute(ctx);
 		Assertions.assertTrue(true);
 	}
 

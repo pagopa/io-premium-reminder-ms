@@ -137,7 +137,7 @@ public class ReminderServiceImpl implements ReminderService {
 	}
 
 	@Override
-	public void getMessageToNotify() {
+	public void getMessageToNotify(String shard) {
 
 		LocalDateTime todayTime = LocalDateTime.now(ZonedDateTime.now().getZone());
 		LocalDateTime dateTimeRead = isTest ? todayTime.minusMinutes(reminderDay) : todayTime.minusDays(reminderDay);
@@ -146,11 +146,11 @@ public class ReminderServiceImpl implements ReminderService {
 		LocalDate startDateReminder = today.plusDays(Integer.valueOf(startDay));
 
 		List<Reminder> readMessageToNotify = new ArrayList<Reminder>(
-				reminderRepository.getReadMessageToNotify(maxReadMessageSend,
+				reminderRepository.getReadMessageToNotify(shard, maxReadMessageSend,
 						dateTimeRead, PageRequest.ofSize(maxGenericPageSize)).toList());
 		log.info("readMessageToNotify: {}", readMessageToNotify.size());
 
-		List<Reminder> paidMessageToNotify = new ArrayList<Reminder>(reminderRepository.getPaidMessageToNotify(
+		List<Reminder> paidMessageToNotify = new ArrayList<Reminder>(reminderRepository.getPaidMessageToNotify(shard,
 				MessageContentType.PAYMENT.toString(), Integer.valueOf(maxPaidMessageSend), dateTimePayment,
 				startDateReminder, PageRequest.ofSize(maxPaymentPageSize)).toList());
 		log.info("paidMessageToNotify: {}", paidMessageToNotify.size());

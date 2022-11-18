@@ -10,9 +10,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter 
-@Setter 
-@NoArgsConstructor 
+@Getter
+@Setter
+@NoArgsConstructor
 public class Message {
 
 	@Id
@@ -22,13 +22,14 @@ public class Message {
 	protected int timeToLiveSeconds;
 	protected long createdAt;
 	protected boolean isPending = true;
-	protected String content_subject="undefined";
+	protected String content_subject = "undefined";
 	protected MessageContentType content_type;
 	protected double content_paymentData_amount;
 	protected String content_paymentData_noticeNumber;
 	protected boolean content_paymentData_invalidAfterDueDate;
 	protected String content_paymentData_payeeFiscalCode;
 	protected String fiscalCode;
+	protected String shard = "A";
 	protected LocalDateTime dueDate;
 	protected FeatureLevelType feature_level_type;
 }
