@@ -2,8 +2,6 @@ package it.gov.pagopa.reminder.consumer;
 
 import static it.gov.pagopa.reminder.util.ReminderUtil.checkNullInMessage;
 
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
 import java.util.concurrent.CountDownLatch;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +12,7 @@ import dto.FeatureLevelType;
 import dto.MessageContentType;
 import it.gov.pagopa.reminder.model.Reminder;
 import it.gov.pagopa.reminder.service.ReminderService;
+import it.gov.pagopa.reminder.util.ShaUtils;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -39,8 +38,7 @@ public class MessageKafkaConsumer {
 			}
 
 			if (reminderService.countById(message.getId()) == 0) {
-				message.setShard(MessageDigest.getInstance("SHA-256")
-						.digest(message.getFiscalCode().getBytes(StandardCharsets.UTF_8)).toString().substring(0, 1));
+				message.setShard(ShaUtils.getHexString(message.getFiscalCode()).substring(0, 1));
 				reminderService.save(message);
 			}
 		}
