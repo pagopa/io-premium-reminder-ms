@@ -15,11 +15,10 @@ services:
       - SPRING_SERVLET_MULTIPART_MAX_FILE_SIZE=200MB
       - JAVA_OPTS=-XX:+UseG1GC -XX:MaxGCPauseMillis=100 -XX:+UseStringDeduplication
       - HEALTH_VALUE = Reminder-dev-end-var-docker
-      - QUARTZ_SCHEDULER_TIMER_NOTIFY=0 * * ? * *
       - REMINDER_MAX=10
       - REMINDER_DAY=0
       - PAYMENT_DAY=0
-      - TEST_ACTIVE=false
+      - TEST_ACTIVE=true
       - MAX_READ_MESSAGE=10
       - MAX_PAID_MESSAGE=20
       - START_DAY=60
@@ -42,7 +41,7 @@ services:
       - IS_ACTIVE_PAYMENT_CONSUMER=true
       - IS_ACTIVE_MESSAGESEND_CONSUMER=true
       - PROXY_ERROR_STATUSCODE=PAA_PAGAMENTO_DUPLICATO,PPT_RPT_DUPLICATA,PPT_PAGAMENTO_DUPLICATO
-      - PROXY_ENDPOINT=https://dummy/checkout/auth/payments/v1
+      - PROXY_ENDPOINT=http://pagopa-proxy-mock:4010
       - SECURITY_PROTOCOL_REMINDER=PLAINTEXT
       - SASL_MECHANISM_REMINDER=PLAIN
       - SECURITY_PROTOCOL_SHARED=PLAINTEXT
@@ -52,8 +51,8 @@ services:
       - BOOTSTRAP_SERVER_MESSAGESTATUS=kafka:9092
       - BOOTSTRAP_SERVER_MESSAGE=kafka:9092
       - MONGO_DATABASE=db
-      - IO_NOTIFY_ENDPOINT=https://dummy/service-messages/api/v1
-      - PAYMENTUPDATER_ENDPOINT=https://dummy
+      - IO_NOTIFY_ENDPOINT=http://fn-services-mock:4010
+      - PAYMENTUPDATER_ENDPOINT=not-required
       - APPLICATIONINSIGHTS_CONNECTION_STRING=appinsights-connection-string
       - MONGO_DATABASE_URI=mongodb://root:root@mongodb:27017
       - KAFKA_URL_MESSAGE=not-required
@@ -61,9 +60,9 @@ services:
       - KAFKA_URL_MESSAGESEND=not-required
       - KAFKA_URL_SHARED=not-required
       - SASL_JAAS_CONF_SHARED=not-required
-      - PROXY_ENDPOINT_SUBSCRIPTION_KEY=dummy
-      - PAYMENTUPDATER_ENDPOINT_SUBSCRIPTION_KEY=dummy
-      - IO_NOTIFY_ENDPOINT_SUBSCRIPTION_KEY=dummy
+      - PROXY_ENDPOINT_SUBSCRIPTION_KEY=not-required
+      - PAYMENTUPDATER_ENDPOINT_SUBSCRIPTION_KEY=not-required
+      - IO_NOTIFY_ENDPOINT_SUBSCRIPTION_KEY=not-required
     depends_on:
       - mongodb
       - kafka
@@ -103,7 +102,16 @@ services:
       - MONGODB_USERNAME=reminder-user
       - MONGODB_PASSWORD=reminder-password
       - MONGODB_DATABASE=db
-
+  pagopa-proxy-mock:
+    image: stoplight/prism
+    command: 'mock -d -h 0.0.0.0 https://raw.githubusercontent.com/pagopa/io-pagopa-proxy/main/api-spec/api-pagopa-proxy.yaml'
+    ports:
+      - "9098:4010"
+  fn-services-mock:
+    image: stoplight/prism
+    command: 'mock -d -h 0.0.0.0 https://raw.githubusercontent.com/pagopa/io-functions-service-messages/master/openapi/index.yaml'
+    ports:
+      - "9096:4010"
 volumes:
   zookeeper_data:
     driver: local
