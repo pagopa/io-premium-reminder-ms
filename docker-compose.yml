@@ -14,5 +14,169 @@ services:
       - SPRING_PROFILES_ACTIVE=prod
       - SPRING_SERVLET_MULTIPART_MAX_FILE_SIZE=200MB
       - JAVA_OPTS=-XX:+UseG1GC -XX:MaxGCPauseMillis=100 -XX:+UseStringDeduplication
-      - HEALTH_VALUE = Reminder-dev-end-var-docker
-      - QUARTZ_SCHEDULER_TIMER_NOTIFY=0 * * ? * *
+      - HEALTH_VALUE=Reminder-dev-end-var-docker
+      - REMINDER_MAX=10
+      - REMINDER_DAY=0
+      - PAYMENT_DAY=0
+      - TEST_ACTIVE=true
+      - MAX_READ_MESSAGE=10
+      - MAX_PAID_MESSAGE=20
+      - START_DAY=60
+      - SENDER_SERVICE_NAME=Reminder
+      - SENDER_ORGANIZATION_NAME=PagoPA
+      - SENDER_DEPARTMENT_NAME=AppIO
+      - QUARTZ_SCHEDULER_TIMER_NOTIFY=0 /3 * ? * *
+      - QUARTZ_SCHEDULER_TIMER_DELETE=0 * * ? * *
+      - SCHEDULER_REMINDER_NOTIFY_ACTIVE=true
+      - SCHEDULER_REMINDER_DELETE_ACTIVE=false
+      - KAFKA_MESSAGE=messages
+      - KAFKA_STATUS=message-status
+      - KAFKA_PAYMENT=payment-updates
+      - KAFKA_SEND=message-reminder-send
+      - RESTCALL_INTERVAL_FUNCTION=10000
+      - RESTCALL_MAX_ATTEMPTS=3
+      - ENABLE_REST_KEY=true
+      - IS_ACTIVE_MESSAGE_CONSUMER=true
+      - IS_ACTIVE_MESSAGESTATUS_CONSUMER=true
+      - IS_ACTIVE_PAYMENT_CONSUMER=true
+      - IS_ACTIVE_MESSAGESEND_CONSUMER=true
+      - PROXY_ERROR_STATUSCODE=PAA_PAGAMENTO_DUPLICATO,PPT_RPT_DUPLICATA,PPT_PAGAMENTO_DUPLICATO
+      - PROXY_ENDPOINT=http://pagopa-proxy-mock:4010
+      - SECURITY_PROTOCOL_REMINDER=PLAINTEXT
+      - SASL_MECHANISM_REMINDER=PLAIN
+      - SECURITY_PROTOCOL_SHARED=PLAINTEXT
+      - SASL_MECHANISM_SHARED=PLAIN
+      - BOOTSTRAP_SERVER_MESSAGESEND=kafka:9092
+      - BOOTSTRAP_SERVER_SHARED=kafka:9092
+      - BOOTSTRAP_SERVER_MESSAGESTATUS=kafka:9092
+      - BOOTSTRAP_SERVER_MESSAGE=kafka:9092
+      - MONGO_DATABASE=db
+      - IO_NOTIFY_ENDPOINT=http://fn-services-mock:4010
+      - PAYMENTUPDATER_ENDPOINT=not-required
+      - APPLICATIONINSIGHTS_CONNECTION_STRING=appinsights-connection-string
+      - MONGO_DATABASE_URI=mongodb://root:root@mongodb:27017
+      - KAFKA_URL_MESSAGE=not-required
+      - KAFKA_URL_MESSAGESTATUS=not-required
+      - KAFKA_URL_MESSAGESEND=not-required
+      - KAFKA_URL_SHARED=not-required
+      - SASL_JAAS_CONF_SHARED=not-required
+      - PROXY_ENDPOINT_SUBSCRIPTION_KEY=not-required
+      - PAYMENTUPDATER_ENDPOINT_SUBSCRIPTION_KEY=not-required
+      - IO_NOTIFY_ENDPOINT_SUBSCRIPTION_KEY=not-required
+    networks:
+      - reminder-net
+    depends_on:
+      - mongodb
+      - zookeeper
+      - kafka
+
+  zookeeper:
+    image: docker.io/bitnami/zookeeper:3.8
+    ports:
+      - "2181:2181"
+    volumes:
+      - "zookeeper_data:/bitnami"  
+    networks:
+      - reminder-net
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+
+  kafka:
+    image: docker.io/bitnami/kafka:3.3
+    ports:
+      - "9094:9094"
+    volumes:
+      - "kafka_data:/bitnami"
+    networks:
+      - reminder-net
+    environment:
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CLIENT:PLAINTEXT,EXTERNAL:PLAINTEXT
+      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=CLIENT
+      - KAFKA_CFG_LISTENERS=CLIENT://:9092,EXTERNAL://:9094
+      - KAFKA_CFG_ADVERTISED_LISTENERS=CLIENT://kafka:9092,EXTERNAL://kafka:9094
+    depends_on:
+      - zookeeper
+
+  mongodb:
+    image: docker.io/bitnami/mongodb:6.0
+    ports:
+      - "27017:27017"
+    networks:
+      - reminder-net
+    volumes:
+      - 'mongodb_data:/bitnami/mongodb'
+    environment:
+      - MONGODB_ROOT_PASSWORD=root
+      - MONGODB_USERNAME=reminder-user
+      - MONGODB_PASSWORD=reminder-password
+      - MONGODB_DATABASE=db
+
+  pagopa-proxy-mock:
+    image: stoplight/prism
+    command: 'mock -d -h 0.0.0.0 https://raw.githubusercontent.com/pagopa/io-pagopa-proxy/main/api-spec/api-pagopa-proxy.yaml'
+    networks:
+      - reminder-net
+    ports:
+      - "9098:4010"
+
+  fn-services-mock:
+    image: stoplight/prism
+    command: 'mock -d -h 0.0.0.0 https://raw.githubusercontent.com/pagopa/io-functions-service-messages/master/openapi/index.yaml'
+    networks:
+      - reminder-net
+    ports:
+      - "9096:4010"
+
+  functions-node-14:
+    image: functions-node-14
+    build:
+      context: ./docker
+      dockerfile: ./functions-node-14/Dockerfile
+    command: /bin/true
+
+  storage-account:
+    image: azurite
+    build:
+      context: ./docker/azurite
+      dockerfile: ./Dockerfile
+    networks:
+      - reminder-net
+    ports:
+      - 10000:10000
+      - 10001:10001
+      - 10002:10002
+
+  io-functions-reminder-api-publisher:
+    image: io-functions-app-reminder-api-publisher
+    build:
+      context: ./docker
+      dockerfile: ./functions-reminder-api-publisher/Dockerfile
+    env_file:
+      - docker/functions-reminder-api-publisher/env.functions-reminder-api-publisher
+    environment:
+      - MESSAGES_BROKERS=kafka:9094
+      - MESSAGES_TOPIC=messages
+    working_dir: /usr/src/app
+    ports:
+      - 7071:7071
+    networks:
+      - reminder-net
+    depends_on:
+      - storage-account
+      - functions-node-14
+      - kafka
+volumes:
+  zookeeper_data:
+    driver: local
+  kafka_data:
+    driver: local
+  mongodb_data:
+    driver: local
+
+networks:
+  reminder-net:
+    driver: bridge
+    driver_opts:
+      com.docker.network.driver.mtu: 1450
