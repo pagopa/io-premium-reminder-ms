@@ -63,8 +63,11 @@ services:
       - PROXY_ENDPOINT_SUBSCRIPTION_KEY=not-required
       - PAYMENTUPDATER_ENDPOINT_SUBSCRIPTION_KEY=not-required
       - IO_NOTIFY_ENDPOINT_SUBSCRIPTION_KEY=not-required
+    networks:
+      - reminder-net
     depends_on:
       - mongodb
+      - zookeeper
       - kafka
 
   zookeeper:
@@ -72,22 +75,27 @@ services:
     ports:
       - "2181:2181"
     volumes:
-      - "zookeeper_data:/bitnami"
+      - "zookeeper_data:/bitnami"  
+    networks:
+      - reminder-net
     environment:
       - ALLOW_ANONYMOUS_LOGIN=yes
+
   kafka:
     image: docker.io/bitnami/kafka:3.3
     ports:
       - "9094:9094"
     volumes:
       - "kafka_data:/bitnami"
+    networks:
+      - reminder-net
     environment:
       - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
       - ALLOW_PLAINTEXT_LISTENER=yes
       - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CLIENT:PLAINTEXT,EXTERNAL:PLAINTEXT
       - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=CLIENT
       - KAFKA_CFG_LISTENERS=CLIENT://:9092,EXTERNAL://:9094
-      - KAFKA_CFG_ADVERTISED_LISTENERS=CLIENT://kafka:9092,EXTERNAL://localhost:9094
+      - KAFKA_CFG_ADVERTISED_LISTENERS=CLIENT://kafka:9092,EXTERNAL://kafka:9094
     depends_on:
       - zookeeper
 
@@ -95,6 +103,8 @@ services:
     image: docker.io/bitnami/mongodb:6.0
     ports:
       - "27017:27017"
+    networks:
+      - reminder-net
     volumes:
       - 'mongodb_data:/bitnami/mongodb'
     environment:
@@ -105,13 +115,57 @@ services:
   pagopa-proxy-mock:
     image: stoplight/prism
     command: 'mock -d -h 0.0.0.0 https://raw.githubusercontent.com/pagopa/io-pagopa-proxy/main/api-spec/api-pagopa-proxy.yaml'
+    networks:
+      - reminder-net
     ports:
       - "9098:4010"
+
   fn-services-mock:
     image: stoplight/prism
     command: 'mock -d -h 0.0.0.0 https://raw.githubusercontent.com/pagopa/io-functions-service-messages/master/openapi/index.yaml'
+    networks:
+      - reminder-net
     ports:
       - "9096:4010"
+
+  functions-node-14:
+    image: functions-node-14
+    build:
+      context: ./docker
+      dockerfile: ./functions-node-14/Dockerfile
+    command: /bin/true
+
+  storage-account:
+    image: azurite
+    build:
+      context: ./docker/azurite
+      dockerfile: ./Dockerfile
+    networks:
+      - reminder-net
+    ports:
+      - 10000:10000
+      - 10001:10001
+      - 10002:10002
+
+  io-functions-reminder-api-publisher:
+    image: io-functions-app-reminder-api-publisher
+    build:
+      context: ./docker
+      dockerfile: ./functions-reminder-api-publisher/Dockerfile
+    env_file:
+      - docker/functions-reminder-api-publisher/env.functions-reminder-api-publisher
+    environment:
+      - MESSAGES_BROKERS=kafka:9094
+      - MESSAGES_TOPIC=messages
+    working_dir: /usr/src/app
+    ports:
+      - 7071:7071
+    networks:
+      - reminder-net
+    depends_on:
+      - storage-account
+      - functions-node-14
+      - kafka
 volumes:
   zookeeper_data:
     driver: local
@@ -119,3 +173,9 @@ volumes:
     driver: local
   mongodb_data:
     driver: local
+
+networks:
+  reminder-net:
+    driver: bridge
+    driver_opts:
+      com.docker.network.driver.mtu: 1450
