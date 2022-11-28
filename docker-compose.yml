@@ -63,10 +63,16 @@ services:
       - PROXY_ENDPOINT_SUBSCRIPTION_KEY=not-required
       - PAYMENTUPDATER_ENDPOINT_SUBSCRIPTION_KEY=not-required
       - IO_NOTIFY_ENDPOINT_SUBSCRIPTION_KEY=not-required
+      - REMINDER_GENERIC_MAX_PAGE_SIZE=10
+      - REMINDER_PAYMENT_MAX_PAGE_SIZE=10
+      - POSTGRES_URL=jdbc:postgresql://db:5432/reminder
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
     networks:
       - reminder-net
     depends_on:
       - mongodb
+      - db
       - zookeeper
       - kafka
 
@@ -95,7 +101,7 @@ services:
       - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CLIENT:PLAINTEXT,EXTERNAL:PLAINTEXT
       - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=CLIENT
       - KAFKA_CFG_LISTENERS=CLIENT://:9092,EXTERNAL://:9094
-      - KAFKA_CFG_ADVERTISED_LISTENERS=CLIENT://kafka:9092,EXTERNAL://kafka:9094
+      - KAFKA_CFG_ADVERTISED_LISTENERS=CLIENT://kafka:9092,EXTERNAL://localhost:9094
     depends_on:
       - zookeeper
 
@@ -156,7 +162,7 @@ services:
     env_file:
       - docker/functions-reminder-api-publisher/env.functions-reminder-api-publisher
     environment:
-      - MESSAGES_BROKERS=kafka:9094
+      - MESSAGES_BROKERS=kafka:9092
       - MESSAGES_TOPIC=messages
     working_dir: /usr/src/app
     ports:
@@ -167,6 +173,19 @@ services:
       - storage-account
       - functions-node-14
       - kafka
+  
+  db:
+    image: postgres
+    restart: always
+    ports:
+      - 5432:5432
+    networks:
+      - reminder-net
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: user
+      POSTGRES_DB: reminder
+
 volumes:
   zookeeper_data:
     driver: local

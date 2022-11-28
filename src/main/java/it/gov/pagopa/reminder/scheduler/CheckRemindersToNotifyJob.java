@@ -30,11 +30,14 @@ public class CheckRemindersToNotifyJob implements Job {
 
 	@Transactional(Transactional.TxType.NOT_SUPPORTED)
 	public void execute(JobExecutionContext context) {
-		log.info(JOB_LOG_NAME + "started");
+		log.info(JOB_LOG_NAME + "started for instance " + context.getFireInstanceId() + " and jobKey "
+				+ context.getJobDetail().getKey().getName());
 		Instant start = Instant.now();
 		reminderService.getMessageToNotify(context.getMergedJobDataMap().getString("shard"));
 		Instant end = Instant.now();
-		log.info(JOB_LOG_NAME + "ended in " + Duration.between(start, end).getSeconds() + " seconds");
+		log.info(JOB_LOG_NAME + "ended for instance " + context.getFireInstanceId() + " and jobKey "
+				+ context.getJobDetail().getKey().getName() + " in "
+				+ Duration.between(start, end).getSeconds() + " seconds");
 	}
 
 }
