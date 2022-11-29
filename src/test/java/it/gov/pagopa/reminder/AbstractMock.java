@@ -5,7 +5,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.junit.Rule;
 import org.mockito.ArgumentMatchers;
@@ -16,10 +18,15 @@ import org.mockito.junit.MockitoRule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.ApplicationContextInitializer;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.MapPropertySource;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
@@ -37,8 +44,44 @@ import it.gov.pagopa.reminder.repository.ReminderRepository;
 import it.gov.pagopa.reminder.restclient.pagopaproxy.api.DefaultApi;
 import it.gov.pagopa.reminder.restclient.pagopaproxy.model.PaymentRequestsGetResponse;
 import it.gov.pagopa.reminder.service.ReminderServiceImpl;
+import org.testcontainers.containers.JdbcDatabaseContainer;
+import org.testcontainers.containers.PostgreSQLContainerProvider;
+import org.testcontainers.lifecycle.Startables;
 
+@ContextConfiguration(initializers = AbstractMock.Initializer.class)
 public class AbstractMock {
+
+	protected static class Initializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
+
+		static JdbcDatabaseContainer<?> postgres = new PostgreSQLContainerProvider().newInstance("15.1")
+				.withDatabaseName(
+						"reminder")
+				.withUsername("user")
+				.withPassword("password");
+
+		private static void startContainers() {
+			Startables.deepStart(Stream.of(postgres)).join();
+		}
+
+		private static Map<String, Object> createConnectionConfiguration() {
+			return Map.of(
+					"spring.quartz.properties.org.quartz.dataSource.quartzDS.URL",
+					postgres.getJdbcUrl(),
+					"spring.quartz.properties.org.quartz.dataSource.quartzDS.user",
+					postgres.getUsername(),
+					"spring.quartz.properties.org.quartz.dataSource.quartzDS.password",
+					postgres.getPassword());
+		}
+
+		@Override
+		public void initialize(ConfigurableApplicationContext applicationContext) {
+			startContainers();
+			ConfigurableEnvironment environment = applicationContext.getEnvironment();
+			MapPropertySource testcontainers = new MapPropertySource("testcontainers",
+					createConnectionConfiguration());
+			environment.getPropertySources().addFirst(testcontainers);
+		}
+	}
 
 	private static final String EMPTY = "empty";
 	private static final String FULL = "full";

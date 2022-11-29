@@ -13,7 +13,9 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
+import org.quartz.JobKey;
 import org.quartz.SchedulerException;
+import org.quartz.impl.JobDetailImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -60,8 +62,11 @@ public class TestSchedulerNotifyIntegrationTest extends AbstractMock {
 	public void test_CheckRemindersToNotifyJob(boolean isRead, String type1, String type2, String contentType) {
 		List<Reminder> modifiedList = selectListReminderMockObject(type1);
 		JobDataMap jobDataMap = new JobDataMap();
+		JobDetailImpl jobDetailMock = new JobDetailImpl();
+		jobDetailMock.setKey(new JobKey("a-job-key-0"));
 		jobDataMap.put("shard", "0");
 		Mockito.when(ctx.getMergedJobDataMap()).thenReturn(jobDataMap);
+		Mockito.when(ctx.getJobDetail()).thenReturn(jobDetailMock);
 		if (isRead) {
 			Reminder newReminder = modifiedList.get(1);
 			newReminder.setReadFlag(true);
