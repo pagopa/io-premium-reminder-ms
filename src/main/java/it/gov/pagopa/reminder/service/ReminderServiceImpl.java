@@ -257,6 +257,9 @@ public class ReminderServiceImpl implements ReminderService {
 			notificationInfoBody.setNotificationType(notificationType);
 
 			serviceMessagesApiClient.addDefaultHeader("Ocp-Apim-Subscription-Key", notifyEndpointKey);
+			if (isTest) {
+				serviceMessagesApiClient.addDefaultHeader("X-Functions-Key", notifyEndpointKey);
+			}
 			serviceMessagesApiClient.setBasePath(serviceMessagesUrl);
 
 			defaultServiceMessagesApi.setApiClient(serviceMessagesApiClient);
