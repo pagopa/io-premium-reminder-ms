@@ -98,6 +98,9 @@ microservice-chart:
     PROXY_ENDPOINT_SUBSCRIPTION_KEY: "pagopa-proxy-prod-subscription-key"
     PAYMENTUPDATER_ENDPOINT_SUBSCRIPTION_KEY: "io-p-reminder-payment-api-subscription-key" # secret - subscription key used to reach payment-updater via APIM
     IO_NOTIFY_ENDPOINT_SUBSCRIPTION_KEY: "io-p-reminder-subscription-key" # secret - subscription key used to reach io-fn-service-messages via APIM
+    POSTGRES_URL: "io-p-messages-reminder-postgresql-DB-URL"
+    POSTGRES_USER: "io-p-messages-reminder-postgresql-DB-ADM-USERNAME"
+    POSTGRES_PASSWORD: "io-p-messages-reminder-postgresql-DB-ADM-PASSWORD"
     # app specific
   keyvault:
     name: "io-p-messages-kv"
