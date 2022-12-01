@@ -7,16 +7,16 @@ services:
     mem_limit: "3g"
     build:
       context: .
-    container_name: app
-    ports:
-      - 9090:9090
+    deploy:
+      mode: replicated
+      replicas: 3
     environment:
       - SPRING_PROFILES_ACTIVE=prod
       - SPRING_SERVLET_MULTIPART_MAX_FILE_SIZE=200MB
       - JAVA_OPTS=-XX:+UseG1GC -XX:MaxGCPauseMillis=100 -XX:+UseStringDeduplication
       - HEALTH_VALUE=Reminder-dev-end-var-docker
       - REMINDER_MAX=10
-      - REMINDER_DAY=0
+      - REMINDER_DAY=60
       - PAYMENT_DAY=0
       - TEST_ACTIVE=true
       - MAX_READ_MESSAGE=10
@@ -25,7 +25,7 @@ services:
       - SENDER_SERVICE_NAME=Reminder
       - SENDER_ORGANIZATION_NAME=PagoPA
       - SENDER_DEPARTMENT_NAME=AppIO
-      - QUARTZ_SCHEDULER_TIMER_NOTIFY=0 /3 * ? * *
+      - QUARTZ_SCHEDULER_TIMER_NOTIFY=0 /1 * ? * *
       - QUARTZ_SCHEDULER_TIMER_DELETE=0 * * ? * *
       - SCHEDULER_REMINDER_NOTIFY_ACTIVE=true
       - SCHEDULER_REMINDER_DELETE_ACTIVE=false
@@ -63,11 +63,12 @@ services:
       - PROXY_ENDPOINT_SUBSCRIPTION_KEY=not-required
       - PAYMENTUPDATER_ENDPOINT_SUBSCRIPTION_KEY=not-required
       - IO_NOTIFY_ENDPOINT_SUBSCRIPTION_KEY=not-required
-      - REMINDER_GENERIC_MAX_PAGE_SIZE=10
+      - REMINDER_GENERIC_MAX_PAGE_SIZE=10090
       - REMINDER_PAYMENT_MAX_PAGE_SIZE=10
       - POSTGRES_URL=jdbc:postgresql://db:5432/reminder
       - POSTGRES_USER=user
       - POSTGRES_PASSWORD=password
+      - MAIN_LOGGING_LEVEL=ERROR
     networks:
       - reminder-net
     depends_on:

@@ -46,7 +46,6 @@ import it.gov.pagopa.reminder.restclient.pagopaproxy.model.PaymentRequestsGetRes
 import it.gov.pagopa.reminder.service.ReminderServiceImpl;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.containers.PostgreSQLContainerProvider;
-import org.testcontainers.lifecycle.Startables;
 
 @ContextConfiguration(initializers = AbstractMock.Initializer.class)
 public class AbstractMock {
@@ -60,7 +59,7 @@ public class AbstractMock {
 				.withPassword("password");
 
 		private static void startContainers() {
-			Startables.deepStart(Stream.of(postgres)).join();
+			postgres.start();
 		}
 
 		private static Map<String, Object> createConnectionConfiguration() {
