@@ -88,7 +88,7 @@ stages:
               publishJUnitResults: true
               testResultsFiles: "**/surefire-reports/TEST-*.xml"
               goals: "package"
-              sonarQubeRunAnalysis: true
+              sonarQubeRunAnalysis: false
   # Release
   - stage: Release
     jobs:
