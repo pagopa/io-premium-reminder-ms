@@ -74,7 +74,7 @@ pool:
   vmImage: "ubuntu-latest"
 
 stages:
-  - stage: Pre-Build
+  - stage: PreBuild
     jobs:
       - job: pre_build
         steps:
