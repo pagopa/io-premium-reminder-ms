@@ -10,6 +10,8 @@ variables:
   KUBERNETES_SERVICE_CONN_WEU_PROD_02: "$(TF_KUBERNETES_SERVICE_CONN_WEU_PROD_02)"
   APPINSIGHTS_SERVICE_CONN_PROD: "$(TF_APPINSIGHTS_SERVICE_CONN_PROD)"
   APPINSIGHTS_RESOURCE_ID_PROD: "$(TF_APPINSIGHTS_RESOURCE_ID_PROD)"
+  MAVEN_CACHE_FOLDER: $(Pipeline.Workspace)/.m2/repository
+  MAVEN_OPTS: "-Dmaven.repo.local=$(MAVEN_CACHE_FOLDER)"
 
 parameters:
   - name: "RELEASE_SEMVER"
@@ -72,6 +74,21 @@ pool:
   vmImage: "ubuntu-latest"
 
 stages:
+  - stage: Pre-Build
+    jobs:
+      - job: pre_build
+        steps:
+          - task: Maven@3
+            inputs:
+              mavenPomFile: "pom.xml"
+              mavenOptions: "-Xmx3072m $(MAVEN_OPTS)"
+              javaHomeOption: "JDKVersion"
+              jdkVersionOption: "1.11"
+              jdkArchitectureOption: "x64"
+              publishJUnitResults: true
+              testResultsFiles: "**/surefire-reports/TEST-*.xml"
+              goals: "package"
+              sonarQubeRunAnalysis: true
   # Release
   - stage: Release
     jobs:
