@@ -45,31 +45,31 @@ import it.gov.pagopa.reminder.restclient.pagopaproxy.api.DefaultApi;
 import it.gov.pagopa.reminder.restclient.pagopaproxy.model.PaymentRequestsGetResponse;
 import it.gov.pagopa.reminder.service.ReminderServiceImpl;
 import org.testcontainers.containers.JdbcDatabaseContainer;
-import org.testcontainers.containers.PostgreSQLContainerProvider;
+import org.testcontainers.containers.MySQLContainerProvider;
 
 @ContextConfiguration(initializers = AbstractMock.Initializer.class)
 public class AbstractMock {
 
 	protected static class Initializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
 
-		static JdbcDatabaseContainer<?> postgres = new PostgreSQLContainerProvider().newInstance("15.1")
+		static JdbcDatabaseContainer<?> mysql = new MySQLContainerProvider().newInstance("8.0.31")
 				.withDatabaseName(
 						"reminder")
 				.withUsername("user")
 				.withPassword("password");
 
 		private static void startContainers() {
-			postgres.start();
+			mysql.start();
 		}
 
 		private static Map<String, Object> createConnectionConfiguration() {
 			return Map.of(
 					"spring.quartz.properties.org.quartz.dataSource.quartzDS.URL",
-					postgres.getJdbcUrl(),
+					mysql.getJdbcUrl(),
 					"spring.quartz.properties.org.quartz.dataSource.quartzDS.user",
-					postgres.getUsername(),
+					mysql.getUsername(),
 					"spring.quartz.properties.org.quartz.dataSource.quartzDS.password",
-					postgres.getPassword());
+					mysql.getPassword());
 		}
 
 		@Override

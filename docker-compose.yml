@@ -65,9 +65,9 @@ services:
       - IO_NOTIFY_ENDPOINT_SUBSCRIPTION_KEY=not-required
       - REMINDER_GENERIC_MAX_PAGE_SIZE=10090
       - REMINDER_PAYMENT_MAX_PAGE_SIZE=10
-      - POSTGRES_URL=jdbc:postgresql://db:5432/reminder
-      - POSTGRES_USER=user
-      - POSTGRES_PASSWORD=password
+      - MYSQL_URL=jdbc:mysql://db:3306/reminder
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=password
       - MAIN_LOGGING_LEVEL=ERROR
       - ENABLE_QUARTZ=true
       - QUARTZ_MAXIMUM_POOL_SIZE=10
@@ -180,16 +180,20 @@ services:
       - kafka
   
   db:
-    image: postgres
+    image: mysql:8.0.31
     restart: always
-    ports:
-      - 5432:5432
-    networks:
-      - reminder-net
     environment:
-      POSTGRES_PASSWORD: password
-      POSTGRES_USER: user
-      POSTGRES_DB: reminder
+      MYSQL_DATABASE: 'reminder'
+      # So you don't have to use root, but you can if you like
+      MYSQL_USER: 'user'
+      # You can use whatever password you like
+      MYSQL_PASSWORD: 'password'
+      # Password for root access
+      MYSQL_ROOT_PASSWORD: 'password'
+    ports:
+      - '3306:3306'
+    volumes:
+      - mysql_data:/var/lib/mysql
 
 volumes:
   zookeeper_data:
@@ -197,6 +201,8 @@ volumes:
   kafka_data:
     driver: local
   mongodb_data:
+    driver: local
+  mysql_data:
     driver: local
 
 networks:

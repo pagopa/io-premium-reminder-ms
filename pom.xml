@@ -158,7 +158,7 @@
 		</dependency>
 		<dependency>
             <groupId>org.testcontainers</groupId>
-            <artifactId>postgresql</artifactId>
+            <artifactId>mysql</artifactId>
             <version>${testcontainer-version}</version>
             <scope>test</scope>
         </dependency>
@@ -256,11 +256,11 @@
 		    <version>2.8.6</version>
 		    <scope>test</scope>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
+		<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
 		<dependency>
-			<groupId>org.postgresql</groupId>
-			<artifactId>postgresql</artifactId>
-			<version>42.5.0</version>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>8.0.31</version>
 		</dependency>
 		<dependency>
             <groupId>org.flywaydb</groupId>
@@ -273,6 +273,13 @@
 			<artifactId>flyway-core</artifactId>
 			<version>${flyway-version}</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.flywaydb/flyway-mysql -->
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-mysql</artifactId>
+			<version>${flyway-version}</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
