@@ -69,6 +69,7 @@ services:
       - POSTGRES_USER=user
       - POSTGRES_PASSWORD=password
       - MAIN_LOGGING_LEVEL=ERROR
+      - ENABLE_QUARTZ=true
     networks:
       - reminder-net
     depends_on:

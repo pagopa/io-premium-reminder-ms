@@ -87,6 +87,7 @@ microservice-chart:
     REMINDER_GENERIC_MAX_PAGE_SIZE: "1000"
     REMINDER_PAYMENT_MAX_PAGE_SIZE: "1000"
     MAIN_LOGGING_LEVEL: "ERROR"
+    ENABLE_QUARTZ: "true"
     # app specific
   envSecret:
     # required
