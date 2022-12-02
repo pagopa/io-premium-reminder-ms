@@ -337,7 +337,7 @@ public class ReminderServiceImpl implements ReminderService {
 	}
 
 	private boolean isGeneric(Reminder reminder) {
-		return MessageContentType.GENERIC.toString().equalsIgnoreCase(reminder.getContent_type().toString());
+		return !MessageContentType.PAYMENT.toString().equalsIgnoreCase(reminder.getContent_type().toString());
 	}
 
 	private boolean isPayment(Reminder reminder) {
