@@ -192,6 +192,8 @@ services:
       MYSQL_ROOT_PASSWORD: 'password'
     ports:
       - '3306:3306'
+    networks:
+      - reminder-net
     volumes:
       - mysql_data:/var/lib/mysql
 
