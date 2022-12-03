@@ -90,7 +90,7 @@ microservice-chart:
     ENABLE_QUARTZ: "true"
     QUARTZ_MAXIMUM_POOL_SIZE: "10"
     QUARTZ_MINIMUM_IDLE_CONNECTIONS: "5"
-    QUARTZ_IDLE_CONNECTIONS_TIMEOUT: "5000"
+    QUARTZ_IDLE_CONNECTIONS_TIMEOUT: "10000"
     # app specific
   envSecret:
     # required
