@@ -15,7 +15,7 @@ public interface ReminderService {
 
 	String healthCheck();
 
-	void getMessageToNotify();
+	void getMessageToNotify(String shard);
 
 	void deleteMessage();
 

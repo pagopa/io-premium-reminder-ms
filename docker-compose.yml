@@ -7,16 +7,16 @@ services:
     mem_limit: "3g"
     build:
       context: .
-    container_name: app
-    ports:
-      - 9090:9090
+    deploy:
+      mode: replicated
+      replicas: 3
     environment:
       - SPRING_PROFILES_ACTIVE=prod
       - SPRING_SERVLET_MULTIPART_MAX_FILE_SIZE=200MB
       - JAVA_OPTS=-XX:+UseG1GC -XX:MaxGCPauseMillis=100 -XX:+UseStringDeduplication
       - HEALTH_VALUE=Reminder-dev-end-var-docker
       - REMINDER_MAX=10
-      - REMINDER_DAY=0
+      - REMINDER_DAY=60
       - PAYMENT_DAY=0
       - TEST_ACTIVE=true
       - MAX_READ_MESSAGE=10
@@ -25,7 +25,7 @@ services:
       - SENDER_SERVICE_NAME=Reminder
       - SENDER_ORGANIZATION_NAME=PagoPA
       - SENDER_DEPARTMENT_NAME=AppIO
-      - QUARTZ_SCHEDULER_TIMER_NOTIFY=0 /3 * ? * *
+      - QUARTZ_SCHEDULER_TIMER_NOTIFY=0 /1 * ? * *
       - QUARTZ_SCHEDULER_TIMER_DELETE=0 * * ? * *
       - SCHEDULER_REMINDER_NOTIFY_ACTIVE=true
       - SCHEDULER_REMINDER_DELETE_ACTIVE=false
@@ -63,10 +63,21 @@ services:
       - PROXY_ENDPOINT_SUBSCRIPTION_KEY=not-required
       - PAYMENTUPDATER_ENDPOINT_SUBSCRIPTION_KEY=not-required
       - IO_NOTIFY_ENDPOINT_SUBSCRIPTION_KEY=not-required
+      - REMINDER_GENERIC_MAX_PAGE_SIZE=10090
+      - REMINDER_PAYMENT_MAX_PAGE_SIZE=10
+      - MYSQL_URL=jdbc:mysql://db:3306/reminder
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=password
+      - MAIN_LOGGING_LEVEL=ERROR
+      - ENABLE_QUARTZ=true
+      - QUARTZ_MAXIMUM_POOL_SIZE=10
+      - QUARTZ_MINIMUM_IDLE_CONNECTIONS=5
+      - QUARTZ_IDLE_CONNECTIONS_TIMEOUT=5000
     networks:
       - reminder-net
     depends_on:
       - mongodb
+      - db
       - zookeeper
       - kafka
 
@@ -95,7 +106,7 @@ services:
       - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CLIENT:PLAINTEXT,EXTERNAL:PLAINTEXT
       - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=CLIENT
       - KAFKA_CFG_LISTENERS=CLIENT://:9092,EXTERNAL://:9094
-      - KAFKA_CFG_ADVERTISED_LISTENERS=CLIENT://kafka:9092,EXTERNAL://kafka:9094
+      - KAFKA_CFG_ADVERTISED_LISTENERS=CLIENT://kafka:9092,EXTERNAL://localhost:9094
     depends_on:
       - zookeeper
 
@@ -112,6 +123,7 @@ services:
       - MONGODB_USERNAME=reminder-user
       - MONGODB_PASSWORD=reminder-password
       - MONGODB_DATABASE=db
+
   pagopa-proxy-mock:
     image: stoplight/prism
     command: 'mock -d -h 0.0.0.0 https://raw.githubusercontent.com/pagopa/io-pagopa-proxy/main/api-spec/api-pagopa-proxy.yaml'
@@ -155,7 +167,7 @@ services:
     env_file:
       - docker/functions-reminder-api-publisher/env.functions-reminder-api-publisher
     environment:
-      - MESSAGES_BROKERS=kafka:9094
+      - MESSAGES_BROKERS=kafka:9092
       - MESSAGES_TOPIC=messages
     working_dir: /usr/src/app
     ports:
@@ -166,12 +178,33 @@ services:
       - storage-account
       - functions-node-14
       - kafka
+  
+  db:
+    image: mysql:8.0.31
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'reminder'
+      # So you don't have to use root, but you can if you like
+      MYSQL_USER: 'user'
+      # You can use whatever password you like
+      MYSQL_PASSWORD: 'password'
+      # Password for root access
+      MYSQL_ROOT_PASSWORD: 'password'
+    ports:
+      - '3306:3306'
+    networks:
+      - reminder-net
+    volumes:
+      - mysql_data:/var/lib/mysql
+
 volumes:
   zookeeper_data:
     driver: local
   kafka_data:
     driver: local
   mongodb_data:
+    driver: local
+  mysql_data:
     driver: local
 
 networks:

@@ -35,7 +35,7 @@ microservice-chart:
   autoscaling:
     enable: true
     minReplica: 1
-    maxReplica: 10
+    maxReplica: 1
     pollingInterval: 30 # seconds
     cooldownPeriod: 300 # seconds
     triggers:
@@ -58,7 +58,7 @@ microservice-chart:
     SENDER_DEPARTMENT_NAME: "AppIO"
     QUARTZ_SCHEDULER_TIMER_NOTIFY: "0 /3 * ? * *"
     QUARTZ_SCHEDULER_TIMER_DELETE: "0 * * ? * *"
-    SCHEDULER_REMINDER_NOTIFY_ACTIVE: "true"
+    SCHEDULER_REMINDER_NOTIFY_ACTIVE: "false"
     SCHEDULER_REMINDER_DELETE_ACTIVE: "false"
     KAFKA_MESSAGE: "messages"
     KAFKA_STATUS: "message-status"
@@ -84,6 +84,13 @@ microservice-chart:
     MONGO_DATABASE: "db"
     IO_NOTIFY_ENDPOINT: "https://api-internal.io.italia.it/service-messages/api/v1" #endpoint notify service
     PAYMENTUPDATER_ENDPOINT: "https://api-app.internal.io.pagopa.it" #endpoint payment updater - implemented for call proxy by the payment updater, now not used. do not fill
+    REMINDER_GENERIC_MAX_PAGE_SIZE: "1"
+    REMINDER_PAYMENT_MAX_PAGE_SIZE: "1"
+    MAIN_LOGGING_LEVEL: "WARN"
+    ENABLE_QUARTZ: "false"
+    QUARTZ_MAXIMUM_POOL_SIZE: "1"
+    QUARTZ_MINIMUM_IDLE_CONNECTIONS: "1"
+    QUARTZ_IDLE_CONNECTIONS_TIMEOUT: "10000"
     # app specific
   envSecret:
     # required
@@ -96,6 +103,9 @@ microservice-chart:
     PROXY_ENDPOINT_SUBSCRIPTION_KEY: "pagopa-proxy-prod-subscription-key"
     PAYMENTUPDATER_ENDPOINT_SUBSCRIPTION_KEY: "io-p-reminder-payment-api-subscription-key" # secret - subscription key used to reach payment-updater via APIM
     IO_NOTIFY_ENDPOINT_SUBSCRIPTION_KEY: "io-p-reminder-subscription-key" # secret - subscription key used to reach io-fn-service-messages via APIM
+    MYSQL_URL: "io-p-messages-reminder-mysql-REMINDER-MYSQL-DB-URL"
+    MYSQL_USER: "io-p-messages-REMINDER-MYSQL-DB-ADM-USERNAME"
+    MYSQL_PASSWORD: "io-p-messages-REMINDER-MYSQL-DB-ADM-PASSWORD"
     # app specific
   keyvault:
     name: "io-p-messages-kv"

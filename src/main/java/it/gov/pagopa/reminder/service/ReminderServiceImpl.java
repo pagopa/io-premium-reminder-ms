@@ -15,6 +15,7 @@ import java.util.function.Function;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,7 +38,6 @@ import it.gov.pagopa.reminder.repository.ReminderRepository;
 import it.gov.pagopa.reminder.restclient.pagopaproxy.model.PaymentRequestsGetResponse;
 import it.gov.pagopa.reminder.restclient.servicemessages.model.NotificationInfo;
 import it.gov.pagopa.reminder.restclient.servicemessages.model.NotificationType;
-import it.gov.pagopa.reminder.util.ApplicationContextProvider;
 import it.gov.pagopa.reminder.util.Constants;
 import it.gov.pagopa.reminder.util.DateUtils;
 import it.gov.pagopa.reminder.util.ReminderUtil;
@@ -103,6 +103,11 @@ public class ReminderServiceImpl implements ReminderService {
 	@Value("${notification_endpoint_subscription_key}")
 	private String notifyEndpointKey;
 
+	@Value("${find.reminder.generic.max_page_size}")
+	private int maxGenericPageSize;
+	@Value("${find.reminder.payment.max_page_size}")
+	private int maxPaymentPageSize;
+
 	@Autowired
 	ReminderProducer remProd;
 
@@ -132,7 +137,7 @@ public class ReminderServiceImpl implements ReminderService {
 	}
 
 	@Override
-	public void getMessageToNotify() {
+	public void getMessageToNotify(String shard) {
 
 		LocalDateTime todayTime = LocalDateTime.now(ZonedDateTime.now().getZone());
 		LocalDateTime dateTimeRead = isTest ? todayTime.minusMinutes(reminderDay) : todayTime.minusDays(reminderDay);
@@ -140,13 +145,14 @@ public class ReminderServiceImpl implements ReminderService {
 		LocalDate today = LocalDate.now();
 		LocalDate startDateReminder = today.plusDays(Integer.valueOf(startDay));
 
-		List<Reminder> readMessageToNotify = reminderRepository.getReadMessageToNotify(maxReadMessageSend,
-				dateTimeRead);
+		List<Reminder> readMessageToNotify = new ArrayList<Reminder>(
+				reminderRepository.getReadMessageToNotify(shard, maxReadMessageSend,
+						dateTimeRead, PageRequest.ofSize(maxGenericPageSize)).toList());
 		log.info("readMessageToNotify: {}", readMessageToNotify.size());
 
-		List<Reminder> paidMessageToNotify = reminderRepository.getPaidMessageToNotify(
+		List<Reminder> paidMessageToNotify = new ArrayList<Reminder>(reminderRepository.getPaidMessageToNotify(shard,
 				MessageContentType.PAYMENT.toString(), Integer.valueOf(maxPaidMessageSend), dateTimePayment,
-				startDateReminder);
+				startDateReminder, PageRequest.ofSize(maxPaymentPageSize)).toList());
 		log.info("paidMessageToNotify: {}", paidMessageToNotify.size());
 
 		readMessageToNotify.addAll(paidMessageToNotify);
@@ -251,6 +257,9 @@ public class ReminderServiceImpl implements ReminderService {
 			notificationInfoBody.setNotificationType(notificationType);
 
 			serviceMessagesApiClient.addDefaultHeader("Ocp-Apim-Subscription-Key", notifyEndpointKey);
+			if (isTest) {
+				serviceMessagesApiClient.addDefaultHeader("X-Functions-Key", notifyEndpointKey);
+			}
 			serviceMessagesApiClient.setBasePath(serviceMessagesUrl);
 
 			defaultServiceMessagesApi.setApiClient(serviceMessagesApiClient);
@@ -328,7 +337,7 @@ public class ReminderServiceImpl implements ReminderService {
 	}
 
 	private boolean isGeneric(Reminder reminder) {
-		return MessageContentType.GENERIC.toString().equalsIgnoreCase(reminder.getContent_type().toString());
+		return !MessageContentType.PAYMENT.toString().equalsIgnoreCase(reminder.getContent_type().toString());
 	}
 
 	private boolean isPayment(Reminder reminder) {
@@ -336,8 +345,6 @@ public class ReminderServiceImpl implements ReminderService {
 	}
 
 	private void sendReminderToProducer(Reminder reminder) throws JsonProcessingException {
-		kafkaTemplatePayments = (KafkaTemplate<String, String>) ApplicationContextProvider
-				.getBean("kafkaTemplatePayments");
 		remProd.sendReminder(reminder, kafkaTemplatePayments, mapper, producerTopic);
 	}
 
