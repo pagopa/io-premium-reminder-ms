@@ -31,8 +31,9 @@ public interface ReminderRepository extends MongoRepository<Reminder, String> {
 	 * @param maxReadMessageSend
 	 * @return Reminder list
 	 */
-	@Query("{readFlag:false, paidFlag:false, shard:?0, maxReadMessageSend:{$lt:?1}, $or:[{lastDateReminder:{$exists: false}}, {lastDateReminder:{$lt:?2}}]}")
-	Page<Reminder> getReadMessageToNotify(String shard, int maxReadMessageSend, LocalDateTime dateTimeRead,
+	@Query("{readFlag:false, paidFlag:false, shard:?0, content_type:{'$ne':?1}, maxReadMessageSend:{$lt:?2}, $or:[{$and:[{lastDateReminder:{$exists: false}},{insertionDate:{$lt:?3}}]}, {lastDateReminder:{$lt:?3}}]}")
+	Page<Reminder> getReadMessageToNotify(String shard, String typeMessage, int maxReadMessageSend,
+			LocalDateTime dateTimeRead,
 			Pageable pageable);
 
 	/**
@@ -47,7 +48,7 @@ public interface ReminderRepository extends MongoRepository<Reminder, String> {
 	 * @param today
 	 * @return Reminder list
 	 */
-	@Query("{readFlag:true, paidFlag:false, shard:?0, content_type:?1, maxPaidMessageSend:{$lt:?2}, $or:[{lastDateReminder:{$exists: false}}, {lastDateReminder:{$lt:?3}}], $or:[{content_paymentData_dueDate:{$exists: false}}, {content_paymentData_dueDate: {$lt:?4}}]}")
+	@Query("{paidFlag:false, shard:?0, content_type:?1, maxPaidMessageSend:{$lt:?2}, $or:[{$and:[{lastDateReminder:{$exists: false}},{insertionDate:{$lt:?3}}]}, {lastDateReminder:{$lt:?3}}], $or:[{content_paymentData_dueDate:{$exists: false}}, {content_paymentData_dueDate: {$lt:?4}}]}")
 	Page<Reminder> getPaidMessageToNotify(String shard, String typeMessage, Integer maxPaidMessageSend,
 			LocalDateTime dateTimePayment,
 			LocalDate startDateReminder, Pageable pageable);
