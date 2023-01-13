@@ -46,17 +46,16 @@ microservice-chart:
   envConfig:
     # required
     WEBSITE_SITE_NAME: "io-p-weubeta-reminder-ms" # required to show cloud role name in application insights
-    REMINDER_MAX: "10"
-    REMINDER_DAY: "0"
-    PAYMENT_DAY: "0"
+    REMINDER_DAY: "3"
+    PAYMENT_DAY: "3"
     TEST_ACTIVE: "false"
-    MAX_READ_MESSAGE: "10"
-    MAX_PAID_MESSAGE: "20"
-    START_DAY: "60"
+    MAX_READ_MESSAGE: "3"
+    MAX_PAID_MESSAGE: "4"
+    START_DAY: "13"
     SENDER_SERVICE_NAME: "Reminder"
     SENDER_ORGANIZATION_NAME: "PagoPA"
     SENDER_DEPARTMENT_NAME: "AppIO"
-    QUARTZ_SCHEDULER_TIMER_NOTIFY: "0 /3 * ? * *"
+    QUARTZ_SCHEDULER_TIMER_NOTIFY: "0 0/10 8-20 ? * *"
     QUARTZ_SCHEDULER_TIMER_DELETE: "0 * * ? * *"
     SCHEDULER_REMINDER_NOTIFY_ACTIVE: "false"
     SCHEDULER_REMINDER_DELETE_ACTIVE: "false"
