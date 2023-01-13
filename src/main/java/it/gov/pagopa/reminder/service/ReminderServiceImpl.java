@@ -16,6 +16,7 @@ import java.util.function.Function;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -145,14 +146,14 @@ public class ReminderServiceImpl implements ReminderService {
 		LocalDate today = LocalDate.now();
 		LocalDate startDateReminder = today.plusDays(Integer.valueOf(startDay));
 
-		List<Reminder> readMessageToNotify = new ArrayList<Reminder>(
+		List<Reminder> readMessageToNotify = new ArrayList<>(
 				reminderRepository
 						.getReadMessageToNotify(shard, MessageContentType.PAYMENT.toString(), maxReadMessageSend,
 								dateTimeRead, PageRequest.ofSize(maxGenericPageSize))
 						.toList());
 		log.info("readMessageToNotify: {}", readMessageToNotify.size());
 
-		List<Reminder> paidMessageToNotify = new ArrayList<Reminder>(reminderRepository.getPaidMessageToNotify(shard,
+		List<Reminder> paidMessageToNotify = new ArrayList<>(reminderRepository.getPaidMessageToNotify(shard,
 				MessageContentType.PAYMENT.toString(), Integer.valueOf(maxPaidMessageSend), dateTimePayment,
 				startDateReminder, PageRequest.ofSize(maxPaymentPageSize)).toList());
 		log.info("paidMessageToNotify: {}", paidMessageToNotify.size());
@@ -214,31 +215,27 @@ public class ReminderServiceImpl implements ReminderService {
 
 		if (localDateProxyDueDate != null && localDateProxyDueDate.equals(reminderDueDate)) {
 			if (proxyResp.isPaid()) {
-				for (Reminder rem : reminders) {
-					rem.setPaidFlag(true);
-					reminderRepository.save(rem);
-				}
+				reminders.forEach(rem -> rem.setPaidFlag(true));
 			} else {
 				try {
 					Reminder rem = Collections.min(reminders, Comparator.comparing(c -> c.getInsertionDate()));
 					sendReminderToProducer(rem);
 
-					for (Reminder reminderToUpdate : reminders) {
-						updateCounter(reminderToUpdate);
-						reminderRepository.save(reminderToUpdate);
-					}
+					reminders.forEach(reminderToUpdate -> updateCounter(reminderToUpdate));
 				} catch (JsonProcessingException e) {
+					reminders = new ArrayList<>();
 					log.error("Producer error sending notification {} to message-send queue", reminder.getId());
 					log.error(e.getMessage());
 				}
 			}
 		} else {
-			for (Reminder reminderToUpdate : reminders) {
-				reminderToUpdate.setDueDate(ReminderUtil.getLocalDateTime(localDateProxyDueDate));
-				reminderRepository.save(reminderToUpdate);
-			}
+			reminders.forEach(reminderToUpdate -> reminderToUpdate
+					.setDueDate(ReminderUtil.getLocalDateTime(localDateProxyDueDate)));
 		}
 
+		for (Reminder reminderToUpdate : reminders) {
+			reminderRepository.save(reminderToUpdate);
+		}
 		return "";
 	}
 
@@ -268,14 +265,12 @@ public class ReminderServiceImpl implements ReminderService {
 			defaultServiceMessagesApi.notify(notificationInfoBody);
 
 		} catch (HttpServerErrorException errorException) {
-			switch (errorException.getStatusCode()) {
-				case NOT_FOUND:
-					return;
-				default:
-					log.error("Error while calling notify|Status Code = {}|Error Message",
-							errorException.getStatusCode(), errorException.getMessage());
-					throw errorException;
+			if (!HttpStatus.NOT_FOUND.equals(errorException.getStatusCode())) {
+				log.error("Error while calling notify|Status Code = {}|Error Message",
+						errorException.getStatusCode(), errorException.getMessage());
+				throw errorException;
 			}
+			return;
 		}
 	}
 
