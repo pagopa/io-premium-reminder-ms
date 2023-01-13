@@ -221,7 +221,7 @@ public class ReminderServiceImpl implements ReminderService {
 					Reminder rem = Collections.min(reminders, Comparator.comparing(c -> c.getInsertionDate()));
 					sendReminderToProducer(rem);
 
-					reminders.forEach(reminderToUpdate -> updateCounter(reminderToUpdate));
+					reminders.forEach(this::updateCounter);
 				} catch (JsonProcessingException e) {
 					reminders = new ArrayList<>();
 					log.error("Producer error sending notification {} to message-send queue", reminder.getId());
@@ -270,7 +270,6 @@ public class ReminderServiceImpl implements ReminderService {
 						errorException.getStatusCode(), errorException.getMessage());
 				throw errorException;
 			}
-			return;
 		}
 	}
 
