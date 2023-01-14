@@ -79,8 +79,9 @@ public class ReminderServiceTest extends AbstractMock {
 		mockGetPaidMessageToNotifyWithResponse(new ArrayList<>());
 		proxyKo(null);
 		reminderService.getMessageToNotify("0");
+		String expectedRptId = rem.getRptId();
 		Assertions.assertThrows(HttpServerErrorException.class,
-				() -> mockDefaultApi.getPaymentInfo(rem.getRptId(), Constants.X_CLIENT_ID));
+				() -> mockDefaultApi.getPaymentInfo(expectedRptId, Constants.X_CLIENT_ID));
 	}
 
 	@Test
