@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -327,9 +326,8 @@ public class ReminderServiceImpl implements ReminderService {
 		IntervalFunction intervalFn = IntervalFunction.of(intervalFunction);
 		RetryConfig retryConfig = RetryConfig.custom().maxAttempts(attemptsMax).intervalFunction(intervalFn).build();
 		Retry retry = Retry.of("sendNotificationWithRetry", retryConfig);
-		Function<Object, Object> sendNotificationFn = Retry.decorateFunction(retry,
-				notObj -> callPaymentCheck((Reminder) notObj));
-		sendNotificationFn.apply(reminder);
+		Retry.decorateFunction(retry,
+				notObj -> callPaymentCheck((Reminder) notObj)).apply(reminder);
 	}
 
 	private boolean isGeneric(Reminder reminder) {
