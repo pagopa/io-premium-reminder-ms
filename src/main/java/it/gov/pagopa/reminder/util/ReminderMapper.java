@@ -11,13 +11,14 @@ import it.gov.pagopa.reminder.model.Reminder;
 public class ReminderMapper {
 
     public static Reminder messageToReminder(message msg) {
-    	Reminder reminder = new Reminder();
+        Reminder reminder = new Reminder();
         reminder.setId(msg.getId());
-        
-        if(msg.getDueDate() != 0L) {
-        	LocalDate reminderDueDate = LocalDateTime.ofInstant(Instant.ofEpochSecond(msg.getDueDate()),
+
+        if (msg.getDueDate() != 0L) {
+            System.out.println("mapping dueDate => " + msg.getDueDate());
+            LocalDate reminderDueDate = LocalDateTime.ofInstant(Instant.ofEpochMilli(msg.getDueDate()),
                     TimeZone.getDefault().toZoneId()).toLocalDate();
-        	reminder.setDueDate(ReminderUtil.getLocalDateTime(reminderDueDate));
+            reminder.setDueDate(ReminderUtil.getLocalDateTime(reminderDueDate));
         }
         reminder.setFiscalCode(msg.getFiscalCode());
         reminder.setFeature_level_type(msg.getFeatureLevelType());
