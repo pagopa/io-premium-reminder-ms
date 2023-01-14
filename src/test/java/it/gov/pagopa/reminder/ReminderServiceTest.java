@@ -32,6 +32,7 @@ import it.gov.pagopa.reminder.producer.ReminderProducer;
 import it.gov.pagopa.reminder.restclient.servicemessages.model.NotificationInfo;
 import it.gov.pagopa.reminder.restclient.servicemessages.model.NotificationType;
 import it.gov.pagopa.reminder.service.ReminderService;
+import it.gov.pagopa.reminder.util.Constants;
 
 @SpringBootTest(classes = Application.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @RunWith(SpringRunner.class)
@@ -72,13 +73,14 @@ public class ReminderServiceTest extends AbstractMock {
 	@DisplayName("it should not save reminder if payment check throws")
 	public void test_getMessageToNotify_producerThrowsHttpServerErrorException() throws JsonProcessingException {
 		List<Reminder> reminders = new ArrayList<>();
-		reminders.add(selectReminderMockObject("type", "1", "PAYMENT", "AAABBB77Y66A444A", "123456", 3));
+		Reminder rem = selectReminderMockObject("type", "1", "PAYMENT", "AAABBB77Y66A444A", "123456", 3);
+		reminders.add(rem);
 		mockGetReadMessageToNotifyWithResponse(reminders);
 		mockGetPaidMessageToNotifyWithResponse(new ArrayList<>());
 		proxyKo(null);
 		reminderService.getMessageToNotify("0");
 		Assertions.assertThrows(HttpServerErrorException.class,
-				() -> mockDefaultApi.getPaymentInfo(Mockito.anyString(), Mockito.anyString()));
+				() -> mockDefaultApi.getPaymentInfo(rem.getRptId(), Constants.X_CLIENT_ID));
 	}
 
 	@Test
