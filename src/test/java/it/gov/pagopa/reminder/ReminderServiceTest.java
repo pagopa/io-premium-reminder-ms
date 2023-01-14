@@ -1,7 +1,9 @@
 package it.gov.pagopa.reminder;
 
 import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,8 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.system.CapturedOutput;
-import org.springframework.boot.test.system.OutputCaptureExtension;
+import org.springframework.http.HttpStatus;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.HttpServerErrorException;
@@ -28,13 +29,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import it.gov.pagopa.reminder.model.Reminder;
 import it.gov.pagopa.reminder.producer.ReminderProducer;
+import it.gov.pagopa.reminder.restclient.servicemessages.model.NotificationInfo;
+import it.gov.pagopa.reminder.restclient.servicemessages.model.NotificationType;
 import it.gov.pagopa.reminder.service.ReminderService;
 
 @SpringBootTest(classes = Application.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
 @ExtendWith(MockitoExtension.class)
-@ExtendWith(OutputCaptureExtension.class)
 public class ReminderServiceTest extends AbstractMock {
 
 	@Autowired
@@ -43,13 +45,17 @@ public class ReminderServiceTest extends AbstractMock {
 	@MockBean
 	ReminderProducer remProdMock;
 
+	@MockBean
+	it.gov.pagopa.reminder.restclient.servicemessages.api.DefaultApi defaultServiceMessagesApiMock;
+
 	@Before
 	public void setUp() {
 		before();
 	}
 
 	@Test
-	public void test_producerThrowsJsonProcessingException() throws JsonProcessingException {
+	@DisplayName("it should not save reminder if producer throws")
+	public void test_getMessageToNotify_producerThrowsJsonProcessingException() throws JsonProcessingException {
 		List<Reminder> reminders = new ArrayList<>();
 		reminders.add(selectReminderMockObject("type", "1", "GENERIC", "AAABBB77Y66A444A", "123456", 3));
 		mockGetReadMessageToNotifyWithResponse(reminders);
@@ -63,7 +69,8 @@ public class ReminderServiceTest extends AbstractMock {
 	}
 
 	@Test
-	public void test_producerThrowsHttpServerErrorException() throws JsonProcessingException {
+	@DisplayName("it should not save reminder if payment check throws")
+	public void test_getMessageToNotify_producerThrowsHttpServerErrorException() throws JsonProcessingException {
 		List<Reminder> reminders = new ArrayList<>();
 		reminders.add(selectReminderMockObject("type", "1", "PAYMENT", "AAABBB77Y66A444A", "123456", 3));
 		mockGetReadMessageToNotifyWithResponse(reminders);
@@ -72,6 +79,76 @@ public class ReminderServiceTest extends AbstractMock {
 		reminderService.getMessageToNotify("0");
 		Assertions.assertThrows(HttpServerErrorException.class,
 				() -> mockDefaultApi.getPaymentInfo(Mockito.anyString(), Mockito.anyString()));
+	}
+
+	@Test
+	@DisplayName("it should return an empty list if reminder with given rptId is not found")
+	public void test_getPaymentsByRptid_returnEmptyResults() {
+		Mockito.when(mockRepository.getPaymentByRptId(Mockito.anyString())).thenReturn(List.of());
+		List<Reminder> results = reminderService.getPaymentsByRptid("0");
+		Assertions.assertTrue(results.isEmpty());
+	}
+
+	@Test
+	@DisplayName("it should return a list with elements if reminder with given rptId is found")
+	public void test_getPaymentsByRptid_returnResults() {
+		Mockito.when(mockRepository.getPaymentByRptId(Mockito.anyString())).thenReturn(List.of(new Reminder()));
+		List<Reminder> results = reminderService.getPaymentsByRptid("0");
+		Assertions.assertTrue(!results.isEmpty());
+	}
+
+	// ###############################
+	// SendReminderNotification
+	// ###############################
+
+	@Test
+	@DisplayName("it should send a Read reminder notification for GENERIC messages")
+	public void test_sendReminderNotification_unreadNotification() {
+		Reminder reminder = selectReminderMockObject("type", "1", "GENERIC", "AAABBB77Y66A444A", "123456", 3);
+		reminderService.sendReminderNotification(reminder);
+		NotificationInfo expected = new NotificationInfo().fiscalCode(reminder.getFiscalCode())
+				.messageId(reminder.getId()).notificationType(NotificationType.REMINDER_READ);
+		verify(defaultServiceMessagesApiMock, times(1)).notify(expected);
+	}
+
+	@Test
+	@DisplayName("it should send a Payment reminder notification for PAYMENT messages")
+	public void test_sendReminderNotification_unpaidNotification() {
+		Reminder reminder = selectReminderMockObject("type", "1", "PAYMENT", "AAABBB77Y66A444A", "123456", 3);
+		reminderService.sendReminderNotification(reminder);
+		NotificationInfo expected = new NotificationInfo().fiscalCode(reminder.getFiscalCode())
+				.messageId(reminder.getId()).notificationType(NotificationType.REMINDER_PAYMENT);
+		verify(defaultServiceMessagesApiMock, times(1)).notify(expected);
+	}
+
+	@Test
+	@DisplayName("it should send a Last Payment reminder notification for PAYMENT messages with due date expiring tomorrow")
+	public void test_sendReminderNotification_unpaidLastNotification() {
+		Reminder reminder = selectReminderMockObject("type", "1", "PAYMENT", "AAABBB77Y66A444A", "123456", 3);
+		reminder.setDueDate(LocalDateTime.now().plusDays(1));
+		reminderService.sendReminderNotification(reminder);
+		NotificationInfo expected = new NotificationInfo().fiscalCode(reminder.getFiscalCode())
+				.messageId(reminder.getId()).notificationType(NotificationType.REMINDER_PAYMENT_LAST);
+		verify(defaultServiceMessagesApiMock, times(1)).notify(expected);
+	}
+
+	@Test
+	@DisplayName("it should fire&forget notification if notify endpoint returns not found")
+	public void test_sendReminderNotification_notificationNotSent() {
+		Reminder reminder = selectReminderMockObject("type", "1", "PAYMENT", "AAABBB77Y66A444A", "123456", 3);
+		Mockito.doThrow(new HttpServerErrorException(HttpStatus.NOT_FOUND)).doNothing()
+				.when(defaultServiceMessagesApiMock).notify(Mockito.any(NotificationInfo.class));
+		Assertions.assertDoesNotThrow(() -> reminderService.sendReminderNotification(reminder));
+	}
+
+	@Test
+	@DisplayName("it should throw if notify endpoint is temporary down")
+	public void test_sendReminderNotification_notificationSend_KO() {
+		Reminder reminder = selectReminderMockObject("type", "1", "PAYMENT", "AAABBB77Y66A444A", "123456", 3);
+		Mockito.doThrow(new HttpServerErrorException(HttpStatus.SERVICE_UNAVAILABLE)).doNothing()
+				.when(defaultServiceMessagesApiMock).notify(Mockito.any(NotificationInfo.class));
+		Assertions.assertThrows(HttpServerErrorException.class,
+				() -> reminderService.sendReminderNotification(reminder));
 	}
 
 }
