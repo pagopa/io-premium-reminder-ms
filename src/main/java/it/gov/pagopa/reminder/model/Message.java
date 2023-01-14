@@ -2,6 +2,11 @@ package it.gov.pagopa.reminder.model;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import it.gov.pagopa.reminder.util.Constants;
+
 import org.springframework.data.annotation.Id;
 
 import dto.FeatureLevelType;
@@ -30,6 +35,10 @@ public class Message {
 	protected String content_paymentData_payeeFiscalCode;
 	protected String fiscalCode;
 	protected String shard = "0";
+
+	@JsonDeserialize(using = LocalDateTimeDeserializer.class)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Constants.DATE_FORMAT_DESERIALIZER)
 	protected LocalDateTime dueDate;
+
 	protected FeatureLevelType feature_level_type;
 }
