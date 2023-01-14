@@ -121,7 +121,7 @@ public class AbstractMock {
 	}
 
 	protected void mockGetReadMessageToNotifyWithResponse(List<Reminder> pageReturnReminder) {
-		Mockito.when(mockRepository.getReadMessageToNotify(Mockito.anyString(), Mockito.anyInt(),
+		Mockito.when(mockRepository.getReadMessageToNotify(Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(),
 				Mockito.any(LocalDateTime.class),
 				Mockito.any(PageRequest.class)))
 				.thenReturn(new PageImpl<>(pageReturnReminder));
