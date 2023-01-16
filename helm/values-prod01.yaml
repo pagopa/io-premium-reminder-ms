@@ -8,14 +8,14 @@ microservice-chart:
     httpGet:
       path: "/api/v1/health/live"
       port: 9090
-    initialDelaySeconds: 90
+    initialDelaySeconds: 150
     failureThreshold: 6
     periodSeconds: 10
   readinessProbe:
     httpGet:
       path: "/api/v1/health/ready"
       port: 9090
-    initialDelaySeconds: 90
+    initialDelaySeconds: 150
     failureThreshold: 6
     periodSeconds: 10
   service:
