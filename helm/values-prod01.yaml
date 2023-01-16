@@ -2,7 +2,7 @@ microservice-chart:
   namespace: "messages"
   image:
     repository: "iopcommonacr.azurecr.io/io-premium-reminder-ms"
-    tag: "0.9.2"
+    tag: "0.10.0"
     pullPolicy: Always
   livenessProbe:
     httpGet:
