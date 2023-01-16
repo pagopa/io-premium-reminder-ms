@@ -15,7 +15,6 @@ public class ReminderMapper {
         reminder.setId(msg.getId());
 
         if (msg.getDueDate() != 0L) {
-            System.out.println("mapping dueDate => " + msg.getDueDate());
             LocalDate reminderDueDate = LocalDateTime.ofInstant(Instant.ofEpochMilli(msg.getDueDate()),
                     TimeZone.getDefault().toZoneId()).toLocalDate();
             reminder.setDueDate(ReminderUtil.getLocalDateTime(reminderDueDate));
