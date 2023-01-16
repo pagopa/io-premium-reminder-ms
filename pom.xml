@@ -12,7 +12,7 @@
 
 	<groupId>it.gov.pagopa</groupId>
 	<artifactId>reminder</artifactId>
-	<version>0.11.0</version>
+	<version>0.11.1</version>
 
 	<properties>
 		<java.version>11</java.version>
