@@ -234,7 +234,6 @@ public class ReminderServiceImpl implements ReminderService {
 		}
 
 		for (Reminder reminderToUpdate : reminders) {
-			updateCounter(reminder);
 			reminderRepository.save(reminderToUpdate);
 		}
 		return "";
