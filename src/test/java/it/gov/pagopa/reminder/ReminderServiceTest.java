@@ -22,6 +22,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -139,7 +140,7 @@ public class ReminderServiceTest extends AbstractMock {
 	@DisplayName("it should fire&forget notification if notify endpoint returns not found")
 	public void test_sendReminderNotification_notificationNotSent() {
 		Reminder reminder = selectReminderMockObject("type", "1", "PAYMENT", "AAABBB77Y66A444A", "123456", 3);
-		Mockito.doThrow(new HttpServerErrorException(HttpStatus.NOT_FOUND)).doNothing()
+		Mockito.doThrow(new HttpClientErrorException(HttpStatus.NOT_FOUND)).doNothing()
 				.when(defaultServiceMessagesApiMock).notify(Mockito.any(NotificationInfo.class));
 		Assertions.assertDoesNotThrow(() -> reminderService.sendReminderNotification(reminder));
 	}
@@ -148,9 +149,9 @@ public class ReminderServiceTest extends AbstractMock {
 	@DisplayName("it should throw if notify endpoint is temporary down")
 	public void test_sendReminderNotification_notificationSend_KO() {
 		Reminder reminder = selectReminderMockObject("type", "1", "PAYMENT", "AAABBB77Y66A444A", "123456", 3);
-		Mockito.doThrow(new HttpServerErrorException(HttpStatus.SERVICE_UNAVAILABLE)).doNothing()
+		Mockito.doThrow(new HttpClientErrorException(HttpStatus.SERVICE_UNAVAILABLE)).doNothing()
 				.when(defaultServiceMessagesApiMock).notify(Mockito.any(NotificationInfo.class));
-		Assertions.assertThrows(HttpServerErrorException.class,
+		Assertions.assertThrows(HttpClientErrorException.class,
 				() -> reminderService.sendReminderNotification(reminder));
 	}
 
