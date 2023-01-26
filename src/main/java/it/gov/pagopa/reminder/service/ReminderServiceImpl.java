@@ -265,8 +265,8 @@ public class ReminderServiceImpl implements ReminderService {
 
 		} catch (HttpServerErrorException errorException) {
 			if (!HttpStatus.NOT_FOUND.equals(errorException.getStatusCode())
-					&& ((HttpStatus.TOO_MANY_REQUESTS).equals(errorException.getStatusCode()))
-					|| errorException.getStatusCode().is5xxServerError()) {
+					&& ((HttpStatus.TOO_MANY_REQUESTS).equals(errorException.getStatusCode())
+							|| errorException.getStatusCode().is5xxServerError())) {
 				log.error("Error while calling notify|Status Code = {}|Error Message",
 						errorException.getStatusCode(), errorException.getMessage());
 				throw errorException;
