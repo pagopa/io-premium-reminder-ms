@@ -164,8 +164,8 @@ public class ReminderServiceImpl implements ReminderService {
 		for (Reminder reminder : readMessageToNotify) {
 			try {
 				if (isGeneric(reminder)) {
-					sendReminderToProducer(reminder);
 					updateCounter(reminder);
+					sendReminderToProducer(reminder);
 					reminderRepository.save(reminder);
 				} else if (!rptidMap.containsKey(reminder.getRptId())) {
 					/*
@@ -233,6 +233,7 @@ public class ReminderServiceImpl implements ReminderService {
 		}
 
 		for (Reminder reminderToUpdate : reminders) {
+			updateCounter(reminder);
 			reminderRepository.save(reminderToUpdate);
 		}
 		return "";
@@ -350,7 +351,7 @@ public class ReminderServiceImpl implements ReminderService {
 			int countRead = reminder.getMaxReadMessageSend() + 1;
 			reminder.setMaxReadMessageSend(countRead);
 		}
-		if (reminder.isReadFlag() && !reminder.isPaidFlag() && isPayment(reminder)) {
+		if (!reminder.isPaidFlag() && isPayment(reminder)) {
 			int countPaid = reminder.getMaxPaidMessageSend() + 1;
 			reminder.setMaxPaidMessageSend(countPaid);
 		}
