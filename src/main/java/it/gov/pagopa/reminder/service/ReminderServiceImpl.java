@@ -19,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
@@ -164,8 +165,8 @@ public class ReminderServiceImpl implements ReminderService {
 		for (Reminder reminder : readMessageToNotify) {
 			try {
 				if (isGeneric(reminder)) {
-					sendReminderToProducer(reminder);
 					updateCounter(reminder);
+					sendReminderToProducer(reminder);
 					reminderRepository.save(reminder);
 				} else if (!rptidMap.containsKey(reminder.getRptId())) {
 					/*
@@ -259,11 +260,10 @@ public class ReminderServiceImpl implements ReminderService {
 				serviceMessagesApiClient.addDefaultHeader("X-Functions-Key", notifyEndpointKey);
 			}
 			serviceMessagesApiClient.setBasePath(serviceMessagesUrl);
-
 			defaultServiceMessagesApi.setApiClient(serviceMessagesApiClient);
 			defaultServiceMessagesApi.notify(notificationInfoBody);
 
-		} catch (HttpServerErrorException errorException) {
+		} catch (HttpClientErrorException errorException) {
 			if (!HttpStatus.NOT_FOUND.equals(errorException.getStatusCode())
 					&& ((HttpStatus.TOO_MANY_REQUESTS).equals(errorException.getStatusCode())
 							|| errorException.getStatusCode().is5xxServerError())) {
@@ -350,7 +350,7 @@ public class ReminderServiceImpl implements ReminderService {
 			int countRead = reminder.getMaxReadMessageSend() + 1;
 			reminder.setMaxReadMessageSend(countRead);
 		}
-		if (reminder.isReadFlag() && !reminder.isPaidFlag() && isPayment(reminder)) {
+		if (!reminder.isPaidFlag() && isPayment(reminder)) {
 			int countPaid = reminder.getMaxPaidMessageSend() + 1;
 			reminder.setMaxPaidMessageSend(countPaid);
 		}
