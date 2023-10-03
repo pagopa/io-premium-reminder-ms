@@ -45,6 +45,9 @@ microservice-chart:
         metadata:
           type: Utilization
           value: "70"
+  tmpVolumeMount:
+    create: true
+    mounts: [{ name: "tmp", mountPath: "/tmp" }]
   envConfig:
     # required
     WEBSITE_SITE_NAME: "io-p-weubeta-reminder-ms" # required to show cloud role name in application insights
