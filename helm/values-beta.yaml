@@ -2,7 +2,7 @@ microservice-chart:
   namespace: "messages"
   image:
     repository: "iopcommonacr.azurecr.io/io-premium-reminder-ms"
-    tag: "0.13.0"
+    tag: "0.13.1"
     pullPolicy: Always
   livenessProbe:
     httpGet:
@@ -47,7 +47,7 @@ microservice-chart:
           value: "70"
   tmpVolumeMount:
     create: true
-    mounts: [{ name: "tmp", mountPath: "/tmp" }]
+    mounts: [{name: "tmp", mountPath: "/tmp"}]
   envConfig:
     # required
     WEBSITE_SITE_NAME: "io-p-weubeta-reminder-ms" # required to show cloud role name in application insights
