@@ -36,8 +36,8 @@ microservice-chart:
       cpu: "200m"
   autoscaling:
     enable: true
-    minReplica: 1
-    maxReplica: 1
+    minReplica: 2
+    maxReplica: 10
     pollingInterval: 30 # seconds
     cooldownPeriod: 300 # seconds
     triggers:
@@ -71,10 +71,10 @@ microservice-chart:
     RESTCALL_INTERVAL_FUNCTION: "10000"
     RESTCALL_MAX_ATTEMPTS: "3"
     ENABLE_REST_KEY: "true"
-    IS_ACTIVE_MESSAGE_CONSUMER: "false"
-    IS_ACTIVE_MESSAGESTATUS_CONSUMER: "false"
-    IS_ACTIVE_PAYMENT_CONSUMER: "false"
-    IS_ACTIVE_MESSAGESEND_CONSUMER: "false"
+    IS_ACTIVE_MESSAGE_CONSUMER: "true"
+    IS_ACTIVE_MESSAGESTATUS_CONSUMER: "true"
+    IS_ACTIVE_PAYMENT_CONSUMER: "true"
+    IS_ACTIVE_MESSAGESEND_CONSUMER: "true"
     PROXY_ERROR_STATUSCODE: "PAA_PAGAMENTO_DUPLICATO,PPT_RPT_DUPLICATA,PPT_PAGAMENTO_DUPLICATO"
     PROXY_ENDPOINT: "https://api.platform.pagopa.it/checkout/auth/payments/v1"
     SECURITY_PROTOCOL_REMINDER: "SASL_SSL"
@@ -88,12 +88,12 @@ microservice-chart:
     MONGO_DATABASE: "db"
     IO_NOTIFY_ENDPOINT: "https://api-internal.io.italia.it/service-messages/api/v1" #endpoint notify service
     PAYMENTUPDATER_ENDPOINT: "https://api-app.internal.io.pagopa.it" #endpoint payment updater - implemented for call proxy by the payment updater, now not used. do not fill
-    REMINDER_GENERIC_MAX_PAGE_SIZE: "1"
-    REMINDER_PAYMENT_MAX_PAGE_SIZE: "1"
+    REMINDER_GENERIC_MAX_PAGE_SIZE: "1000"
+    REMINDER_PAYMENT_MAX_PAGE_SIZE: "1000"
     MAIN_LOGGING_LEVEL: "WARN"
-    ENABLE_QUARTZ: "false"
-    QUARTZ_MAXIMUM_POOL_SIZE: "1"
-    QUARTZ_MINIMUM_IDLE_CONNECTIONS: "1"
+    ENABLE_QUARTZ: "true"
+    QUARTZ_MAXIMUM_POOL_SIZE: "10"
+    QUARTZ_MINIMUM_IDLE_CONNECTIONS: "5"
     QUARTZ_IDLE_CONNECTIONS_TIMEOUT: "10000"
     # app specific
   envSecret:
