@@ -36,8 +36,8 @@ microservice-chart:
       cpu: "200m"
   autoscaling:
     enable: true
-    minReplica: 1
-    maxReplica: 1
+    minReplica: 2
+    maxReplica: 10
     pollingInterval: 30 # seconds
     cooldownPeriod: 300 # seconds
     triggers:
@@ -62,7 +62,7 @@ microservice-chart:
     SENDER_DEPARTMENT_NAME: "AppIO"
     QUARTZ_SCHEDULER_TIMER_NOTIFY: "0 0/10 8-20 ? * *"
     QUARTZ_SCHEDULER_TIMER_DELETE: "0 * * ? * *"
-    SCHEDULER_REMINDER_NOTIFY_ACTIVE: "false"
+    SCHEDULER_REMINDER_NOTIFY_ACTIVE: "true"
     SCHEDULER_REMINDER_DELETE_ACTIVE: "false"
     KAFKA_MESSAGE: "messages"
     KAFKA_STATUS: "message-status"
@@ -71,10 +71,10 @@ microservice-chart:
     RESTCALL_INTERVAL_FUNCTION: "10000"
     RESTCALL_MAX_ATTEMPTS: "3"
     ENABLE_REST_KEY: "true"
-    IS_ACTIVE_MESSAGE_CONSUMER: "false"
-    IS_ACTIVE_MESSAGESTATUS_CONSUMER: "false"
-    IS_ACTIVE_PAYMENT_CONSUMER: "false"
-    IS_ACTIVE_MESSAGESEND_CONSUMER: "false"
+    IS_ACTIVE_MESSAGE_CONSUMER: "true"
+    IS_ACTIVE_MESSAGESTATUS_CONSUMER: "true"
+    IS_ACTIVE_PAYMENT_CONSUMER: "true"
+    IS_ACTIVE_MESSAGESEND_CONSUMER: "true"
     PROXY_ERROR_STATUSCODE: "PAA_PAGAMENTO_DUPLICATO,PPT_RPT_DUPLICATA,PPT_PAGAMENTO_DUPLICATO"
     PROXY_ENDPOINT: "https://api.platform.pagopa.it/checkout/auth/payments/v1"
     SECURITY_PROTOCOL_REMINDER: "SASL_SSL"
@@ -91,7 +91,7 @@ microservice-chart:
     REMINDER_GENERIC_MAX_PAGE_SIZE: "1000"
     REMINDER_PAYMENT_MAX_PAGE_SIZE: "1000"
     MAIN_LOGGING_LEVEL: "WARN"
-    ENABLE_QUARTZ: "false"
+    ENABLE_QUARTZ: "true"
     QUARTZ_MAXIMUM_POOL_SIZE: "10"
     QUARTZ_MINIMUM_IDLE_CONNECTIONS: "5"
     QUARTZ_IDLE_CONNECTIONS_TIMEOUT: "10000"
