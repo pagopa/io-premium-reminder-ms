@@ -29,10 +29,10 @@ microservice-chart:
     servicePort: 9090
   resources:
     requests:
-      memory: "512Mi"
+      memory: "1024Mi"
       cpu: "200m"
     limits:
-      memory: "512Mi"
+      memory: "1024Mi"
       cpu: "200m"
   autoscaling:
     enable: true
