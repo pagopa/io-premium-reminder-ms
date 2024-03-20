@@ -29,15 +29,15 @@ microservice-chart:
     servicePort: 9090
   resources:
     requests:
-      memory: "1024Mi"
+      memory: "1Gi"
       cpu: "200m"
     limits:
-      memory: "1024Mi"
-      cpu: "200m"
+      memory: "1.5Gi"
+      cpu: "500m"
   autoscaling:
     enable: true
-    minReplica: 2
-    maxReplica: 10
+    minReplica: 0
+    maxReplica: 0
     pollingInterval: 30 # seconds
     cooldownPeriod: 300 # seconds
     triggers:
