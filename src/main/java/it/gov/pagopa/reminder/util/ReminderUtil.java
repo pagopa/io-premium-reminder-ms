@@ -62,4 +62,9 @@ public class ReminderUtil {
 	}
 
 
+	public static String calculateShard(String fiscalCode) throws Exception {
+		return ShaUtils.getHexString(fiscalCode).substring(0, 1);
+	}
+
+
 }

@@ -21,7 +21,7 @@ public interface ReminderService {
 
 	List<Reminder> getPaymentsByRptid(String rptId);
 
-	int countById(String id);
+	int countById(String shard, String id);
 
 	void sendReminderNotification(Reminder reminder);
 }

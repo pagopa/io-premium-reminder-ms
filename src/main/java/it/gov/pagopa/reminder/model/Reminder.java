@@ -18,12 +18,15 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import javax.persistence.Table;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @JsonIgnoreProperties
 @Document
 @ToString(callSuper = true)
+@Table(name = "reminder-sharded")
 public class Reminder extends Message {
 
 	private boolean readFlag;
