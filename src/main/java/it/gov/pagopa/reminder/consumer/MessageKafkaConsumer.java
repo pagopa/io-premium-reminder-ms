@@ -3,9 +3,12 @@ package it.gov.pagopa.reminder.consumer;
 import static it.gov.pagopa.reminder.util.ReminderUtil.checkNullInMessage;
 import static it.gov.pagopa.reminder.util.ReminderUtil.calculateShard;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.CountDownLatch;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
@@ -22,6 +25,9 @@ public class MessageKafkaConsumer {
     @Autowired
     ReminderService reminderService;
 
+    @Value("${senders.to.skip}")
+    private String sendersToSkipDashedString;
+
     private CountDownLatch latch = new CountDownLatch(1);
     private String payload = null;
 
@@ -29,8 +35,8 @@ public class MessageKafkaConsumer {
     public void messageKafkaListener(Reminder message) throws Exception {
         log.info("Received message: {}", message);
         checkNullInMessage(message);
-
-        if (FeatureLevelType.ADVANCED.toString().equalsIgnoreCase(message.getFeature_level_type().toString())) {
+        boolean shouldSkipThisReminder = Arrays.stream(sendersToSkipDashedString.split("-")).anyMatch(value -> message.getSenderServiceId().equals(value));
+        if (!shouldSkipThisReminder && FeatureLevelType.ADVANCED.toString().equalsIgnoreCase(message.getFeature_level_type().toString())) {
 
             if (MessageContentType.PAYMENT.toString().equalsIgnoreCase(message.getContent_type().toString())) {
                 message.setRptId(message.getContent_paymentData_payeeFiscalCode()
@@ -43,6 +49,7 @@ public class MessageKafkaConsumer {
                 reminderService.save(message);
             }
         }
+
         payload = message.toString();
         latch.countDown();
     }
