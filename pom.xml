@@ -374,37 +374,11 @@
                 </executions>
                 <configuration>
                     <excludes>
-                        <exclude>it/gov/pagopa/cgnonboardingportal/**/*</exclude>
+                        <exclude>it/gov/pagopa/reminder/**/*</exclude>
                         <exclude>org/openapitools/**/*</exclude>
                     </excludes>
                 </configuration>
             </plugin>
-
-			<plugin>
-				<groupId>org.jacoco</groupId>
-				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.8.6</version>
-				<executions>
-					<execution>
-						<id>default-prepare-agent</id>
-						<goals>
-							<goal>prepare-agent</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>report</id>
-						<phase>prepare-package</phase>
-						<goals>
-							<goal>report</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<excludes>
-						<exclude>org/openapitools/**/*</exclude>
-					</excludes>
-				</configuration>
-			</plugin>
 			
 			<plugin>
 			    <groupId>org.apache.maven.plugins</groupId>
