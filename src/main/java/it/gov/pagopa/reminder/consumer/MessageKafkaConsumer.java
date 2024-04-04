@@ -32,7 +32,7 @@ public class MessageKafkaConsumer {
     private String payload = null;
 
     @KafkaListener(topics = "${kafka.message}", groupId = "reminder-message", autoStartup = "${message.auto.start}")
-    public void messageKafkaListener(Reminder message) throws Exception {
+    public void messageKafkaListener(Reminder message) {
         log.info("Received message: {}", message);
         checkNullInMessage(message);
         boolean shouldSkipThisReminder = Arrays.stream(sendersToSkipDashedString.split("-")).anyMatch(value -> message.getSenderServiceId().equals(value));

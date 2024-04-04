@@ -206,7 +206,7 @@ public class ReminderServiceImpl implements ReminderService {
         return health;
     }
 
-    private String callPaymentCheck(Reminder reminder) throws Exception {
+    private String callPaymentCheck(Reminder reminder) {
 
         ProxyResponse proxyResp = callProxyCheck(reminder.getRptId());
 
@@ -330,14 +330,7 @@ public class ReminderServiceImpl implements ReminderService {
         IntervalFunction intervalFn = IntervalFunction.of(intervalFunction);
         RetryConfig retryConfig = RetryConfig.custom().maxAttempts(attemptsMax).intervalFunction(intervalFn).build();
         Retry retry = Retry.of("sendNotificationWithRetry", retryConfig);
-        Retry.decorateFunction(retry,
-                notObj -> {
-                    try {
-                        return callPaymentCheck((Reminder) notObj);
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-                }).apply(reminder);
+        Retry.decorateFunction(retry, notObj -> callPaymentCheck((Reminder) notObj)).apply(reminder);
     }
 
     private boolean isGeneric(Reminder reminder) {

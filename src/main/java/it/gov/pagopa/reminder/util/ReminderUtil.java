@@ -1,5 +1,6 @@
 package it.gov.pagopa.reminder.util;
 
+import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -61,9 +62,12 @@ public class ReminderUtil {
 		return localDate;
 	}
 
-
-	public static String calculateShard(String fiscalCode) throws Exception {
-		return ShaUtils.getHexString(fiscalCode).substring(0, 1);
+	public static String calculateShard(String fiscalCode) {
+		try {
+			return ShaUtils.getHexString(fiscalCode).substring(0, 1);
+		} catch (NoSuchAlgorithmException e) {
+			return "0";
+		}
 	}
 
 
