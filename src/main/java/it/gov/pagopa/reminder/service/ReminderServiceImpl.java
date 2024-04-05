@@ -369,7 +369,7 @@ public class ReminderServiceImpl implements ReminderService {
 
     @Override
     public int countById(String shard, String id) {
-        return reminderRepository.countById(shard, id);
+        return reminderRepository.countByShardAndId(shard, id);
     }
 
 }
