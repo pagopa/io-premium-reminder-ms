@@ -39,7 +39,7 @@ parameters:
   - name: "ENVIRONMENT_WEU_BETA"
     displayName: "Deploy to weu-beta"
     type: boolean
-    default: True
+    default: False
     values:
       - False
       - True
@@ -47,13 +47,6 @@ parameters:
     displayName: "Deploy to weu-prod-01"
     type: boolean
     default: True
-    values:
-      - False
-      - True
-  - name: "ENVIRONMENT_WEU_PROD_02"
-    displayName: "Deploy to weu-prod-02"
-    type: boolean
-    default: False
     values:
       - False
       - True
