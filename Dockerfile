@@ -1,20 +1,27 @@
 #
 # Build
 #
-FROM eclipse-temurin:17.0.9_9-jre-alpine as buildtime
+FROM eclipse-temurin:17.0.10_7-jdk-alpine as buildtime
+
+RUN apk --no-cache add curl
+
+RUN mkdir -p /usr/share/maven /usr/share/maven/ref \
+  && curl -fsSL https://dlcdn.apache.org/maven/maven-3/3.9.6/binaries/apache-maven-3.9.6-bin.tar.gz \
+    | tar -xzC /usr/share/maven --strip-components=1 \
+  && ln -s /usr/share/maven/bin/mvn /usr/bin/mvn
 
 WORKDIR /build
 COPY . .
 
 RUN mvn clean package -DskipTests
 
-FROM eclipse-temurin:17.0.9_9-jre-alpine as builder
+FROM eclipse-temurin:17.0.10_7-jdk-alpine as builder
 
 COPY --from=buildtime /build/target/*.jar application.jar
 
 RUN java -Djarmode=layertools -jar application.jar extract
 
-FROM eclipse-temurin:17.0.9_9-jre-alpine
+FROM eclipse-temurin:17.0.10_7-jdk-alpine
 
 RUN addgroup -S spring && adduser -S spring -G spring
 USER spring:spring
