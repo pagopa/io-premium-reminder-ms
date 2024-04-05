@@ -1,7 +1,9 @@
 #
 # Build
 #
-FROM openjdk:17-oracle as buildtime
+FROM eclipse-temurin:17.0.10_7-jdk-alpine as buildtime
+
+RUN apk --no-cache add curl
 
 RUN mkdir -p /usr/share/maven /usr/share/maven/ref \
   && curl -fsSL https://dlcdn.apache.org/maven/maven-3/3.9.6/binaries/apache-maven-3.9.6-bin.tar.gz \
@@ -13,13 +15,13 @@ COPY . .
 
 RUN mvn clean package -DskipTests
 
-FROM openjdk:17-oracle as builder
+FROM eclipse-temurin:17.0.10_7-jdk-alpine as builder
 
 COPY --from=buildtime /build/target/*.jar application.jar
 
 RUN java -Djarmode=layertools -jar application.jar extract
 
-FROM openjdk:17-oracle
+FROM eclipse-temurin:17.0.10_7-jdk-alpine
 
 RUN addgroup -S spring && adduser -S spring -G spring
 USER spring:spring
