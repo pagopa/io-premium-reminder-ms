@@ -1,20 +1,20 @@
 #
 # Build
 #
-FROM eclipse-temurin:17.0.9_9-jre-alpine as buildtime
+FROM openjdk:17-oracle as buildtime
 
 WORKDIR /build
 COPY . .
 
 RUN mvn clean package -DskipTests
 
-FROM eclipse-temurin:17.0.9_9-jre-alpine as builder
+FROM openjdk:17-oracle as builder
 
 COPY --from=buildtime /build/target/*.jar application.jar
 
 RUN java -Djarmode=layertools -jar application.jar extract
 
-FROM eclipse-temurin:17.0.9_9-jre-alpine
+FROM openjdk:17-oracle
 
 RUN addgroup -S spring && adduser -S spring -G spring
 USER spring:spring
