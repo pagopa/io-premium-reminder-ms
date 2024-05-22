@@ -243,11 +243,11 @@
 		    <groupId>org.springframework.kafka</groupId>
 		    <artifactId>spring-kafka</artifactId>
 		    <version>2.8.5</version>
-		</dependency>	
+		</dependency>
 		<dependency>
-		    <groupId>com.microsoft.azure</groupId>
-		    <artifactId>applicationinsights-core</artifactId>
-		    <version>2.6.4</version>
+			<groupId>com.microsoft.azure</groupId>
+			<artifactId>applicationinsights-core</artifactId>
+			<version>3.5.2</version>
 		</dependency>
 		<dependency>
 		    <groupId>tech.allegro.schema.json2avro</groupId>
@@ -407,7 +407,7 @@
 			                         verbose="false"
 			                         usetimestamp="true"/>
 								<!-- download swagger service messages-->
-			                    <get src="https://raw.githubusercontent.com/pagopa/io-functions-service-messages/master/openapi/index.yaml"
+			                    <get src="https://raw.githubusercontent.com/pagopa/io-functions-services-messages/master/openapi/index.yaml"
 			                         dest="${project.basedir}/src/main/resources/openapi/service-messages.yaml"
 			                         verbose="false"
 			                         usetimestamp="true"/>	
