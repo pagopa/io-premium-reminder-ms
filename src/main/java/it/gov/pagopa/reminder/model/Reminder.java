@@ -24,7 +24,7 @@ import javax.persistence.Table;
 @Setter
 @NoArgsConstructor
 @JsonIgnoreProperties
-@Document("reminder-sharded")
+@Document("reminder-sharded-new")
 @ToString(callSuper = true)
 public class Reminder extends Message {
 

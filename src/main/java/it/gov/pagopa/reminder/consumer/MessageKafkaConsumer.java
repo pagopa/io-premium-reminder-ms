@@ -28,6 +28,9 @@ public class MessageKafkaConsumer {
     @Value("${senders.to.skip}")
     private String sendersToSkipDashedString;
 
+    @Value("${senders.to.use}")
+    private String sendersToUseDashedString;
+
     private CountDownLatch latch = new CountDownLatch(1);
     private String payload = null;
 
@@ -35,8 +38,9 @@ public class MessageKafkaConsumer {
     public void messageKafkaListener(Reminder message) {
         log.info("Received message: {}", message);
         checkNullInMessage(message);
-        boolean shouldSkipThisReminder = Arrays.stream(sendersToSkipDashedString.split("-")).anyMatch(value -> message.getSenderServiceId().equals(value));
-        if (!shouldSkipThisReminder && FeatureLevelType.ADVANCED.toString().equalsIgnoreCase(message.getFeature_level_type().toString())) {
+        //boolean shouldSkipThisReminder = Arrays.stream(sendersToSkipDashedString.split("-")).anyMatch(value -> message.getSenderServiceId().equals(value));
+        boolean shouldSaveThisMessage = Arrays.stream(sendersToUseDashedString.split("-")).anyMatch(value -> message.getSenderServiceId().equals(value));
+        if (shouldSaveThisMessage && FeatureLevelType.ADVANCED.toString().equalsIgnoreCase(message.getFeature_level_type().toString())) {
 
             if (MessageContentType.PAYMENT.toString().equalsIgnoreCase(message.getContent_type().toString())) {
                 message.setRptId(message.getContent_paymentData_payeeFiscalCode()

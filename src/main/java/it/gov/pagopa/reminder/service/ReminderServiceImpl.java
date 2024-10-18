@@ -164,7 +164,8 @@ public class ReminderServiceImpl implements ReminderService {
 
         Map<String, Boolean> rptidMap = new HashMap<>();
 
-        for (Reminder reminder : readMessageToNotify) {
+
+        /*for (Reminder reminder : readMessageToNotify) {
             try {
                 if (isGeneric(reminder)) {
                     updateCounter(reminder);
@@ -175,7 +176,7 @@ public class ReminderServiceImpl implements ReminderService {
                      * If rptId is not present in rptidMap, we send the notification to the IO
                      * backend. This avoids sending the same message multiple times.
                      */
-                    sendNotificationWithRetry(reminder);
+                    /*sendNotificationWithRetry(reminder);
                     rptidMap.put(reminder.getRptId(), true);
                 }
                 log.info("Update reminder with id: {}", reminder.getId());
@@ -186,7 +187,7 @@ public class ReminderServiceImpl implements ReminderService {
                 log.error("HttpServerErrorException for reminder with id {}, {}", reminder.getId());
                 log.error(e.getMessage());
             }
-        }
+        }*/
     }
 
     @Override
