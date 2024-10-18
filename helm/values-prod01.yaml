@@ -111,6 +111,7 @@ microservice-chart:
     MYSQL_USER: "io-p-messages-REMINDER-MYSQL-DB-ADM-USERNAME"
     MYSQL_PASSWORD: "io-p-messages-REMINDER-MYSQL-DB-ADM-PASSWORD"
     SENDERS_TO_SKIP: "io-p-messages-REMINDER-SENDERS-TO-SKIP"
+    SENDERS_TO_USE: "io-p-messages-REMINDER-SENDERS-TO-USE"
     # app specific
   keyvault:
     name: "io-p-messages-kv"
