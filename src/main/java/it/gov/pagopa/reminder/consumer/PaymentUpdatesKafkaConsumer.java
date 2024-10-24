@@ -29,11 +29,11 @@ public class PaymentUpdatesKafkaConsumer {
 
 			if ("payments".equalsIgnoreCase(message.getSource())) {
 
-				reminderService.findById(message.getMessageId()).ifPresent(reminderToUpdate -> {
+				/*reminderService.findById(message.getMessageId()).ifPresent(reminderToUpdate -> {
 					reminderToUpdate.setPaidFlag(true);
 					reminderToUpdate.setPaidDate(message.getPaymentDateTime());
 					reminderService.save(reminderToUpdate);
-				});
+				});*/
 
 			}
 		}
