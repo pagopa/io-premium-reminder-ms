@@ -42,8 +42,8 @@ public class JobScheduler {
     }
 
     public void startRemindersJob() throws SchedulerException {
-        /*if (isActiveNotifyJob)
-            scheduleCheckRemindersToNotifyJob();*/
+        if (isActiveNotifyJob)
+            scheduleCheckRemindersToNotifyJob();
         if (isActiveDeleteJob)
             scheduleCheckRemindersToDeleteJob();
     }

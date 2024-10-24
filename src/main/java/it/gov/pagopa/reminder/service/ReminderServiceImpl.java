@@ -129,12 +129,10 @@ public class ReminderServiceImpl implements ReminderService {
     }
 
     @Override
-    public void updateReminder(String reminderId, boolean isRead) {
+    public void updateReminder(String reminderId) {
         findById(reminderId).ifPresent(reminderToUpdate -> {
-            reminderToUpdate.setReadFlag(isRead);
-            if (isRead) {
-                reminderToUpdate.setReadDate(LocalDateTime.now());
-            }
+            reminderToUpdate.setReadFlag(true);
+            reminderToUpdate.setReadDate(LocalDateTime.now());
             save(reminderToUpdate);
         });
     }
@@ -148,24 +146,23 @@ public class ReminderServiceImpl implements ReminderService {
         LocalDate today = LocalDate.now();
         LocalDate startDateReminder = today.plusDays(Integer.valueOf(startDay));
 
-        List<Reminder> readMessageToNotify = new ArrayList<>(
+        /*List<Reminder> readMessageToNotify = new ArrayList<>(
                 reminderRepository
                         .getReadMessageToNotify(shard, MessageContentType.PAYMENT.toString(), maxReadMessageSend,
                                 dateTimeRead, PageRequest.ofSize(maxGenericPageSize))
                         .toList());
-        log.info("readMessageToNotify: {}", readMessageToNotify.size());
+        log.info("readMessageToNotify: {}", readMessageToNotify.size());*/
 
         List<Reminder> paidMessageToNotify = new ArrayList<>(reminderRepository.getPaidMessageToNotify(shard,
                 MessageContentType.PAYMENT.toString(), Integer.valueOf(maxPaidMessageSend), dateTimePayment,
                 startDateReminder, PageRequest.ofSize(maxPaymentPageSize)).toList());
         log.info("paidMessageToNotify: {}", paidMessageToNotify.size());
 
-        readMessageToNotify.addAll(paidMessageToNotify);
+        // readMessageToNotify.addAll(paidMessageToNotify);
 
         Map<String, Boolean> rptidMap = new HashMap<>();
 
-
-        /*for (Reminder reminder : readMessageToNotify) {
+        /*for (Reminder reminder : paidMessageToNotify) {
             try {
                 if (isGeneric(reminder)) {
                     updateCounter(reminder);

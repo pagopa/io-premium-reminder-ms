@@ -11,7 +11,7 @@ public interface ReminderService {
 
 	void save(Reminder reminder);
 
-	void updateReminder(String reminderId, boolean isRead);
+	void updateReminder(String reminderId);
 
 	String healthCheck();
 

@@ -24,10 +24,10 @@ public class MessageStatusKafkaConsumer {
 
 		log.info("Received message-status: {}", messageStatus);
 
-		if (Objects.nonNull(messageStatus)) {
+		if (Objects.nonNull(messageStatus) && messageStatus.getIsRead() != null && messageStatus.getIsRead() == Boolean.TRUE) {
 
 			payload = messageStatus.toString();
-			//reminderService.updateReminder(messageStatus.getMessageId(), messageStatus.getIsRead());
+			//reminderService.updateReminder(messageStatus.getMessageId());
 		}
 		latch.countDown();
 	}
