@@ -2,7 +2,7 @@ swagger: '2.0'
 info:
   title: Microservice JAVA API
   description: Microservice JAVA API
-  version: '0.14.13'
+  version: '0.14.14'
 host: localhost
 basePath: /api/v1
 schemes:
