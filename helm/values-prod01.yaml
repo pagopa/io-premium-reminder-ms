@@ -60,7 +60,7 @@ microservice-chart:
     SENDER_SERVICE_NAME: "Reminder"
     SENDER_ORGANIZATION_NAME: "PagoPA"
     SENDER_DEPARTMENT_NAME: "AppIO"
-    QUARTZ_SCHEDULER_TIMER_NOTIFY: "0 0/10 8-20 ? * *"
+    QUARTZ_SCHEDULER_TIMER_NOTIFY: "0 0/3 8-20 ? * *"
     QUARTZ_SCHEDULER_TIMER_DELETE: "0 * * ? * *"
     SCHEDULER_REMINDER_NOTIFY_ACTIVE: "true"
     SCHEDULER_REMINDER_DELETE_ACTIVE: "false"
@@ -90,7 +90,7 @@ microservice-chart:
     PAYMENTUPDATER_ENDPOINT: "https://api-app.internal.io.pagopa.it" #endpoint payment updater - implemented for call proxy by the payment updater, now not used. do not fill
     REMINDER_GENERIC_MAX_PAGE_SIZE: "1000"
     REMINDER_PAYMENT_MAX_PAGE_SIZE: "1000"
-    MAIN_LOGGING_LEVEL: "INFO"
+    MAIN_LOGGING_LEVEL: "WARN"
     ENABLE_QUARTZ: "true"
     QUARTZ_MAXIMUM_POOL_SIZE: "10"
     QUARTZ_MINIMUM_IDLE_CONNECTIONS: "5"
