@@ -155,7 +155,7 @@ public class ReminderServiceImpl implements ReminderService {
 
         List<Reminder> paidMessageToNotify = new ArrayList<>(reminderRepository.getPaidMessageToNotify(shard,
                 MessageContentType.PAYMENT.toString(), Integer.valueOf(maxPaidMessageSend), dateTimePayment,
-                startDateReminder, PageRequest.ofSize(maxPaymentPageSize)).toList());
+                startDateReminder, todayTime, PageRequest.ofSize(maxPaymentPageSize)).toList());
         log.warn("paidMessageToNotify: {}", paidMessageToNotify.size());
 
         // readMessageToNotify.addAll(paidMessageToNotify);
