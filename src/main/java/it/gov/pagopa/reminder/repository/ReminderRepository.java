@@ -51,7 +51,7 @@ public interface ReminderRepository extends MongoRepository<Reminder, String> {
 	@Query("{paidFlag:false, shard:?0, content_type:?1, maxPaidMessageSend:{$lt:?2}, $or:[{$and:[{lastDateReminder:{$exists: false}},{insertionDate:{$lt:?3}}]}, {lastDateReminder:{$lt:?3}}], $or:[{dueDate:{$exists: false}}, {$and:[{dueDate:{$lt: ?4}}, {dueDate:{$gt: ?5}}]}]}")
 	Page<Reminder> getPaidMessageToNotify(String shard, String typeMessage, Integer maxPaidMessageSend,
 			LocalDateTime dateTimePayment,
-			LocalDate startDateReminder, LocalDateTime todayTime, Pageable pageable);
+			LocalDate startDateReminder, LocalDate todayTime, Pageable pageable);
 
 	@Query("{shard:?0, rptId:?1}")
 	List<Reminder> getPaymentByRptId(String shard, String rptId);
