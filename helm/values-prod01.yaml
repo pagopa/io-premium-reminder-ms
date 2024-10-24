@@ -53,7 +53,7 @@ microservice-chart:
     WEBSITE_SITE_NAME: "io-p-weuprod01-reminder-ms" # required to show cloud role name in application insights
     REMINDER_DAY: "3"
     PAYMENT_DAY: "3"
-    TEST_ACTIVE: "false"
+    TEST_ACTIVE: "true"
     MAX_READ_MESSAGE: "3"
     MAX_PAID_MESSAGE: "4"
     START_DAY: "13"
@@ -62,7 +62,7 @@ microservice-chart:
     SENDER_DEPARTMENT_NAME: "AppIO"
     QUARTZ_SCHEDULER_TIMER_NOTIFY: "0 0/10 8-20 ? * *"
     QUARTZ_SCHEDULER_TIMER_DELETE: "0 * * ? * *"
-    SCHEDULER_REMINDER_NOTIFY_ACTIVE: "false"
+    SCHEDULER_REMINDER_NOTIFY_ACTIVE: "true"
     SCHEDULER_REMINDER_DELETE_ACTIVE: "false"
     KAFKA_MESSAGE: "messages"
     KAFKA_STATUS: "message-status"
@@ -90,7 +90,7 @@ microservice-chart:
     PAYMENTUPDATER_ENDPOINT: "https://api-app.internal.io.pagopa.it" #endpoint payment updater - implemented for call proxy by the payment updater, now not used. do not fill
     REMINDER_GENERIC_MAX_PAGE_SIZE: "1000"
     REMINDER_PAYMENT_MAX_PAGE_SIZE: "1000"
-    MAIN_LOGGING_LEVEL: "WARN"
+    MAIN_LOGGING_LEVEL: "INFO"
     ENABLE_QUARTZ: "true"
     QUARTZ_MAXIMUM_POOL_SIZE: "10"
     QUARTZ_MINIMUM_IDLE_CONNECTIONS: "5"
