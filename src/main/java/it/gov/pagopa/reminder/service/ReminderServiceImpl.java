@@ -362,6 +362,7 @@ public class ReminderServiceImpl implements ReminderService {
         listDate = Optional.ofNullable(listDate).orElseGet(ArrayList::new);
         listDate.add(LocalDateTime.now());
         reminder.setDateReminder(listDate);
+        reminderRepository.save(reminder);
     }
 
     private NotificationType computeNotificationType(Reminder reminder) {
