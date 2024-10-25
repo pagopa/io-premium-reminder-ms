@@ -40,7 +40,6 @@ import it.gov.pagopa.reminder.restclient.pagopaproxy.model.PaymentRequestsGetRes
 import it.gov.pagopa.reminder.restclient.servicemessages.model.NotificationInfo;
 import it.gov.pagopa.reminder.restclient.servicemessages.model.NotificationType;
 import it.gov.pagopa.reminder.util.Constants;
-import it.gov.pagopa.reminder.util.DateUtils;
 import it.gov.pagopa.reminder.util.ReminderUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -144,7 +143,7 @@ public class ReminderServiceImpl implements ReminderService {
         LocalDateTime dateTimeRead = isTest ? todayTime.minusMinutes(reminderDay) : todayTime.minusDays(reminderDay);
         LocalDateTime dateTimePayment = isTest ? todayTime.minusMinutes(paymentDay) : todayTime.minusDays(paymentDay);
         LocalDate today = LocalDate.now();
-        LocalDate startDateReminder = today.plusDays(Integer.valueOf(startDay));
+        LocalDate startDateReminder = today.plusDays(Integer.parseInt(startDay));
 
         /*List<Reminder> readMessageToNotify = new ArrayList<>(
                 reminderRepository
@@ -153,9 +152,16 @@ public class ReminderServiceImpl implements ReminderService {
                         .toList());
         log.info("readMessageToNotify: {}", readMessageToNotify.size());*/
 
-        List<Reminder> paidMessageToNotify = new ArrayList<>(reminderRepository.getPaidMessageToNotify(shard,
-                MessageContentType.PAYMENT.toString(), Integer.valueOf(maxPaidMessageSend), dateTimePayment,
-                startDateReminder, today, PageRequest.ofSize(maxPaymentPageSize)).toList());
+        List<Reminder> paidMessageToNotify =
+                reminderRepository.getPaidMessageToNotify(
+                        shard,
+                        MessageContentType.PAYMENT.toString(),
+                        maxPaidMessageSend,
+                        dateTimePayment,
+                        startDateReminder,
+                        today,
+                        PageRequest.ofSize(maxPaymentPageSize))
+                .toList();
         log.info("paidMessagesToNotify: {}", paidMessageToNotify.size());
 
         // readMessageToNotify.addAll(paidMessageToNotify);
@@ -166,7 +172,7 @@ public class ReminderServiceImpl implements ReminderService {
             log.warn("Sending reminder for message with id: {}", reminder.getId());
             try {
                 if (isGeneric(reminder)) {
-                    updateCounter(reminder);
+                    // updateCounter(reminder);
                     sendReminderToProducer(reminder);
                     reminderRepository.save(reminder);
                 } else if (!rptidMap.containsKey(reminder.getRptId())) {
@@ -213,7 +219,7 @@ public class ReminderServiceImpl implements ReminderService {
         LocalDate reminderDueDate = reminder.getDueDate() == null ? null : reminder.getDueDate().toLocalDate();
         List<Reminder> reminders = reminderRepository.getPaymentByRptId(calculateShard(reminder.getFiscalCode()), reminder.getRptId());
 
-        if (isTest || (localDateProxyDueDate != null && localDateProxyDueDate.equals(reminderDueDate))) {
+        if (localDateProxyDueDate != null && localDateProxyDueDate.equals(reminderDueDate)) {
             if (proxyResp.isPaid()) {
                 reminders.forEach(rem -> rem.setPaidFlag(true));
             } else {
@@ -221,7 +227,7 @@ public class ReminderServiceImpl implements ReminderService {
                     Reminder rem = Collections.min(reminders, Comparator.comparing(c -> c.getInsertionDate()));
                     sendReminderToProducer(rem);
 
-                    reminders.forEach(this::updateCounter);
+                    // reminders.forEach(this::updateCounter);
                 } catch (JsonProcessingException e) {
                     reminders = new ArrayList<>();
                     log.error("Producer error sending notification {} to message-send queue", reminder.getId());
@@ -245,19 +251,14 @@ public class ReminderServiceImpl implements ReminderService {
             NotificationInfo notificationInfoBody = new NotificationInfo();
             notificationInfoBody.setFiscalCode(reminder.getFiscalCode());
             notificationInfoBody.setMessageId(reminder.getId());
-            NotificationType notificationType = Optional.of(reminder).filter(this::isPayment)
-                    .map(r -> r.getDueDate().toLocalDate())
-                    .map(dueDate -> dueDate.minusDays(1).isEqual(LocalDate.now())
-                            ? NotificationType.REMINDER_PAYMENT_LAST
-                            : NotificationType.REMINDER_PAYMENT)
-                    .orElse(NotificationType.REMINDER_READ);
+            NotificationType notificationType = computeNotificationType(reminder);
 
             notificationInfoBody.setNotificationType(notificationType);
 
             serviceMessagesApiClient.addDefaultHeader("Ocp-Apim-Subscription-Key", notifyEndpointKey);
-            if (isTest) {
+            /*if (isTest) {
                 serviceMessagesApiClient.addDefaultHeader("X-Functions-Key", notifyEndpointKey);
-            }
+            }*/
             serviceMessagesApiClient.setBasePath(serviceMessagesUrl);
             defaultServiceMessagesApi.setApiClient(serviceMessagesApiClient);
             log.warn("Sending reminder notification for rptId: {} and notificationType: {} ", reminder.getRptId(), notificationType.name());
@@ -344,20 +345,32 @@ public class ReminderServiceImpl implements ReminderService {
         remProd.sendReminder(reminder, kafkaTemplatePayments, mapper, producerTopic);
     }
 
-    private void updateCounter(Reminder reminder) {
-        if (!reminder.isReadFlag()) {
+    public void updateCounter(Reminder reminder) {
+        NotificationType notificationType = computeNotificationType(reminder);
+
+        if (notificationType == NotificationType.REMINDER_READ) {
             int countRead = reminder.getMaxReadMessageSend() + 1;
             reminder.setMaxReadMessageSend(countRead);
         }
-        if (!reminder.isPaidFlag() && isPayment(reminder)) {
+        if (notificationType == NotificationType.REMINDER_PAYMENT || notificationType == NotificationType.REMINDER_PAYMENT_LAST) {
             int countPaid = reminder.getMaxPaidMessageSend() + 1;
             reminder.setMaxPaidMessageSend(countPaid);
         }
+
         reminder.setLastDateReminder(LocalDateTime.now());
         List<LocalDateTime> listDate = reminder.getDateReminder();
         listDate = Optional.ofNullable(listDate).orElseGet(ArrayList::new);
         listDate.add(LocalDateTime.now());
         reminder.setDateReminder(listDate);
+    }
+
+    private NotificationType computeNotificationType(Reminder reminder) {
+        return Optional.of(reminder).filter(this::isPayment)
+                .map(r -> r.getDueDate().toLocalDate())
+                .map(dueDate -> dueDate.minusDays(1).isEqual(LocalDate.now())
+                        ? NotificationType.REMINDER_PAYMENT_LAST
+                        : NotificationType.REMINDER_PAYMENT)
+                .orElse(NotificationType.REMINDER_READ);
     }
 
     @Override

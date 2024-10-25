@@ -53,6 +53,7 @@ public class ReminderKafkaConsumer {
 
 	private String callNotify(Reminder reminder) {
 		reminderService.sendReminderNotification(reminder);
+		reminderService.updateCounter(reminder);
 		return "";
 	}
 
