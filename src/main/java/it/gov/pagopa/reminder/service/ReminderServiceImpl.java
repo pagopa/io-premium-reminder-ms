@@ -206,7 +206,7 @@ public class ReminderServiceImpl implements ReminderService {
     }
 
     private String callPaymentCheck(Reminder reminder) {
-
+        log.warn("Calling proxy to check payment with rptId: {}", reminder.getRptId());
         ProxyResponse proxyResp = callProxyCheck(reminder.getRptId());
 
         LocalDate localDateProxyDueDate = proxyResp.getDueDate();
@@ -214,7 +214,7 @@ public class ReminderServiceImpl implements ReminderService {
                 .orElse(null);
         List<Reminder> reminders = reminderRepository.getPaymentByRptId(calculateShard(reminder.getFiscalCode()), reminder.getRptId());
 
-        if (localDateProxyDueDate != null && localDateProxyDueDate.equals(reminderDueDate)) {
+        if (isTest || (localDateProxyDueDate != null && localDateProxyDueDate.equals(reminderDueDate))) {
             if (proxyResp.isPaid()) {
                 reminders.forEach(rem -> rem.setPaidFlag(true));
             } else {
