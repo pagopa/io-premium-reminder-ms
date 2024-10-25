@@ -52,7 +52,6 @@ public class ReminderKafkaConsumer {
 	}
 
 	private String callNotify(Reminder reminder) {
-		log.warn("Attempt to send reminder with id: {} ", reminder.getId());
 		reminderService.sendReminderNotification(reminder);
 		return "";
 	}

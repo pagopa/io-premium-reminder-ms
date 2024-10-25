@@ -210,8 +210,7 @@ public class ReminderServiceImpl implements ReminderService {
         ProxyResponse proxyResp = callProxyCheck(reminder.getRptId());
 
         LocalDate localDateProxyDueDate = proxyResp.getDueDate();
-        LocalDate reminderDueDate = Optional.ofNullable(reminder.getDueDate()).map(dueDate -> dueDate.toLocalDate())
-                .orElse(null);
+        LocalDate reminderDueDate = reminder.getDueDate() == null ? null : reminder.getDueDate().toLocalDate();
         List<Reminder> reminders = reminderRepository.getPaymentByRptId(calculateShard(reminder.getFiscalCode()), reminder.getRptId());
 
         if (isTest || (localDateProxyDueDate != null && localDateProxyDueDate.equals(reminderDueDate))) {
@@ -242,14 +241,13 @@ public class ReminderServiceImpl implements ReminderService {
 
     public void sendReminderNotification(Reminder reminder) {
         try {
-
+            log.warn("Attempt to send reminder notification with id: {} ", reminder.getId());
             NotificationInfo notificationInfoBody = new NotificationInfo();
             notificationInfoBody.setFiscalCode(reminder.getFiscalCode());
             notificationInfoBody.setMessageId(reminder.getId());
             NotificationType notificationType = Optional.of(reminder).filter(this::isPayment)
-                    .map(r -> DateUtils.resetLocalDateTimeToSimpleDate(r.getDueDate()))
-                    .map(dueDate -> dueDate.minusDays(1)
-                            .isEqual(DateUtils.resetLocalDateTimeToSimpleDate(LocalDateTime.now()))
+                    .map(r -> r.getDueDate().toLocalDate())
+                    .map(dueDate -> dueDate.minusDays(1).isEqual(LocalDate.now())
                             ? NotificationType.REMINDER_PAYMENT_LAST
                             : NotificationType.REMINDER_PAYMENT)
                     .orElse(NotificationType.REMINDER_READ);
@@ -262,6 +260,7 @@ public class ReminderServiceImpl implements ReminderService {
             }
             serviceMessagesApiClient.setBasePath(serviceMessagesUrl);
             defaultServiceMessagesApi.setApiClient(serviceMessagesApiClient);
+            log.warn("Sending reminder notification for rptId: {} and notificationType: {} ", reminder.getRptId(), notificationType.name());
             defaultServiceMessagesApi.notify(notificationInfoBody);
 
         } catch (HttpClientErrorException errorException) {
@@ -289,14 +288,14 @@ public class ReminderServiceImpl implements ReminderService {
 
             LocalDate dueDate = ReminderUtil.getLocalDateFromString(resp.getDueDate());
             proxyResp.setDueDate(dueDate);
-
+            log.warn("Received response from proxy: {}", proxyResp);
             return proxyResp;
 
         } catch (HttpServerErrorException errorException) {
-
             ProxyPaymentResponse res;
             try {
                 res = mapper.readValue(errorException.getResponseBodyAsString(), ProxyPaymentResponse.class);
+                log.error("Received error from proxy: {}", res);
 
                 if (res.getDetail_v2() != null) {
                     int code = errorException.getStatusCode().value();
@@ -315,6 +314,7 @@ public class ReminderServiceImpl implements ReminderService {
                 } else {
                     throw errorException;
                 }
+                log.warn("Received response from proxy: {}", proxyResp);
             } catch (JsonMappingException e) {
                 log.error(e.getMessage());
             } catch (JsonProcessingException e) {
@@ -345,7 +345,6 @@ public class ReminderServiceImpl implements ReminderService {
     }
 
     private void updateCounter(Reminder reminder) {
-
         if (!reminder.isReadFlag()) {
             int countRead = reminder.getMaxReadMessageSend() + 1;
             reminder.setMaxReadMessageSend(countRead);
