@@ -38,11 +38,11 @@ public class ReminderKafkaConsumer {
 	@KafkaListener(topics = "${kafka.send}", groupId = "reminder-message-send", containerFactory = "kafkaListenerContainerFactoryNotify", autoStartup = "${messagesend.auto.start}")
 	public void reminderKafkaListener(Reminder reminder) {
 
-		log.info("Received message-send: {}", reminder);
+		log.warn("Received message-send: {}", reminder);
 		if (Objects.nonNull(reminder)) {
 			log.info("I'm processing the reminder with id: {} ", reminder.getId());
 			try {
-				// sendNotificationWithRetry(reminder);
+				sendNotificationWithRetry(reminder);
 			} catch (Exception e) {
 				log.error(e.getMessage());
 			}
@@ -52,7 +52,7 @@ public class ReminderKafkaConsumer {
 	}
 
 	private String callNotify(Reminder reminder) {
-		log.info("Attempt to send reminder with id: {} ", reminder.getId());
+		log.warn("Attempt to send reminder with id: {} ", reminder.getId());
 		reminderService.sendReminderNotification(reminder);
 		return "";
 	}
