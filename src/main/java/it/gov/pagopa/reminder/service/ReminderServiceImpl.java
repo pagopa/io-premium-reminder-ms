@@ -143,7 +143,7 @@ public class ReminderServiceImpl implements ReminderService {
         LocalDateTime dateTimeRead = isTest ? todayTime.minusMinutes(reminderDay) : todayTime.minusDays(reminderDay);
         LocalDateTime dateTimePayment = isTest ? todayTime.minusMinutes(paymentDay) : todayTime.minusDays(paymentDay);
         LocalDate today = LocalDate.now();
-        LocalDate startDateReminder = today.plusDays(Integer.parseInt(startDay));
+        LocalDate startDateReminder = isTest ? today.plusMonths(Integer.parseInt(startDay)) : today.plusDays(Integer.parseInt(startDay));
 
         /*List<Reminder> readMessageToNotify = new ArrayList<>(
                 reminderRepository
