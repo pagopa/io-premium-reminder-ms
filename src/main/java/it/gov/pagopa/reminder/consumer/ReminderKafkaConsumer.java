@@ -43,6 +43,7 @@ public class ReminderKafkaConsumer {
 			log.info("I'm processing the reminder with id: {} ", reminder.getId());
 			try {
 				sendNotificationWithRetry(reminder);
+				reminderService.updateCounter(reminder);
 			} catch (Exception e) {
 				log.error(e.getMessage());
 			}
@@ -53,7 +54,6 @@ public class ReminderKafkaConsumer {
 
 	private String callNotify(Reminder reminder) {
 		reminderService.sendReminderNotification(reminder);
-		reminderService.updateCounter(reminder);
 		return "";
 	}
 
