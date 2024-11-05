@@ -38,7 +38,7 @@ public class ReminderKafkaConsumer {
 	@KafkaListener(topics = "${kafka.send}", groupId = "reminder-message-send", containerFactory = "kafkaListenerContainerFactoryNotify", autoStartup = "${messagesend.auto.start}")
 	public void reminderKafkaListener(Reminder reminder) {
 
-		log.warn("Received message-send: {}", reminder);
+		log.info("Received message-send: {}", reminder);
 		if (Objects.nonNull(reminder)) {
 			log.info("I'm processing the reminder with id: {} ", reminder.getId());
 			try {
