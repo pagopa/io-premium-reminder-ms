@@ -53,7 +53,7 @@ microservice-chart:
     WEBSITE_SITE_NAME: "io-p-weuprod01-reminder-ms" # required to show cloud role name in application insights
     REMINDER_DAY: "3"
     PAYMENT_DAY: "3"
-    TEST_ACTIVE: "true"
+    TEST_ACTIVE: "false"
     MAX_READ_MESSAGE: "3"
     MAX_PAID_MESSAGE: "4"
     START_DAY: "13"
