@@ -24,4 +24,6 @@ public interface ReminderService {
 	int countById(String shard, String id);
 
 	void sendReminderNotification(Reminder reminder);
+
+	void updateCounter(Reminder reminder);
 }
