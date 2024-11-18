@@ -342,8 +342,8 @@ public class ReminderServiceImpl implements ReminderService {
     }
 
     private void sendReminderToProducer(Reminder reminder) throws JsonProcessingException {
-        /*remProd.sendReminder(reminder, kafkaTemplatePayments, mapper, producerTopic);
-        updateCounter(reminder);*/
+        remProd.sendReminder(reminder, kafkaTemplatePayments, mapper, producerTopic);
+        updateCounter(reminder);
     }
 
     public void updateCounter(Reminder reminder) {
