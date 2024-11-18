@@ -289,7 +289,7 @@ public class ReminderServiceImpl implements ReminderService {
 
             LocalDate dueDate = ReminderUtil.getLocalDateFromString(resp.getDueDate());
             proxyResp.setDueDate(dueDate);
-            log.warn("Received response from proxy: {}", proxyResp);
+            log.warn("Received response from proxy for rptId: {}", rptId);
             return proxyResp;
 
         } catch (HttpServerErrorException errorException) {
@@ -315,7 +315,7 @@ public class ReminderServiceImpl implements ReminderService {
                 } else {
                     throw errorException;
                 }
-                log.warn("Received response from proxy: {}", proxyResp);
+                log.warn("Received response from proxy for rptId: {}", rptId);
             } catch (JsonMappingException e) {
                 log.error(e.getMessage());
             } catch (JsonProcessingException e) {
