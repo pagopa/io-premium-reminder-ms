@@ -307,7 +307,7 @@ public class ReminderServiceImpl implements ReminderService {
                         LocalDate dueDate = ReminderUtil.getLocalDateFromString(res.getDuedate());
                         proxyResp.setPaid(true);
                         proxyResp.setDueDate(dueDate);
-
+                        return proxyResp;
                     }
 
                     proxyResp.setPaid(false);
