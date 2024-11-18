@@ -42,7 +42,7 @@ public class ReminderKafkaConsumer {
 		if (Objects.nonNull(reminder)) {
 			log.info("I'm processing the reminder with id: {} ", reminder.getId());
 			try {
-				sendNotificationWithRetry(reminder);
+				//sendNotificationWithRetry(reminder);
 			} catch (Exception e) {
 				log.error(e.getMessage());
 			}
