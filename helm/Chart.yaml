@@ -2,8 +2,8 @@ apiVersion: v2
 name: io-premium-reminder-ms
 description: io-premium-reminder-ms
 type: application
-version: 0.14.26
-appVersion: 0.14.26
+version: 0.14.27
+appVersion: 0.14.27
 dependencies:
   - name: microservice-chart
     version: 5.2.0
