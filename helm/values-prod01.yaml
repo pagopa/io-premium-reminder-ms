@@ -2,7 +2,7 @@ microservice-chart:
   namespace: "messages"
   image:
     repository: "iopcommonacr.azurecr.io/io-premium-reminder-ms"
-    tag: "0.14.24"
+    tag: "0.14.28"
     pullPolicy: Always
   livenessProbe:
     httpGet:
@@ -36,7 +36,7 @@ microservice-chart:
       cpu: "500m"
   autoscaling:
     enable: true
-    minReplica: 2
+    minReplica: 4
     maxReplica: 10
     pollingInterval: 30 # seconds
     cooldownPeriod: 300 # seconds
@@ -89,7 +89,7 @@ microservice-chart:
     IO_NOTIFY_ENDPOINT: "https://api-internal.io.italia.it/api/v1/messages-sending/internal" #endpoint notify service
     PAYMENTUPDATER_ENDPOINT: "https://api-app.internal.io.pagopa.it" #endpoint payment updater - implemented for call proxy by the payment updater, now not used. do not fill
     REMINDER_GENERIC_MAX_PAGE_SIZE: "1000"
-    REMINDER_PAYMENT_MAX_PAGE_SIZE: "300"
+    REMINDER_PAYMENT_MAX_PAGE_SIZE: "400"
     MAIN_LOGGING_LEVEL: "WARN"
     ENABLE_QUARTZ: "true"
     QUARTZ_MAXIMUM_POOL_SIZE: "10"

@@ -162,7 +162,7 @@ public class ReminderServiceImpl implements ReminderService {
                         today,
                         PageRequest.ofSize(maxPaymentPageSize))
                 .toList();
-        log.info("paidMessagesToNotify: {}", paidMessageToNotify.size());
+        log.warn("paidMessagesToNotify for shard {}: {}", shard, paidMessageToNotify.size());
 
         // readMessageToNotify.addAll(paidMessageToNotify);
 
