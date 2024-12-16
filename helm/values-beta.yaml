@@ -105,8 +105,8 @@ microservice-chart:
     KAFKA_URL_MESSAGESEND: "messages-io-p-message-reminder-send-weu-prod01-evh-reminder-jaas-connection-string" # secrets - internal queue for send message to notify
     KAFKA_URL_SHARED: "payments-io-p-payment-updates-weu-prod01-evh-reminder-jaas-connection-string" #secrets - queue messageUpdates from payment updater
     PROXY_ENDPOINT_SUBSCRIPTION_KEY: "pagopa-proxy-prod-subscription-key"
-    PAYMENTUPDATER_ENDPOINT_SUBSCRIPTION_KEY: "io-p-reminder-payment-api-subscription-key-v2" # secret - subscription key used to reach payment-updater via APIM
-    IO_NOTIFY_ENDPOINT_SUBSCRIPTION_KEY: "io-p-reminder-subscription-key-v2" # secret - subscription key used to reach io-fn-service-messages via APIM
+    PAYMENTUPDATER_ENDPOINT_SUBSCRIPTION_KEY: "io-p-reminder-payment-api-subscription-key-itn" # secret - subscription key used to reach payment-updater via APIM
+    IO_NOTIFY_ENDPOINT_SUBSCRIPTION_KEY: "io-p-reminder-subscription-key-itn" # secret - subscription key used to reach io-fn-service-messages via APIM
     MYSQL_URL: "io-p-messages-reminder-mysql-REMINDER-MYSQL-DB-URL"
     MYSQL_USER: "io-p-messages-REMINDER-MYSQL-DB-ADM-USERNAME"
     MYSQL_PASSWORD: "io-p-messages-REMINDER-MYSQL-DB-ADM-PASSWORD"
