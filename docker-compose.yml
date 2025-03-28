@@ -82,7 +82,7 @@ services:
       - kafka
 
   zookeeper:
-    image: docker.io/bitnami/zookeeper:3.8
+    image: public.ecr.aws/docker/library/zookeeper:3.8
     ports:
       - "2181:2181"
     volumes:
@@ -93,7 +93,7 @@ services:
       - ALLOW_ANONYMOUS_LOGIN=yes
 
   kafka:
-    image: docker.io/bitnami/kafka:3.3
+    image: public.ecr.aws/bitnami/kafka:3.3
     ports:
       - "9094:9094"
     volumes:
@@ -111,7 +111,7 @@ services:
       - zookeeper
 
   mongodb:
-    image: docker.io/bitnami/mongodb:6.0
+    image: public.ecr.aws/bitnami/mongodb:6.0
     ports:
       - "27017:27017"
     networks:
@@ -180,7 +180,7 @@ services:
       - kafka
   
   db:
-    image: mysql:8.0.31
+    image: public.ecr.aws/docker/library/mysql:8.0.31
     restart: always
     environment:
       MYSQL_DATABASE: 'reminder'
