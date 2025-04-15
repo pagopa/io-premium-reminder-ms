@@ -1,0 +1,22 @@
+name: Docker Build
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - gh-actions 
+    # paths:
+    #   - ".github/workflows/docker_ci.yaml"
+    #   - "Dockerfile"
+    #   - "src/**"
+    #   - "pom.xml"
+
+jobs:
+  build:
+    uses: pagopa/dx/.github/workflows/docker_image_build.yaml@CES-957-definire-pipeline-di-ci-per-le-immagini-docker
+    name: Docker Build
+    secrets: inherit
+    with:
+      image_description: "Docker image for Premium Reminder"
+      image_authors: "IO Comunicazione team of PagoPA"
