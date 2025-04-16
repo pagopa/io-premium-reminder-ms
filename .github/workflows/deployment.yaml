@@ -1,4 +1,3 @@
-
 name: Test CA deployments
 
 on:
@@ -8,15 +7,16 @@ on:
       - CES-925-migrazione-reminder-su-container-apps
 
 permissions:
-  contents: read
   id-token: write
+  contents: read
   packages: write
-  attestations: write
 
 jobs:
   release:
-    runs-on: ubuntu-latest
-    name: CA Deployment
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+      uses: pagopa/dx/.github/workflows/container_app_deploy_v1.yaml@CES-958-definire-una-pipeline-di-cd-per-le-container-app
+      name: CA Deployment
+      secrets: inherit
+      with:
+        image_description: test
+        container_app: io-p-itn-com-reminder-ca-01
+        resource_group_name: io-p-itn-com-rg-01
