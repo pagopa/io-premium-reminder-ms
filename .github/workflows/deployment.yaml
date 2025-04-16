@@ -1,22 +1,25 @@
-name: Test CA deployments
+name: Release
 
 on:
   workflow_dispatch:
   push:
     branches:
-      - CES-925-migrazione-reminder-su-container-apps
+      - main
 
 permissions:
-  id-token: write
   contents: read
+  id-token: write
   packages: write
+  attestations: write
 
 jobs:
   release:
-      uses: pagopa/dx/.github/workflows/container_app_deploy_v1.yaml@CES-958-definire-una-pipeline-di-cd-per-le-container-app
-      name: CA Deployment
+      uses: pagopa/dx/.github/workflows/release-azure-containerapp-v1.yaml@main
+      name: Release to Production
       secrets: inherit
       with:
-        image_description: test
+        docker_image_name: pagopa/io-premium-reminder-ms
+        docker_image_description: "Java application to send reminders to agencies subscribed with premium support"
         container_app: io-p-itn-com-reminder-ca-01
         resource_group_name: io-p-itn-com-rg-01
+        environment: prod
