@@ -7,8 +7,8 @@ on:
       - CES-925-migrazione-reminder-su-container-apps
 
 permissions:
-  id-token: write
   contents: read
+  id-token: write
   packages: write
   attestations: write
 
