@@ -17,7 +17,8 @@ jobs:
       name: CA Deployment
       secrets: inherit
       with:
-        image_description: test
+        docker_image_description: test
         container_app: io-p-itn-com-reminder-ca-01
         resource_group_name: io-p-itn-com-rg-01
         docker_image_name: iopcommonacr.azurecr.io/io-premium-reminder-ms:0.16.0-6ad2da6750aa3f808e3430d9b596d4548390466a-docker-base-img
+        apply_github_tags_to_image_tags: true
