@@ -1,0 +1,22 @@
+
+name: Test CA deployments
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - CES-925-migrazione-reminder-su-container-apps
+
+permissions:
+  contents: read
+  id-token: write
+  packages: write
+  attestations: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    name: CA Deployment
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
