@@ -82,7 +82,7 @@ services:
       - kafka
 
   zookeeper:
-    image: docker.io/bitnami/zookeeper:3.8
+    image: docker.io/bitnami/zookeeper:3.8@sha256:4d450d4b1dab610e1012993d2ea78ba00a516b63e74214a57fef40c060ce4986
     ports:
       - "2181:2181"
     volumes:
@@ -93,7 +93,7 @@ services:
       - ALLOW_ANONYMOUS_LOGIN=yes
 
   kafka:
-    image: docker.io/bitnami/kafka:3.3
+    image: docker.io/bitnami/kafka:3.3@sha256:c5dd5bcf4b76df6f388be3f3c2f54255b7ca028e4c88337a6fb50b5fed2f1b22
     ports:
       - "9094:9094"
     volumes:
@@ -111,7 +111,7 @@ services:
       - zookeeper
 
   mongodb:
-    image: docker.io/bitnami/mongodb:6.0
+    image: docker.io/bitnami/mongodb:6.0@sha256:98fca2a5dc569ec1588a0819c1778bf453b39ded1d8e9c42c15104a3e0f44d4a
     ports:
       - "27017:27017"
     networks:
@@ -125,7 +125,7 @@ services:
       - MONGODB_DATABASE=db
 
   pagopa-proxy-mock:
-    image: stoplight/prism
+    image: stoplight/prism@sha256:f0b6056428c6a419be1adafb94343abb336a9ae208fbc7dbc798cb5ff670813a
     command: 'mock -d -h 0.0.0.0 https://raw.githubusercontent.com/pagopa/io-pagopa-proxy/main/api-spec/api-pagopa-proxy.yaml'
     networks:
       - reminder-net
@@ -133,7 +133,7 @@ services:
       - "9098:4010"
 
   fn-services-mock:
-    image: stoplight/prism
+    image: stoplight/prism@sha256:f0b6056428c6a419be1adafb94343abb336a9ae208fbc7dbc798cb5ff670813a
     command: 'mock -d -h 0.0.0.0 https://raw.githubusercontent.com/pagopa/io-functions-service-messages/master/openapi/index.yaml'
     networks:
       - reminder-net
@@ -180,7 +180,7 @@ services:
       - kafka
   
   db:
-    image: mysql:8.0.31
+    image: mysql:8.0.31@sha256:3d7ae561cf6095f6aca8eb7830e1d14734227b1fb4748092f2be2cfbccf7d614
     restart: always
     environment:
       MYSQL_DATABASE: 'reminder'
