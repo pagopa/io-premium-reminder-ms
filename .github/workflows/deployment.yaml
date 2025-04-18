@@ -18,7 +18,7 @@ jobs:
       name: CA Deployment
       secrets: inherit
       with:
-        docker_image_description: "no provenance, enabled attestation"
+        docker_image_description: "Java application to send reminders to agencies with premium support"
         container_app: io-p-itn-com-reminder-ca-01
         resource_group_name: io-p-itn-com-rg-01
         docker_image_name: pagopa/io-premium-reminder-ms
