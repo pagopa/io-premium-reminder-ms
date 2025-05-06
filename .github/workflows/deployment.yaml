@@ -5,6 +5,8 @@ on:
   push:
     branches:
       - CES-925-migrazione-reminder-su-container-apps
+    tags:
+      - 'v*'
 
 permissions:
   contents: read
