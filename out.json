@@ -1,0 +1,2073 @@
+[
+  {
+    "category": "Basic",
+    "dimensions": [
+      {
+        "localizedValue": "Revision",
+        "value": "revisionName"
+      },
+      {
+        "localizedValue": "Replica",
+        "value": "podName"
+      }
+    ],
+    "displayDescription": "CPU consumed by the container app, in nano cores. 1,000,000,000 nano cores = 1 core",
+    "id": "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-itn-com-rg-01/providers/Microsoft.App/containerApps/io-p-itn-com-reminder-ca-01/providers/microsoft.insights/metricdefinitions/UsageNanoCores",
+    "isDimensionRequired": false,
+    "metricAvailabilities": [
+      {
+        "retention": "P93D",
+        "timeGrain": "PT1M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT5M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT15M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT30M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT1H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT6H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT12H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "P1D"
+      }
+    ],
+    "name": {
+      "localizedValue": "CPU Usage",
+      "value": "UsageNanoCores"
+    },
+    "namespace": "Microsoft.App/containerApps",
+    "primaryAggregationType": "Average",
+    "resourceGroup": "io-p-itn-com-rg-01",
+    "resourceId": "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-itn-com-rg-01/providers/Microsoft.App/containerApps/io-p-itn-com-reminder-ca-01",
+    "supportedAggregationTypes": [
+      "Total",
+      "Average",
+      "Maximum",
+      "Minimum"
+    ],
+    "unit": "NanoCores"
+  },
+  {
+    "category": "Basic",
+    "dimensions": [
+      {
+        "localizedValue": "Revision",
+        "value": "revisionName"
+      },
+      {
+        "localizedValue": "Replica",
+        "value": "podName"
+      }
+    ],
+    "displayDescription": "Container App working set memory used in bytes.",
+    "id": "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-itn-com-rg-01/providers/Microsoft.App/containerApps/io-p-itn-com-reminder-ca-01/providers/microsoft.insights/metricdefinitions/WorkingSetBytes",
+    "isDimensionRequired": false,
+    "metricAvailabilities": [
+      {
+        "retention": "P93D",
+        "timeGrain": "PT1M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT5M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT15M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT30M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT1H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT6H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT12H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "P1D"
+      }
+    ],
+    "name": {
+      "localizedValue": "Memory Working Set Bytes",
+      "value": "WorkingSetBytes"
+    },
+    "namespace": "Microsoft.App/containerApps",
+    "primaryAggregationType": "Average",
+    "resourceGroup": "io-p-itn-com-rg-01",
+    "resourceId": "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-itn-com-rg-01/providers/Microsoft.App/containerApps/io-p-itn-com-reminder-ca-01",
+    "supportedAggregationTypes": [
+      "Total",
+      "Average",
+      "Maximum",
+      "Minimum"
+    ],
+    "unit": "Bytes"
+  },
+  {
+    "category": "Basic",
+    "dimensions": [
+      {
+        "localizedValue": "Revision",
+        "value": "revisionName"
+      },
+      {
+        "localizedValue": "Replica",
+        "value": "podName"
+      }
+    ],
+    "displayDescription": "Network transmitted bytes",
+    "id": "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-itn-com-rg-01/providers/Microsoft.App/containerApps/io-p-itn-com-reminder-ca-01/providers/microsoft.insights/metricdefinitions/TxBytes",
+    "isDimensionRequired": false,
+    "metricAvailabilities": [
+      {
+        "retention": "P93D",
+        "timeGrain": "PT1M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT5M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT15M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT30M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT1H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT6H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT12H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "P1D"
+      }
+    ],
+    "name": {
+      "localizedValue": "Network Out Bytes",
+      "value": "TxBytes"
+    },
+    "namespace": "Microsoft.App/containerApps",
+    "primaryAggregationType": "Total",
+    "resourceGroup": "io-p-itn-com-rg-01",
+    "resourceId": "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-itn-com-rg-01/providers/Microsoft.App/containerApps/io-p-itn-com-reminder-ca-01",
+    "supportedAggregationTypes": [
+      "Average",
+      "Total",
+      "Maximum",
+      "Minimum"
+    ],
+    "unit": "Bytes"
+  },
+  {
+    "category": "Basic",
+    "dimensions": [
+      {
+        "localizedValue": "Revision",
+        "value": "revisionName"
+      },
+      {
+        "localizedValue": "Replica",
+        "value": "podName"
+      }
+    ],
+    "displayDescription": "Network received bytes",
+    "id": "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-itn-com-rg-01/providers/Microsoft.App/containerApps/io-p-itn-com-reminder-ca-01/providers/microsoft.insights/metricdefinitions/RxBytes",
+    "isDimensionRequired": false,
+    "metricAvailabilities": [
+      {
+        "retention": "P93D",
+        "timeGrain": "PT1M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT5M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT15M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT30M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT1H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT6H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT12H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "P1D"
+      }
+    ],
+    "name": {
+      "localizedValue": "Network In Bytes",
+      "value": "RxBytes"
+    },
+    "namespace": "Microsoft.App/containerApps",
+    "primaryAggregationType": "Total",
+    "resourceGroup": "io-p-itn-com-rg-01",
+    "resourceId": "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-itn-com-rg-01/providers/Microsoft.App/containerApps/io-p-itn-com-reminder-ca-01",
+    "supportedAggregationTypes": [
+      "Average",
+      "Total",
+      "Maximum",
+      "Minimum"
+    ],
+    "unit": "Bytes"
+  },
+  {
+    "category": "Basic",
+    "dimensions": [
+      {
+        "localizedValue": "Revision",
+        "value": "revisionName"
+      },
+      {
+        "localizedValue": "Replica",
+        "value": "podName"
+      },
+      {
+        "localizedValue": "Status Code Category",
+        "value": "statusCodeCategory"
+      },
+      {
+        "localizedValue": "Status Code",
+        "value": "statusCode"
+      }
+    ],
+    "displayDescription": "Requests processed",
+    "id": "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-itn-com-rg-01/providers/Microsoft.App/containerApps/io-p-itn-com-reminder-ca-01/providers/microsoft.insights/metricdefinitions/Requests",
+    "isDimensionRequired": false,
+    "metricAvailabilities": [
+      {
+        "retention": "P93D",
+        "timeGrain": "PT1M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT5M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT15M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT30M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT1H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT6H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT12H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "P1D"
+      }
+    ],
+    "name": {
+      "localizedValue": "Requests",
+      "value": "Requests"
+    },
+    "namespace": "Microsoft.App/containerApps",
+    "primaryAggregationType": "Total",
+    "resourceGroup": "io-p-itn-com-rg-01",
+    "resourceId": "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-itn-com-rg-01/providers/Microsoft.App/containerApps/io-p-itn-com-reminder-ca-01",
+    "supportedAggregationTypes": [
+      "Average",
+      "Total",
+      "Maximum",
+      "Minimum"
+    ],
+    "unit": "Count"
+  },
+  {
+    "category": "Basic",
+    "dimensions": [
+      {
+        "localizedValue": "Revision",
+        "value": "revisionName"
+      },
+      {
+        "localizedValue": "Replica",
+        "value": "podName"
+      }
+    ],
+    "displayDescription": "Restart count of container app replicas",
+    "id": "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-itn-com-rg-01/providers/Microsoft.App/containerApps/io-p-itn-com-reminder-ca-01/providers/microsoft.insights/metricdefinitions/RestartCount",
+    "isDimensionRequired": false,
+    "metricAvailabilities": [
+      {
+        "retention": "P93D",
+        "timeGrain": "PT1M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT5M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT15M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT30M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT1H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT6H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT12H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "P1D"
+      }
+    ],
+    "name": {
+      "localizedValue": "Replica Restart Count",
+      "value": "RestartCount"
+    },
+    "namespace": "Microsoft.App/containerApps",
+    "primaryAggregationType": "Maximum",
+    "resourceGroup": "io-p-itn-com-rg-01",
+    "resourceId": "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-itn-com-rg-01/providers/Microsoft.App/containerApps/io-p-itn-com-reminder-ca-01",
+    "supportedAggregationTypes": [
+      "Average",
+      "Total",
+      "Maximum",
+      "Minimum"
+    ],
+    "unit": "Count"
+  },
+  {
+    "category": "Basic",
+    "dimensions": [
+      {
+        "localizedValue": "Revision",
+        "value": "revisionName"
+      }
+    ],
+    "displayDescription": "Number of replicas count of container app",
+    "id": "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-itn-com-rg-01/providers/Microsoft.App/containerApps/io-p-itn-com-reminder-ca-01/providers/microsoft.insights/metricdefinitions/Replicas",
+    "isDimensionRequired": false,
+    "metricAvailabilities": [
+      {
+        "retention": "P93D",
+        "timeGrain": "PT1M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT5M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT15M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT30M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT1H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT6H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT12H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "P1D"
+      }
+    ],
+    "name": {
+      "localizedValue": "Replica Count",
+      "value": "Replicas"
+    },
+    "namespace": "Microsoft.App/containerApps",
+    "primaryAggregationType": "Maximum",
+    "resourceGroup": "io-p-itn-com-rg-01",
+    "resourceId": "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-itn-com-rg-01/providers/Microsoft.App/containerApps/io-p-itn-com-reminder-ca-01",
+    "supportedAggregationTypes": [
+      "Average",
+      "Total",
+      "Maximum",
+      "Minimum"
+    ],
+    "unit": "Count"
+  },
+  {
+    "category": "Gpu",
+    "dimensions": [
+      {
+        "localizedValue": "Revision",
+        "value": "revisionName"
+      },
+      {
+        "localizedValue": "Replica",
+        "value": "podName"
+      }
+    ],
+    "displayDescription": "Gpu utilization indicates the percent of time over the past sample period during which one or more kernels were executing on the GPU.",
+    "id": "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-itn-com-rg-01/providers/Microsoft.App/containerApps/io-p-itn-com-reminder-ca-01/providers/microsoft.insights/metricdefinitions/GpuUtilizationPercentage",
+    "isDimensionRequired": false,
+    "metricAvailabilities": [
+      {
+        "retention": "P93D",
+        "timeGrain": "PT1M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT5M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT15M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT30M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT1H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT6H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT12H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "P1D"
+      }
+    ],
+    "name": {
+      "localizedValue": "GPU Utilization Percentage (Preview)",
+      "value": "GpuUtilizationPercentage"
+    },
+    "namespace": "Microsoft.App/containerApps",
+    "primaryAggregationType": "Average",
+    "resourceGroup": "io-p-itn-com-rg-01",
+    "resourceId": "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-itn-com-rg-01/providers/Microsoft.App/containerApps/io-p-itn-com-reminder-ca-01",
+    "supportedAggregationTypes": [
+      "Average",
+      "Maximum",
+      "Minimum"
+    ],
+    "unit": "Percent"
+  },
+  {
+    "category": "Basic",
+    "dimensions": [
+      {
+        "localizedValue": "Revision",
+        "value": "revisionName"
+      }
+    ],
+    "displayDescription": "Number of reserved cores for container app revisions",
+    "id": "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-itn-com-rg-01/providers/Microsoft.App/containerApps/io-p-itn-com-reminder-ca-01/providers/microsoft.insights/metricdefinitions/CoresQuotaUsed",
+    "isDimensionRequired": false,
+    "metricAvailabilities": [
+      {
+        "retention": "P93D",
+        "timeGrain": "PT1M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT5M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT15M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT30M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT1H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT6H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT12H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "P1D"
+      }
+    ],
+    "name": {
+      "localizedValue": "Reserved Cores",
+      "value": "CoresQuotaUsed"
+    },
+    "namespace": "Microsoft.App/containerApps",
+    "primaryAggregationType": "Maximum",
+    "resourceGroup": "io-p-itn-com-rg-01",
+    "resourceId": "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-itn-com-rg-01/providers/Microsoft.App/containerApps/io-p-itn-com-reminder-ca-01",
+    "supportedAggregationTypes": [
+      "Maximum",
+      "Minimum"
+    ],
+    "unit": "Count"
+  },
+  {
+    "category": "Basic",
+    "displayDescription": "Number of total reserved cores for the container app",
+    "id": "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-itn-com-rg-01/providers/Microsoft.App/containerApps/io-p-itn-com-reminder-ca-01/providers/microsoft.insights/metricdefinitions/TotalCoresQuotaUsed",
+    "isDimensionRequired": false,
+    "metricAvailabilities": [
+      {
+        "retention": "P93D",
+        "timeGrain": "PT1M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT5M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT15M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT30M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT1H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT6H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT12H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "P1D"
+      }
+    ],
+    "name": {
+      "localizedValue": "Total Reserved Cores",
+      "value": "TotalCoresQuotaUsed"
+    },
+    "namespace": "Microsoft.App/containerApps",
+    "primaryAggregationType": "Average",
+    "resourceGroup": "io-p-itn-com-rg-01",
+    "resourceId": "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-itn-com-rg-01/providers/Microsoft.App/containerApps/io-p-itn-com-reminder-ca-01",
+    "supportedAggregationTypes": [
+      "Average",
+      "Maximum",
+      "Minimum"
+    ],
+    "unit": "Count"
+  },
+  {
+    "category": "Basic",
+    "dimensions": [
+      {
+        "localizedValue": "Revision",
+        "value": "revisionName"
+      }
+    ],
+    "displayDescription": "Total connection timeouts",
+    "id": "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-itn-com-rg-01/providers/Microsoft.App/containerApps/io-p-itn-com-reminder-ca-01/providers/microsoft.insights/metricdefinitions/ResiliencyConnectTimeouts",
+    "isDimensionRequired": false,
+    "metricAvailabilities": [
+      {
+        "retention": "P93D",
+        "timeGrain": "PT1M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT5M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT15M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT30M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT1H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT6H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT12H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "P1D"
+      }
+    ],
+    "name": {
+      "localizedValue": "Resiliency Connection Timeouts",
+      "value": "ResiliencyConnectTimeouts"
+    },
+    "namespace": "Microsoft.App/containerApps",
+    "primaryAggregationType": "Average",
+    "resourceGroup": "io-p-itn-com-rg-01",
+    "resourceId": "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-itn-com-rg-01/providers/Microsoft.App/containerApps/io-p-itn-com-reminder-ca-01",
+    "supportedAggregationTypes": [
+      "Total",
+      "Average",
+      "Maximum",
+      "Minimum"
+    ],
+    "unit": "Count"
+  },
+  {
+    "category": "Basic",
+    "dimensions": [
+      {
+        "localizedValue": "Revision",
+        "value": "revisionName"
+      }
+    ],
+    "displayDescription": "Total request retries",
+    "id": "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-itn-com-rg-01/providers/Microsoft.App/containerApps/io-p-itn-com-reminder-ca-01/providers/microsoft.insights/metricdefinitions/ResiliencyRequestRetries",
+    "isDimensionRequired": false,
+    "metricAvailabilities": [
+      {
+        "retention": "P93D",
+        "timeGrain": "PT1M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT5M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT15M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT30M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT1H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT6H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT12H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "P1D"
+      }
+    ],
+    "name": {
+      "localizedValue": "Resiliency Request Retries",
+      "value": "ResiliencyRequestRetries"
+    },
+    "namespace": "Microsoft.App/containerApps",
+    "primaryAggregationType": "Average",
+    "resourceGroup": "io-p-itn-com-rg-01",
+    "resourceId": "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-itn-com-rg-01/providers/Microsoft.App/containerApps/io-p-itn-com-reminder-ca-01",
+    "supportedAggregationTypes": [
+      "Total",
+      "Average",
+      "Maximum",
+      "Minimum"
+    ],
+    "unit": "Count"
+  },
+  {
+    "category": "Basic",
+    "dimensions": [
+      {
+        "localizedValue": "Revision",
+        "value": "revisionName"
+      }
+    ],
+    "displayDescription": "Total request that timed out waiting for a response",
+    "id": "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-itn-com-rg-01/providers/Microsoft.App/containerApps/io-p-itn-com-reminder-ca-01/providers/microsoft.insights/metricdefinitions/ResiliencyRequestTimeouts",
+    "isDimensionRequired": false,
+    "metricAvailabilities": [
+      {
+        "retention": "P93D",
+        "timeGrain": "PT1M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT5M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT15M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT30M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT1H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT6H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT12H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "P1D"
+      }
+    ],
+    "name": {
+      "localizedValue": "Resiliency Request Timeouts",
+      "value": "ResiliencyRequestTimeouts"
+    },
+    "namespace": "Microsoft.App/containerApps",
+    "primaryAggregationType": "Average",
+    "resourceGroup": "io-p-itn-com-rg-01",
+    "resourceId": "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-itn-com-rg-01/providers/Microsoft.App/containerApps/io-p-itn-com-reminder-ca-01",
+    "supportedAggregationTypes": [
+      "Total",
+      "Average",
+      "Maximum",
+      "Minimum"
+    ],
+    "unit": "Count"
+  },
+  {
+    "category": "Basic",
+    "dimensions": [
+      {
+        "localizedValue": "Revision",
+        "value": "revisionName"
+      }
+    ],
+    "displayDescription": "Total requests pending a connection pool connection",
+    "id": "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-itn-com-rg-01/providers/Microsoft.App/containerApps/io-p-itn-com-reminder-ca-01/providers/microsoft.insights/metricdefinitions/ResiliencyRequestsPendingConnectionPool",
+    "isDimensionRequired": false,
+    "metricAvailabilities": [
+      {
+        "retention": "P93D",
+        "timeGrain": "PT1M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT5M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT15M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT30M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT1H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT6H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT12H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "P1D"
+      }
+    ],
+    "name": {
+      "localizedValue": "Resiliency Requests Pending Connection Pool",
+      "value": "ResiliencyRequestsPendingConnectionPool"
+    },
+    "namespace": "Microsoft.App/containerApps",
+    "primaryAggregationType": "Average",
+    "resourceGroup": "io-p-itn-com-rg-01",
+    "resourceId": "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-itn-com-rg-01/providers/Microsoft.App/containerApps/io-p-itn-com-reminder-ca-01",
+    "supportedAggregationTypes": [
+      "Total",
+      "Average",
+      "Maximum",
+      "Minimum"
+    ],
+    "unit": "Count"
+  },
+  {
+    "category": "Basic",
+    "dimensions": [
+      {
+        "localizedValue": "Revision",
+        "value": "revisionName"
+      }
+    ],
+    "displayDescription": "Number of currently ejected hosts",
+    "id": "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-itn-com-rg-01/providers/Microsoft.App/containerApps/io-p-itn-com-reminder-ca-01/providers/microsoft.insights/metricdefinitions/ResiliencyEjectedHosts",
+    "isDimensionRequired": false,
+    "metricAvailabilities": [
+      {
+        "retention": "P93D",
+        "timeGrain": "PT1M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT5M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT15M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT30M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT1H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT6H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT12H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "P1D"
+      }
+    ],
+    "name": {
+      "localizedValue": "Resiliency Ejected Hosts",
+      "value": "ResiliencyEjectedHosts"
+    },
+    "namespace": "Microsoft.App/containerApps",
+    "primaryAggregationType": "Average",
+    "resourceGroup": "io-p-itn-com-rg-01",
+    "resourceId": "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-itn-com-rg-01/providers/Microsoft.App/containerApps/io-p-itn-com-reminder-ca-01",
+    "supportedAggregationTypes": [
+      "Total",
+      "Average",
+      "Maximum",
+      "Minimum"
+    ],
+    "unit": "Count"
+  },
+  {
+    "category": "Basic",
+    "dimensions": [
+      {
+        "localizedValue": "Revision",
+        "value": "revisionName"
+      }
+    ],
+    "displayDescription": "Number of ejections aborted due to the max ejection %",
+    "id": "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-itn-com-rg-01/providers/Microsoft.App/containerApps/io-p-itn-com-reminder-ca-01/providers/microsoft.insights/metricdefinitions/ResiliencyEjectionsAborted",
+    "isDimensionRequired": false,
+    "metricAvailabilities": [
+      {
+        "retention": "P93D",
+        "timeGrain": "PT1M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT5M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT15M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT30M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT1H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT6H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT12H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "P1D"
+      }
+    ],
+    "name": {
+      "localizedValue": "Resiliency Ejections Aborted",
+      "value": "ResiliencyEjectionsAborted"
+    },
+    "namespace": "Microsoft.App/containerApps",
+    "primaryAggregationType": "Average",
+    "resourceGroup": "io-p-itn-com-rg-01",
+    "resourceId": "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-itn-com-rg-01/providers/Microsoft.App/containerApps/io-p-itn-com-reminder-ca-01",
+    "supportedAggregationTypes": [
+      "Total",
+      "Average",
+      "Maximum",
+      "Minimum"
+    ],
+    "unit": "Count"
+  },
+  {
+    "category": "Java",
+    "dimensions": [
+      {
+        "localizedValue": "Revision",
+        "value": "revisionName"
+      },
+      {
+        "localizedValue": "Replica",
+        "value": "podName"
+      },
+      {
+        "localizedValue": "Container",
+        "value": "container"
+      },
+      {
+        "localizedValue": "PoolType",
+        "value": "poolType"
+      }
+    ],
+    "displayDescription": "Total amount of memory used by heap or non-heap (in bytes)",
+    "id": "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-itn-com-rg-01/providers/Microsoft.App/containerApps/io-p-itn-com-reminder-ca-01/providers/microsoft.insights/metricdefinitions/JvmMemoryTotalUsed",
+    "isDimensionRequired": false,
+    "metricAvailabilities": [
+      {
+        "retention": "P93D",
+        "timeGrain": "PT1M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT5M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT15M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT30M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT1H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT6H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT12H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "P1D"
+      }
+    ],
+    "name": {
+      "localizedValue": "jvm.memory.total.used",
+      "value": "JvmMemoryTotalUsed"
+    },
+    "namespace": "Microsoft.App/containerApps",
+    "primaryAggregationType": "Average",
+    "resourceGroup": "io-p-itn-com-rg-01",
+    "resourceId": "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-itn-com-rg-01/providers/Microsoft.App/containerApps/io-p-itn-com-reminder-ca-01",
+    "supportedAggregationTypes": [
+      "Average",
+      "Maximum",
+      "Minimum"
+    ],
+    "unit": "Bytes"
+  },
+  {
+    "category": "Java",
+    "dimensions": [
+      {
+        "localizedValue": "Revision",
+        "value": "revisionName"
+      },
+      {
+        "localizedValue": "Replica",
+        "value": "podName"
+      },
+      {
+        "localizedValue": "Container",
+        "value": "container"
+      },
+      {
+        "localizedValue": "PoolType",
+        "value": "poolType"
+      }
+    ],
+    "displayDescription": "Total amount of memory guaranteed to be available for heap or non-heap (in bytes)",
+    "id": "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-itn-com-rg-01/providers/Microsoft.App/containerApps/io-p-itn-com-reminder-ca-01/providers/microsoft.insights/metricdefinitions/JvmMemoryTotalCommitted",
+    "isDimensionRequired": false,
+    "metricAvailabilities": [
+      {
+        "retention": "P93D",
+        "timeGrain": "PT1M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT5M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT15M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT30M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT1H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT6H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT12H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "P1D"
+      }
+    ],
+    "name": {
+      "localizedValue": "jvm.memory.total.committed",
+      "value": "JvmMemoryTotalCommitted"
+    },
+    "namespace": "Microsoft.App/containerApps",
+    "primaryAggregationType": "Average",
+    "resourceGroup": "io-p-itn-com-rg-01",
+    "resourceId": "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-itn-com-rg-01/providers/Microsoft.App/containerApps/io-p-itn-com-reminder-ca-01",
+    "supportedAggregationTypes": [
+      "Average",
+      "Maximum",
+      "Minimum"
+    ],
+    "unit": "Bytes"
+  },
+  {
+    "category": "Java",
+    "dimensions": [
+      {
+        "localizedValue": "Revision",
+        "value": "revisionName"
+      },
+      {
+        "localizedValue": "Replica",
+        "value": "podName"
+      },
+      {
+        "localizedValue": "Container",
+        "value": "container"
+      },
+      {
+        "localizedValue": "PoolType",
+        "value": "poolType"
+      }
+    ],
+    "displayDescription": "Total amount of maximum obtainable memory for heap or non-heap (in bytes)",
+    "id": "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-itn-com-rg-01/providers/Microsoft.App/containerApps/io-p-itn-com-reminder-ca-01/providers/microsoft.insights/metricdefinitions/JvmMemoryTotalLimit",
+    "isDimensionRequired": false,
+    "metricAvailabilities": [
+      {
+        "retention": "P93D",
+        "timeGrain": "PT1M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT5M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT15M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT30M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT1H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT6H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT12H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "P1D"
+      }
+    ],
+    "name": {
+      "localizedValue": "jvm.memory.total.limit",
+      "value": "JvmMemoryTotalLimit"
+    },
+    "namespace": "Microsoft.App/containerApps",
+    "primaryAggregationType": "Average",
+    "resourceGroup": "io-p-itn-com-rg-01",
+    "resourceId": "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-itn-com-rg-01/providers/Microsoft.App/containerApps/io-p-itn-com-reminder-ca-01",
+    "supportedAggregationTypes": [
+      "Average",
+      "Maximum",
+      "Minimum"
+    ],
+    "unit": "Bytes"
+  },
+  {
+    "category": "Java",
+    "dimensions": [
+      {
+        "localizedValue": "Revision",
+        "value": "revisionName"
+      },
+      {
+        "localizedValue": "Replica",
+        "value": "podName"
+      },
+      {
+        "localizedValue": "Container",
+        "value": "container"
+      },
+      {
+        "localizedValue": "PoolName",
+        "value": "poolName"
+      },
+      {
+        "localizedValue": "PoolType",
+        "value": "poolType"
+      }
+    ],
+    "displayDescription": "Amount of memory used by each pool (in bytes)",
+    "id": "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-itn-com-rg-01/providers/Microsoft.App/containerApps/io-p-itn-com-reminder-ca-01/providers/microsoft.insights/metricdefinitions/JvmMemoryUsed",
+    "isDimensionRequired": false,
+    "metricAvailabilities": [
+      {
+        "retention": "P93D",
+        "timeGrain": "PT1M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT5M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT15M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT30M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT1H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT6H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT12H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "P1D"
+      }
+    ],
+    "name": {
+      "localizedValue": "jvm.memory.used",
+      "value": "JvmMemoryUsed"
+    },
+    "namespace": "Microsoft.App/containerApps",
+    "primaryAggregationType": "Average",
+    "resourceGroup": "io-p-itn-com-rg-01",
+    "resourceId": "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-itn-com-rg-01/providers/Microsoft.App/containerApps/io-p-itn-com-reminder-ca-01",
+    "supportedAggregationTypes": [
+      "Average",
+      "Maximum",
+      "Minimum"
+    ],
+    "unit": "Bytes"
+  },
+  {
+    "category": "Java",
+    "dimensions": [
+      {
+        "localizedValue": "Revision",
+        "value": "revisionName"
+      },
+      {
+        "localizedValue": "Replica",
+        "value": "podName"
+      },
+      {
+        "localizedValue": "Container",
+        "value": "container"
+      },
+      {
+        "localizedValue": "PoolName",
+        "value": "poolName"
+      },
+      {
+        "localizedValue": "PoolType",
+        "value": "poolType"
+      }
+    ],
+    "displayDescription": "Amount of memory guaranteed to be available for each pool (in bytes)",
+    "id": "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-itn-com-rg-01/providers/Microsoft.App/containerApps/io-p-itn-com-reminder-ca-01/providers/microsoft.insights/metricdefinitions/JvmMemoryCommitted",
+    "isDimensionRequired": false,
+    "metricAvailabilities": [
+      {
+        "retention": "P93D",
+        "timeGrain": "PT1M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT5M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT15M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT30M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT1H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT6H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT12H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "P1D"
+      }
+    ],
+    "name": {
+      "localizedValue": "jvm.memory.committed",
+      "value": "JvmMemoryCommitted"
+    },
+    "namespace": "Microsoft.App/containerApps",
+    "primaryAggregationType": "Average",
+    "resourceGroup": "io-p-itn-com-rg-01",
+    "resourceId": "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-itn-com-rg-01/providers/Microsoft.App/containerApps/io-p-itn-com-reminder-ca-01",
+    "supportedAggregationTypes": [
+      "Average",
+      "Maximum",
+      "Minimum"
+    ],
+    "unit": "Bytes"
+  },
+  {
+    "category": "Java",
+    "dimensions": [
+      {
+        "localizedValue": "Revision",
+        "value": "revisionName"
+      },
+      {
+        "localizedValue": "Replica",
+        "value": "podName"
+      },
+      {
+        "localizedValue": "Container",
+        "value": "container"
+      },
+      {
+        "localizedValue": "PoolName",
+        "value": "poolName"
+      },
+      {
+        "localizedValue": "PoolType",
+        "value": "poolType"
+      }
+    ],
+    "displayDescription": "Amount of maximum obtainable memory for each pool (in bytes)",
+    "id": "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-itn-com-rg-01/providers/Microsoft.App/containerApps/io-p-itn-com-reminder-ca-01/providers/microsoft.insights/metricdefinitions/JvmMemoryLimit",
+    "isDimensionRequired": false,
+    "metricAvailabilities": [
+      {
+        "retention": "P93D",
+        "timeGrain": "PT1M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT5M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT15M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT30M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT1H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT6H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT12H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "P1D"
+      }
+    ],
+    "name": {
+      "localizedValue": "jvm.memory.limit",
+      "value": "JvmMemoryLimit"
+    },
+    "namespace": "Microsoft.App/containerApps",
+    "primaryAggregationType": "Average",
+    "resourceGroup": "io-p-itn-com-rg-01",
+    "resourceId": "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-itn-com-rg-01/providers/Microsoft.App/containerApps/io-p-itn-com-reminder-ca-01",
+    "supportedAggregationTypes": [
+      "Average",
+      "Maximum",
+      "Minimum"
+    ],
+    "unit": "Bytes"
+  },
+  {
+    "category": "Java",
+    "dimensions": [
+      {
+        "localizedValue": "Revision",
+        "value": "revisionName"
+      },
+      {
+        "localizedValue": "Replica",
+        "value": "podName"
+      },
+      {
+        "localizedValue": "Container",
+        "value": "container"
+      },
+      {
+        "localizedValue": "GcName",
+        "value": "gcName"
+      }
+    ],
+    "displayDescription": "Count of JVM garbage collection actions",
+    "id": "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-itn-com-rg-01/providers/Microsoft.App/containerApps/io-p-itn-com-reminder-ca-01/providers/microsoft.insights/metricdefinitions/JvmGcCount",
+    "isDimensionRequired": false,
+    "metricAvailabilities": [
+      {
+        "retention": "P93D",
+        "timeGrain": "PT1M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT5M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT15M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT30M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT1H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT6H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT12H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "P1D"
+      }
+    ],
+    "name": {
+      "localizedValue": "jvm.gc.count",
+      "value": "JvmGcCount"
+    },
+    "namespace": "Microsoft.App/containerApps",
+    "primaryAggregationType": "Total",
+    "resourceGroup": "io-p-itn-com-rg-01",
+    "resourceId": "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-itn-com-rg-01/providers/Microsoft.App/containerApps/io-p-itn-com-reminder-ca-01",
+    "supportedAggregationTypes": [
+      "Total",
+      "Average",
+      "Maximum",
+      "Minimum"
+    ],
+    "unit": "Count"
+  },
+  {
+    "category": "Java",
+    "dimensions": [
+      {
+        "localizedValue": "Revision",
+        "value": "revisionName"
+      },
+      {
+        "localizedValue": "Replica",
+        "value": "podName"
+      },
+      {
+        "localizedValue": "Container",
+        "value": "container"
+      },
+      {
+        "localizedValue": "GcName",
+        "value": "gcName"
+      }
+    ],
+    "displayDescription": "Duration of JVM garbage collection actions (in milliseconds)",
+    "id": "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-itn-com-rg-01/providers/Microsoft.App/containerApps/io-p-itn-com-reminder-ca-01/providers/microsoft.insights/metricdefinitions/JvmGcDuration",
+    "isDimensionRequired": false,
+    "metricAvailabilities": [
+      {
+        "retention": "P93D",
+        "timeGrain": "PT1M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT5M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT15M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT30M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT1H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT6H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT12H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "P1D"
+      }
+    ],
+    "name": {
+      "localizedValue": "jvm.gc.duration",
+      "value": "JvmGcDuration"
+    },
+    "namespace": "Microsoft.App/containerApps",
+    "primaryAggregationType": "Total",
+    "resourceGroup": "io-p-itn-com-rg-01",
+    "resourceId": "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-itn-com-rg-01/providers/Microsoft.App/containerApps/io-p-itn-com-reminder-ca-01",
+    "supportedAggregationTypes": [
+      "Total",
+      "Average",
+      "Maximum",
+      "Minimum"
+    ],
+    "unit": "MilliSeconds"
+  },
+  {
+    "category": "Java",
+    "dimensions": [
+      {
+        "localizedValue": "Revision",
+        "value": "revisionName"
+      },
+      {
+        "localizedValue": "Replica",
+        "value": "podName"
+      },
+      {
+        "localizedValue": "Container",
+        "value": "container"
+      },
+      {
+        "localizedValue": "Daemon",
+        "value": "daemon"
+      },
+      {
+        "localizedValue": "ThreadState",
+        "value": "threadState"
+      }
+    ],
+    "displayDescription": "Number of executing platform threads",
+    "id": "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-itn-com-rg-01/providers/Microsoft.App/containerApps/io-p-itn-com-reminder-ca-01/providers/microsoft.insights/metricdefinitions/JvmThreadCount",
+    "isDimensionRequired": false,
+    "metricAvailabilities": [
+      {
+        "retention": "P93D",
+        "timeGrain": "PT1M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT5M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT15M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT30M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT1H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT6H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT12H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "P1D"
+      }
+    ],
+    "name": {
+      "localizedValue": "jvm.thread.count",
+      "value": "JvmThreadCount"
+    },
+    "namespace": "Microsoft.App/containerApps",
+    "primaryAggregationType": "Average",
+    "resourceGroup": "io-p-itn-com-rg-01",
+    "resourceId": "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-itn-com-rg-01/providers/Microsoft.App/containerApps/io-p-itn-com-reminder-ca-01",
+    "supportedAggregationTypes": [
+      "Average",
+      "Maximum",
+      "Minimum"
+    ],
+    "unit": "Count"
+  },
+  {
+    "category": "Java",
+    "dimensions": [
+      {
+        "localizedValue": "Revision",
+        "value": "revisionName"
+      },
+      {
+        "localizedValue": "Replica",
+        "value": "podName"
+      },
+      {
+        "localizedValue": "Container",
+        "value": "container"
+      },
+      {
+        "localizedValue": "PoolName",
+        "value": "poolName"
+      }
+    ],
+    "displayDescription": "Amount of memory used by buffers, such as direct memory (in bytes)",
+    "id": "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-itn-com-rg-01/providers/Microsoft.App/containerApps/io-p-itn-com-reminder-ca-01/providers/microsoft.insights/metricdefinitions/JvmBufferMemoryUsage",
+    "isDimensionRequired": false,
+    "metricAvailabilities": [
+      {
+        "retention": "P93D",
+        "timeGrain": "PT1M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT5M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT15M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT30M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT1H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT6H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT12H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "P1D"
+      }
+    ],
+    "name": {
+      "localizedValue": "jvm.buffer.memory.usage",
+      "value": "JvmBufferMemoryUsage"
+    },
+    "namespace": "Microsoft.App/containerApps",
+    "primaryAggregationType": "Average",
+    "resourceGroup": "io-p-itn-com-rg-01",
+    "resourceId": "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-itn-com-rg-01/providers/Microsoft.App/containerApps/io-p-itn-com-reminder-ca-01",
+    "supportedAggregationTypes": [
+      "Average",
+      "Maximum",
+      "Minimum"
+    ],
+    "unit": "Bytes"
+  },
+  {
+    "category": "Java",
+    "dimensions": [
+      {
+        "localizedValue": "Revision",
+        "value": "revisionName"
+      },
+      {
+        "localizedValue": "Replica",
+        "value": "podName"
+      },
+      {
+        "localizedValue": "Container",
+        "value": "container"
+      },
+      {
+        "localizedValue": "PoolName",
+        "value": "poolName"
+      }
+    ],
+    "displayDescription": "Amount of total memory capacity of buffers (in bytes)",
+    "id": "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-itn-com-rg-01/providers/Microsoft.App/containerApps/io-p-itn-com-reminder-ca-01/providers/microsoft.insights/metricdefinitions/JvmBufferMemoryLimit",
+    "isDimensionRequired": false,
+    "metricAvailabilities": [
+      {
+        "retention": "P93D",
+        "timeGrain": "PT1M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT5M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT15M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT30M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT1H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT6H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT12H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "P1D"
+      }
+    ],
+    "name": {
+      "localizedValue": "jvm.buffer.memory.limit",
+      "value": "JvmBufferMemoryLimit"
+    },
+    "namespace": "Microsoft.App/containerApps",
+    "primaryAggregationType": "Average",
+    "resourceGroup": "io-p-itn-com-rg-01",
+    "resourceId": "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-itn-com-rg-01/providers/Microsoft.App/containerApps/io-p-itn-com-reminder-ca-01",
+    "supportedAggregationTypes": [
+      "Average",
+      "Maximum",
+      "Minimum"
+    ],
+    "unit": "Bytes"
+  },
+  {
+    "category": "Java",
+    "dimensions": [
+      {
+        "localizedValue": "Revision",
+        "value": "revisionName"
+      },
+      {
+        "localizedValue": "Replica",
+        "value": "podName"
+      },
+      {
+        "localizedValue": "Container",
+        "value": "container"
+      },
+      {
+        "localizedValue": "PoolName",
+        "value": "poolName"
+      }
+    ],
+    "displayDescription": "Number of buffers in the memory pool",
+    "id": "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-itn-com-rg-01/providers/Microsoft.App/containerApps/io-p-itn-com-reminder-ca-01/providers/microsoft.insights/metricdefinitions/JvmBufferCount",
+    "isDimensionRequired": false,
+    "metricAvailabilities": [
+      {
+        "retention": "P93D",
+        "timeGrain": "PT1M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT5M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT15M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT30M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT1H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT6H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT12H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "P1D"
+      }
+    ],
+    "name": {
+      "localizedValue": "jvm.buffer.count",
+      "value": "JvmBufferCount"
+    },
+    "namespace": "Microsoft.App/containerApps",
+    "primaryAggregationType": "Average",
+    "resourceGroup": "io-p-itn-com-rg-01",
+    "resourceId": "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-itn-com-rg-01/providers/Microsoft.App/containerApps/io-p-itn-com-reminder-ca-01",
+    "supportedAggregationTypes": [
+      "Average",
+      "Maximum",
+      "Minimum"
+    ],
+    "unit": "Count"
+  },
+  {
+    "category": "Basic",
+    "dimensions": [
+      {
+        "localizedValue": "Status Code Category",
+        "value": "statusCodeCategory"
+      },
+      {
+        "localizedValue": "Status Code",
+        "value": "statusCode"
+      }
+    ],
+    "displayDescription": "Average Response Time per Status Code",
+    "id": "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-itn-com-rg-01/providers/Microsoft.App/containerApps/io-p-itn-com-reminder-ca-01/providers/microsoft.insights/metricdefinitions/ResponseTime",
+    "isDimensionRequired": false,
+    "metricAvailabilities": [
+      {
+        "retention": "P93D",
+        "timeGrain": "PT1M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT5M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT15M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT30M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT1H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT6H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT12H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "P1D"
+      }
+    ],
+    "name": {
+      "localizedValue": "Average Response Time (Preview)",
+      "value": "ResponseTime"
+    },
+    "namespace": "Microsoft.App/containerApps",
+    "primaryAggregationType": "Total",
+    "resourceGroup": "io-p-itn-com-rg-01",
+    "resourceId": "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-itn-com-rg-01/providers/Microsoft.App/containerApps/io-p-itn-com-reminder-ca-01",
+    "supportedAggregationTypes": [
+      "Average",
+      "Total",
+      "Maximum",
+      "Minimum"
+    ],
+    "unit": "MilliSeconds"
+  },
+  {
+    "category": "Basic",
+    "dimensions": [
+      {
+        "localizedValue": "Replica",
+        "value": "podName"
+      }
+    ],
+    "displayDescription": "Percentage of CPU limit used in percentage points",
+    "id": "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-itn-com-rg-01/providers/Microsoft.App/containerApps/io-p-itn-com-reminder-ca-01/providers/microsoft.insights/metricdefinitions/CpuPercentage",
+    "isDimensionRequired": false,
+    "metricAvailabilities": [
+      {
+        "retention": "P93D",
+        "timeGrain": "PT1M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT5M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT15M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT30M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT1H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT6H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT12H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "P1D"
+      }
+    ],
+    "name": {
+      "localizedValue": "CPU Usage Percentage (Preview)",
+      "value": "CpuPercentage"
+    },
+    "namespace": "Microsoft.App/containerApps",
+    "primaryAggregationType": "Average",
+    "resourceGroup": "io-p-itn-com-rg-01",
+    "resourceId": "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-itn-com-rg-01/providers/Microsoft.App/containerApps/io-p-itn-com-reminder-ca-01",
+    "supportedAggregationTypes": [
+      "Total",
+      "Average",
+      "Maximum",
+      "Minimum"
+    ],
+    "unit": "Percent"
+  },
+  {
+    "category": "Basic",
+    "dimensions": [
+      {
+        "localizedValue": "Replica",
+        "value": "podName"
+      }
+    ],
+    "displayDescription": "Percentage of memory limit used, in percentage points",
+    "id": "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-itn-com-rg-01/providers/Microsoft.App/containerApps/io-p-itn-com-reminder-ca-01/providers/microsoft.insights/metricdefinitions/MemoryPercentage",
+    "isDimensionRequired": false,
+    "metricAvailabilities": [
+      {
+        "retention": "P93D",
+        "timeGrain": "PT1M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT5M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT15M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT30M"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT1H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT6H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "PT12H"
+      },
+      {
+        "retention": "P93D",
+        "timeGrain": "P1D"
+      }
+    ],
+    "name": {
+      "localizedValue": "Memory Percentage (Preview)",
+      "value": "MemoryPercentage"
+    },
+    "namespace": "Microsoft.App/containerApps",
+    "primaryAggregationType": "Average",
+    "resourceGroup": "io-p-itn-com-rg-01",
+    "resourceId": "/subscriptions/ec285037-c673-4f58-b594-d7c480da4e8b/resourceGroups/io-p-itn-com-rg-01/providers/Microsoft.App/containerApps/io-p-itn-com-reminder-ca-01",
+    "supportedAggregationTypes": [
+      "Total",
+      "Average",
+      "Maximum",
+      "Minimum"
+    ],
+    "unit": "Percent"
+  }
+]
