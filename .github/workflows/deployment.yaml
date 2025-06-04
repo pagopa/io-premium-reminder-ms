@@ -25,4 +25,5 @@ jobs:
         container_app: io-p-itn-com-reminder-ca-01
         resource_group_name: io-p-itn-com-rg-01
         environment: prod
-        script_path: start
+        script_language: typescript (yarn)
+        script_name: start
