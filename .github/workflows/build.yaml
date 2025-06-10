@@ -1,0 +1,22 @@
+name: Build
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - CES-925-migrazione-reminder-su-container-apps
+
+permissions:
+  contents: read
+  id-token: write
+  packages: write
+  attestations: write
+
+jobs:
+  release:
+      uses: pagopa/dx/.github/workflows/docker_image_build.yaml@main
+      name: Build Docker Image
+      secrets: inherit
+      with:
+        docker_image_name: pagopa/io-premium-reminder-ms
+        image_description: "Java application to send reminders to agencies subscribed with premium support"
