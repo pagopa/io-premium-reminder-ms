@@ -40,6 +40,18 @@ microservice-chart:
     maxReplica: 0
     pollingInterval: 30 # seconds
     cooldownPeriod: 300 # seconds
+    triggers:
+      - type: cpu
+        metadata:
+          type: Utilization
+          value: "70"
+      - type: cron
+        metadata:
+          # Required
+          timezone: Europe/Rome
+          start: 0 4 * 1 *
+          end: 5 4 * 1 *
+          desiredReplicas: "1"
   tmpVolumeMount:
     create: true
     mounts: [{name: "tmp", mountPath: "/tmp"}]
